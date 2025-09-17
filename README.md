@@ -15,3 +15,6 @@ Philipp Rebeschieß - Project Leader <br/>
 * As a user I want to be able to see information/statistics about already completed tracks, so I can see the location I have visited
 * As a user I want to be able to select tracks that are close to me, so that i don't have to walk to the other side of the city to start the track
 * As a user I want to be shown a radius of the location if I ask for it, so that I can find the location even if I cant find it just based on the picture
+
+## Wireframe
+![Start Screen](https://github.com/user-attachments/assets/6bdcefe9-73f1-4e19-8872-60906d57eaad)

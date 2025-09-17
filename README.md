@@ -18,3 +18,8 @@ Philipp Rebeschieß - Project Leader <br/>
 
 ## Wireframe
 ![Start Screen](https://github.com/user-attachments/assets/6bdcefe9-73f1-4e19-8872-60906d57eaad)
+![Stat Screen](https://github.com/user-attachments/assets/45c91b35-8fe8-45b8-999d-882b400fc05d)
+![Map Select Screen](https://github.com/user-attachments/assets/90bca45c-f532-406c-a6b0-f61ab415e4c7)
+![Play Screen](https://github.com/user-attachments/assets/e7b0be11-cac4-4f83-9b79-df73f69280b6)
+![Hint System](https://github.com/user-attachments/assets/0fa23cf8-97db-434c-a939-ddab2fe1a118)
+![End of Game Stat Screen](https://github.com/user-attachments/assets/4e62fa43-7ba3-4e87-938d-6a5e22219d67)

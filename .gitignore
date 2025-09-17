@@ -1,0 +1,123 @@
+*.iml
+.gradle
+/local.properties
+/.idea/caches
+/.idea/libraries
+/.idea/modules.xml
+/.idea/workspace.xml
+/.idea/navEditor.xml
+/.idea/assetWizardSettings.xml
+.DS_Store
+/build
+/captures
+.externalNativeBuild
+.cxx
+local.properties
+
+
+# ------------------------------
+# Betriebssystem / Allgemein
+# ------------------------------
+.DS_Store
+Thumbs.db
+desktop.ini
+*.log
+*.tmp
+*.swp
+*.swo
+*.orig
+*.bak
+*.tmp
+*.temp
+*.patch
+
+# ------------------------------
+# IDEs
+# ------------------------------
+# Android Studio / IntelliJ IDEA
+.idea/
+*.iml
+*.ipr
+*.iws
+
+# VS Code (optional)
+.vscode/
+
+# JetBrains Fleet (optional)
+.fleet/
+
+# Eclipse (optional)
+.project
+.classpath
+.settings/
+
+# ------------------------------
+# Gradle
+# ------------------------------
+.gradle/
+**/build/
+build/
+.out/
+.kotlin/
+
+# WICHTIG: Gradle Wrapper gehört ins Repo (nicht ignorieren):
+# gradlew
+# gradlew.bat
+# gradle/wrapper/gradle-wrapper.properties
+# gradle/wrapper/gradle-wrapper.jar
+
+# Lokale Gradle-/Android-Konfiguration
+local.properties
+gradle.properties.local
+*.local.properties
+
+# Wenn eure gradle.properties Geheimnisse enthält, ignorieren:
+# gradle.properties
+
+# ------------------------------
+# Android / NDK / CMake
+# ------------------------------
+.externalNativeBuild/
+.cxx/
+cmake-build-*/
+captures/
+*.hprof
+
+# Packaging-Artefakte
+*.apk
+*.ap_
+*.aab
+*.dex
+*.class
+
+# Test-/Coverage-Artefakte (meistens unter build/, hier zur Sicherheit)
+*.ec
+
+# ------------------------------
+# Build-Tools / Annotation Processing
+# ------------------------------
+# KAPT / KSP generiert primär unter build/, hier einige zusätzliche Caches
+.ksp/
+.kspCaches/
+
+# ------------------------------
+# Signierung / Secrets (niemals einchecken)
+# ------------------------------
+*.jks
+*.keystore
+keystore.properties
+signing.properties
+*.pem
+*.key
+*.p12
+*.pfx
+*.cer
+.env
+.env.*
+*.secrets
+
+# ------------------------------
+# Sonstiges
+# ------------------------------
+# Lokale/IDE-spezifische Lint/Inspektionsdateien (falls nicht teilen gewünscht)
+lint-results.*

@@ -1,4 +1,4 @@
-package ee.ut.cs.tartu_explorer.ui.theme
+package ee.ut.cs.tartu_explorer.core.ui.theme
 
 import androidx.compose.ui.graphics.Color
 

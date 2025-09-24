@@ -11,7 +11,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import ee.ut.cs.tartu_explorer.ui.theme.TartuExplorerTheme
+import ee.ut.cs.tartu_explorer.core.ui.theme.TartuExplorerTheme
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {

@@ -69,6 +69,7 @@ dependencies {
     implementation(libs.coil.compose)
     implementation(libs.coil.network.okhttp)
 
+    implementation(libs.play.services.location)
     implementation(libs.accompanist.permissions) // check permissions the compose way
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

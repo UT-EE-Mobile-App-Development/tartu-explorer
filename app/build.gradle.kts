@@ -56,4 +56,7 @@ dependencies {
     androidTestImplementation(libs.androidx.compose.ui.test.junit4)
     debugImplementation(libs.androidx.compose.ui.tooling)
     debugImplementation(libs.androidx.compose.ui.test.manifest)
+
+    // Jetpack Compose navigation
+    implementation("androidx.navigation:navigation-compose:2.7.5")
 }

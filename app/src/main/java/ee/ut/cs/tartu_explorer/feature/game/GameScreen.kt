@@ -1,4 +1,5 @@
-package ee.ut.cs.tartu_explorer.feature.statistics
+package ee.ut.cs.tartu_explorer.feature.game
+
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Button
@@ -7,10 +8,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 
-
 @Composable
-//Statistics Screen
-fun StatisticsScreen(onNavigateBack: () -> Unit) {
+fun GameScreen(onNavigateBack: () -> Unit) {
     Box(
         modifier = Modifier.fillMaxSize(),
         contentAlignment = Alignment.Center
@@ -18,8 +17,7 @@ fun StatisticsScreen(onNavigateBack: () -> Unit) {
         Button(onClick = onNavigateBack) {
             Text("Back")
         }
-
         //to Delete
-        Text("This is statistics Screen")
+        Text("This is Game Screen")
     }
 }

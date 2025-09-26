@@ -75,8 +75,8 @@ fun QuestScreen(onNavigateBack: () -> Unit) {
         ){
 
             //easy difficulty
-            Row(){
-                Column(){
+            Row {
+                Column {
                     Text("Easy")
 
                     //pictures for easy difficulty
@@ -98,8 +98,8 @@ fun QuestScreen(onNavigateBack: () -> Unit) {
             }
 
             //medium difficulty
-            Row(){
-                Column(){
+            Row {
+                Column {
                     Text("Medium")
                     //pictures for medium difficulty
                     Row(
@@ -120,8 +120,8 @@ fun QuestScreen(onNavigateBack: () -> Unit) {
             }
 
             //hard difficulty
-            Row(){
-                Column(){
+            Row {
+                Column {
                     Text("Hard")
                     //pictures for hard difficulty
                     Row(

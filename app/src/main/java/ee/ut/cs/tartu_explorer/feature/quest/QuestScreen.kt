@@ -22,32 +22,32 @@ import ee.ut.cs.tartu_explorer.R
 fun QuestScreen(onNavigateBack: () -> Unit) {
     //to be replaced with a function that gets the data from the backend someday
     val easyLevelsPictures = listOf(
-        R.drawable.temp_progress_bar_1,
-        R.drawable.temp_progress_bar_2,
-        R.drawable.temp_progress_bar_3,
-        R.drawable.temp_progress_bar_4,
-        R.drawable.temp_progress_bar_5,
-        R.drawable.temp_progress_bar_6
+        R.drawable.delta_image,
+        R.drawable.delta_image,
+        R.drawable.delta_image,
+        R.drawable.delta_image,
+        R.drawable.delta_image,
+        R.drawable.delta_image
     )
 
     //to be replaced with a function that gets the data from the backend someday
     val mediumLevelsPictures = listOf(
-        R.drawable.temp_progress_bar_1,
-        R.drawable.temp_progress_bar_2,
-        R.drawable.temp_progress_bar_3,
-        R.drawable.temp_progress_bar_4,
-        R.drawable.temp_progress_bar_5,
-        R.drawable.temp_progress_bar_6
+        R.drawable.delta_image,
+        R.drawable.delta_image,
+        R.drawable.delta_image,
+        R.drawable.delta_image,
+        R.drawable.delta_image,
+        R.drawable.delta_image
     )
 
     //to be replaced with a function that gets the data from the backend someday
     val hardLevelsPictures = listOf(
-        R.drawable.temp_progress_bar_1,
-        R.drawable.temp_progress_bar_2,
-        R.drawable.temp_progress_bar_3,
-        R.drawable.temp_progress_bar_4,
-        R.drawable.temp_progress_bar_5,
-        R.drawable.temp_progress_bar_6
+        R.drawable.delta_image,
+        R.drawable.delta_image,
+        R.drawable.delta_image,
+        R.drawable.delta_image,
+        R.drawable.delta_image,
+        R.drawable.delta_image
     )
 
     //scroll states for the pictures on different difficulties

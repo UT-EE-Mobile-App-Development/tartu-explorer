@@ -1,6 +1,6 @@
 package ee.ut.cs.tartu_explorer.feature.game
 
-import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -8,25 +8,24 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil3.compose.AsyncImage
-import ee.ut.cs.tartu_explorer.R
 import ee.ut.cs.tartu_explorer.core.data.local.db.DatabaseProvider
 import ee.ut.cs.tartu_explorer.core.data.repository.GameRepository
 
@@ -38,19 +37,21 @@ fun GameScreen(onNavigateBack: () -> Unit) {
     )
     val state by viewModel.state.collectAsState()
 
-    // State to track current image index
-    var currentIndex by remember { mutableIntStateOf(0) }
-
-    Column(modifier = Modifier,
+    Column(
+        modifier = Modifier,
         verticalArrangement = Arrangement.spacedBy(50.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        ProgressBar(currentIndex)
+        ProgressBar(
+            currentStep = state.currentQuest,
+            totalSteps = state.quests.size,
+            modifier = Modifier.fillMaxWidth()
+        )
 
         state.hints
             .filter { it -> it.index <= state.currentHint }
             .forEach { hint ->
-                Column (
+                Column(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(horizontal = 32.dp)
@@ -84,26 +85,40 @@ fun GameScreen(onNavigateBack: () -> Unit) {
 }
 
 @Composable
-fun ProgressBar(progress: Int) {
-    // List on Tamp progress bar images
-    val images = listOf(
-        R.drawable.temp_progress_bar_1,
-        R.drawable.temp_progress_bar_2,
-        R.drawable.temp_progress_bar_3,
-        R.drawable.temp_progress_bar_4,
-        R.drawable.temp_progress_bar_5,
-        R.drawable.temp_progress_bar_6
-    )
-    if (progress in 0..5) {
-        // Progress bar
+fun ProgressBar(currentStep: Int, totalSteps: Int, modifier: Modifier = Modifier) {
+    Box(
+        modifier = modifier
+            .padding(20.dp)
+    ) {
+        val progress = currentStep/(totalSteps-1).toFloat()
         Box(
-            modifier = Modifier,
-            contentAlignment = Alignment.TopCenter
-        ) {
-            Image(
-                painter = painterResource(id = images[progress]),
-                contentDescription = "Progress bar",
-            )
+            modifier = Modifier
+                .align(Alignment.Center)
+                .fillMaxWidth()
+                .height(12.dp)
+                .padding(horizontal = 10.dp)
+                .background(
+                    brush = Brush.horizontalGradient(
+                        colorStops = arrayOf(
+                            progress to Color.Green,
+                            progress + 0.01f to Color.White,
+                        )
+                    )
+                )
+        )
+        Row(horizontalArrangement = Arrangement.SpaceBetween, modifier = Modifier.fillMaxWidth()) {
+            repeat(totalSteps) { index ->
+                Box(
+                    modifier = Modifier
+                        .size(32.dp)
+                        .background(
+                            color = if (index < currentStep) Color.Green
+                            else if (index == currentStep) Color.Yellow
+                            else Color.White,
+                            shape = CircleShape
+                        )
+                )
+            }
         }
     }
 }

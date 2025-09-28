@@ -4,6 +4,7 @@ import androidx.room.Database
 import androidx.room.RoomDatabase
 import ee.ut.cs.tartu_explorer.core.data.local.dao.MapQuestDao
 import ee.ut.cs.tartu_explorer.core.data.local.dao.PlayerDao
+import ee.ut.cs.tartu_explorer.core.data.local.entities.HintEntity
 import ee.ut.cs.tartu_explorer.core.data.local.entities.MapQuestEntity
 import ee.ut.cs.tartu_explorer.core.data.local.entities.PlayerEntity
 import ee.ut.cs.tartu_explorer.core.data.local.entities.QuestStepEntity
@@ -17,7 +18,8 @@ import ee.ut.cs.tartu_explorer.core.data.local.entities.QuestStepEntity
     entities = [
         MapQuestEntity::class,
         QuestStepEntity::class,
-        PlayerEntity::class
+        HintEntity::class,
+        PlayerEntity::class,
     ],
     version = 1
 )

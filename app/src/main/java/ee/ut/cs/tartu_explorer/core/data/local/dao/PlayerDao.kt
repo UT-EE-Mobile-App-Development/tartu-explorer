@@ -10,6 +10,10 @@ import kotlinx.coroutines.flow.Flow
 
 private const val DEFAULT_PLAYER_ID: Int = 1
 
+/**
+ * Data Access Object (DAO) for performing database operations on the `PlayerEntity` table.
+ * This interface provides methods to insert, update, query, and observe player data in the local database.
+ */
 @Dao
 interface PlayerDao {
 

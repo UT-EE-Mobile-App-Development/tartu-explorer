@@ -9,6 +9,10 @@ import ee.ut.cs.tartu_explorer.core.data.local.entities.MapQuestEntity
 import ee.ut.cs.tartu_explorer.core.data.local.entities.QuestStepEntity
 import ee.ut.cs.tartu_explorer.core.data.local.relations.MapQuestWithSteps
 
+/**
+ * Data Access Object (DAO) for managing operations related to `MapQuestEntity`
+ * and its associated `QuestStepEntity` objects within the local database.
+ */
 @Dao
 interface MapQuestDao {
 
@@ -29,7 +33,6 @@ interface MapQuestDao {
     @Query("DELETE FROM map_quest")
     suspend fun deleteAllQuests()
 
-    // WICHTIG: Tabellenname an Entity (quest_steps) angepasst
     @Query("DELETE FROM quest_steps")
     suspend fun deleteAllSteps()
 }

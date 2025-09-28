@@ -15,6 +15,7 @@ object DatabaseProvider {
                 "tartuExplorer.db"
             )
                 .createFromAsset("exampleData.db")
+                .fallbackToDestructiveMigration(true)
                 .build().also { INSTANCE = it }
         }
     }

@@ -76,7 +76,7 @@ fun GameScreen(onNavigateBack: () -> Unit) {
         GameControls(
             onNavigateBack,
             onUseHint = { viewModel.requestNextHint() },
-            onGuess = { },
+            onGuess = { viewModel.nextQuest() },
             modifier = Modifier.fillMaxWidth(),
             hintDisabled = state.currentHint >= state.hints.size,
         )

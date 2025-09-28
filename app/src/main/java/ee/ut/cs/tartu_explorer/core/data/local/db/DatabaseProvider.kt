@@ -14,7 +14,7 @@ object DatabaseProvider {
                 AppDatabase::class.java,
                 "tartuExplorer.db"
             )
-                // .createFromAsset("exampleData.db")
+                .createFromAsset("exampleData.db")
                 .build().also { INSTANCE = it }
         }
     }

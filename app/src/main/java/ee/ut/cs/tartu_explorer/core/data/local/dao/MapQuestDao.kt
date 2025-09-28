@@ -20,7 +20,7 @@ interface MapQuestDao {
 
     @Transaction
     @Query("SELECT * FROM map_quest WHERE id = :questId")
-    suspend fun getQuestWithSteps(questId: Long): MapQuestWithSteps?
+    suspend fun getQuestWithSteps(questId: Int): MapQuestWithSteps?
 
     @Transaction
     @Query("SELECT * FROM map_quest")

@@ -2,12 +2,12 @@ package ee.ut.cs.tartu_explorer.core.data.local.db
 
 import androidx.room.Database
 import androidx.room.RoomDatabase
-import ee.ut.cs.tartu_explorer.core.data.local.dao.MapQuestDao
+import ee.ut.cs.tartu_explorer.core.data.local.dao.AdventureDao
 import ee.ut.cs.tartu_explorer.core.data.local.dao.PlayerDao
 import ee.ut.cs.tartu_explorer.core.data.local.entities.HintEntity
-import ee.ut.cs.tartu_explorer.core.data.local.entities.MapQuestEntity
+import ee.ut.cs.tartu_explorer.core.data.local.entities.AdventureEntity
 import ee.ut.cs.tartu_explorer.core.data.local.entities.PlayerEntity
-import ee.ut.cs.tartu_explorer.core.data.local.entities.QuestStepEntity
+import ee.ut.cs.tartu_explorer.core.data.local.entities.QuestEntity
 
 /**
  * AppDatabase is the Room database for the app, containing the entities `MapQuestEntity`, `QuestStepEntity`, and `PlayerEntity`.
@@ -16,14 +16,14 @@ import ee.ut.cs.tartu_explorer.core.data.local.entities.QuestStepEntity
 
 @Database(
     entities = [
-        MapQuestEntity::class,
-        QuestStepEntity::class,
+        AdventureEntity::class,
+        QuestEntity::class,
         HintEntity::class,
         PlayerEntity::class,
     ],
     version = 1
 )
 abstract class AppDatabase : RoomDatabase() {
-    abstract fun mapQuestDao(): MapQuestDao
+    abstract fun mapQuestDao(): AdventureDao
     abstract fun playerDao(): PlayerDao
 }

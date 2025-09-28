@@ -4,7 +4,7 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 
 /**
- * Entity representing a map quest in the local database.
+ * Entity representing a map quest (Adventure) in the local database.
  *
  * Defines the structure of a quest with its core attributes:
  * @property id Auto-generated primary key.
@@ -17,13 +17,17 @@ import androidx.room.PrimaryKey
  */
 
 
-@Entity(tableName = "map_quest")
-data class MapQuestEntity(
+@Entity(tableName = "adventure")
+data class AdventureEntity(
     @PrimaryKey(autoGenerate = true) val id: Int = 0,
     val title: String,
     val description: String,
-    val difficulty: Int,
+    val difficulty: AdventureDifficulty,
     val estimatedDuration: Int,
     val thumbnailPath: String,
     val completed: Boolean = false
 )
+
+enum class AdventureDifficulty {
+    VERY_EASY, EASY, MEDIUM, HARD, VERY_HARD
+}

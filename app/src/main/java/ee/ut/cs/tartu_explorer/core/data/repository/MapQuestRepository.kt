@@ -11,7 +11,7 @@ class MapQuestRepository(private val dao: MapQuestDao) {
 
     suspend fun insertSteps(steps: List<QuestStepEntity>) = dao.insertSteps(steps)
 
-    suspend fun getQuestWithSteps(questId: Long): MapQuestWithSteps? = dao.getQuestWithSteps(questId)
+    suspend fun getQuestWithSteps(questId: Int): MapQuestWithSteps? = dao.getQuestWithSteps(questId)
 
     suspend fun getAllQuestsWithSteps(): List<MapQuestWithSteps> = dao.getAllQuestsWithSteps()
 

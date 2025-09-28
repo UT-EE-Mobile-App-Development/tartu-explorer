@@ -18,7 +18,7 @@ import ee.ut.cs.tartu_explorer.core.data.local.relations.MapQuestWithSteps
  */
 class MapQuestRepository(private val dao: MapQuestDao) {
 
-    suspend fun insertQuest(quest: MapQuestEntity): Long = dao.insertQuest(quest)
+    suspend fun insertQuest(quest: MapQuestEntity) = dao.insertQuest(quest)
 
     suspend fun insertSteps(steps: List<QuestStepEntity>) = dao.insertSteps(steps)
 

@@ -18,7 +18,7 @@ private const val DEFAULT_PLAYER_ID: Int = 1
 interface PlayerDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertPlayer(player: PlayerEntity): Long
+    suspend fun insertPlayer(player: PlayerEntity)
 
     @Update
     suspend fun updatePlayer(player: PlayerEntity)

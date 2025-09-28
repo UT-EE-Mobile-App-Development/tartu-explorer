@@ -38,7 +38,7 @@ class QuestRepository(
         return playerDao.getPlayerById()
     }
 
-    suspend fun insertQuest(quest: MapQuestEntity): Long {
+    suspend fun insertQuest(quest: MapQuestEntity) {
         return mapQuestDao.insertQuest(quest)
     }
 

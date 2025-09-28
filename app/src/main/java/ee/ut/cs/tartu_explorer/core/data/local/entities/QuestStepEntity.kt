@@ -32,7 +32,7 @@ import androidx.room.PrimaryKey
 )
 data class QuestStepEntity(
     @PrimaryKey(autoGenerate = true)
-    val id: Long = 0,
-    val questId: Long,
+    val id: Int = 0,
+    val questId: Int,
     val message: String // Dieses Feld hat gefehlt
 )

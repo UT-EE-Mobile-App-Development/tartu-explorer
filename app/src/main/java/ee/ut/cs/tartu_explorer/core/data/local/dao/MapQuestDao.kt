@@ -17,7 +17,7 @@ import ee.ut.cs.tartu_explorer.core.data.local.relations.MapQuestWithSteps
 interface MapQuestDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertQuest(quest: MapQuestEntity): Long
+    suspend fun insertQuest(quest: MapQuestEntity)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertSteps(steps: List<QuestStepEntity>)

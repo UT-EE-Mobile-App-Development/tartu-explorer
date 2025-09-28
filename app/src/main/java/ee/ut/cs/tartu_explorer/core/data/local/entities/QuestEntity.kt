@@ -8,31 +8,34 @@ import androidx.room.PrimaryKey
 /**
  * Entity representing a step in a quest within the local database.
  *
- * This entity is linked to the `MapQuestEntity` table via a foreign key relationship,
+ * This entity is linked to the `AdventureEntity` table via a foreign key relationship,
  * indicating which quest the step belongs to. Steps are defined by their message and
  * associated quest ID, enabling ordered and descriptive steps for quests.
  *
  * @property id Auto-generated primary key representing the unique identifier of the quest step.
- * @property questId Foreign key referencing the associated `MapQuestEntity`.
+ * @property adventureId Foreign key referencing the associated `AdventureEntity`.
  *                   Defines which quest this step belongs to.
- * @property message Text or description of the step, providing instructions or details
- *                   for the quest participant.
+ * @property latitude Latitude of target point
+ * @property longitude Longitude of target point
+ * @property radius Radius in metres around the target point that count as being on target.
  */
 @Entity(
-    tableName = "quest_steps",
+    tableName = "quest",
     foreignKeys = [
         ForeignKey(
-            entity = MapQuestEntity::class,
+            entity = AdventureEntity::class,
             parentColumns = ["id"],
-            childColumns = ["questId"],
+            childColumns = ["adventureId"],
             onDelete = ForeignKey.CASCADE
         )
     ],
-    indices = [Index(value = ["questId"])]
+    indices = [Index(value = ["adventureId"])]
 )
-data class QuestStepEntity(
+data class QuestEntity(
     @PrimaryKey(autoGenerate = true)
     val id: Int = 0,
-    val questId: Int,
-    val message: String // Dieses Feld hat gefehlt
+    val adventureId: Int,
+    val latitude: Double,
+    val longitude: Double,
+    val radius: Float = 25f
 )

@@ -8,7 +8,7 @@ import androidx.room.ForeignKey.Companion.CASCADE
     tableName = "hint",
     primaryKeys = ["questId", "index"],
     foreignKeys = [ForeignKey(
-        entity = QuestStepEntity::class,
+        entity = QuestEntity::class,
         parentColumns = ["id"],
         childColumns = ["questId"],
         onDelete = CASCADE

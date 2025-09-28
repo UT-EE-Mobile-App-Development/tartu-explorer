@@ -121,3 +121,6 @@ signing.properties
 # ------------------------------
 # Lokale/IDE-spezifische Lint/Inspektionsdateien (falls nicht teilen gewünscht)
 lint-results.*
+
+# room schema export files
+/app/schemas/**/*.json

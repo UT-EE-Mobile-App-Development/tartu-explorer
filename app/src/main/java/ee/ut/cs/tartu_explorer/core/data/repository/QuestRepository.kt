@@ -9,6 +9,16 @@ import ee.ut.cs.tartu_explorer.core.data.local.entities.PlayerEntity
 import ee.ut.cs.tartu_explorer.core.data.local.entities.QuestStepEntity
 import ee.ut.cs.tartu_explorer.core.data.local.relations.MapQuestWithSteps
 
+/**
+ * Repository class responsible for managing quest-related operations.
+ * Encapsulates data access logic by interacting with DAOs and provides
+ * an abstraction layer for handling quests, steps, and player data.
+ *
+ * @constructor Initializes the repository with the database and relevant DAOs.
+ * @param db The application's Room database instance.
+ * @param mapQuestDao Data Access Object for managing quest-related operations.
+ * @param playerDao Data Access Object for managing player-related operations.
+ */
 class QuestRepository(
     private val db: AppDatabase,
     private val mapQuestDao: MapQuestDao,

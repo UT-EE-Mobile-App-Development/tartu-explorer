@@ -4,6 +4,13 @@ import ee.ut.cs.tartu_explorer.core.data.local.entities.MapQuestEntity
 import ee.ut.cs.tartu_explorer.core.data.local.entities.PlayerEntity
 import ee.ut.cs.tartu_explorer.core.data.local.entities.QuestStepEntity
 
+/**
+ * Utility object for generating test data for various entity classes.
+ *
+ * Provides sample data for `PlayerEntity`, `MapQuestEntity`, and `QuestStepEntity`
+ * to facilitate testing and development. All generated data is predefined and fixed,
+ * serving as mock data for application components or database operations.
+ */
 object TestDataGenerator {
 
     fun getTestPlayer(): PlayerEntity {

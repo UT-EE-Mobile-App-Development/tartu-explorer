@@ -1,154 +1,104 @@
 package ee.ut.cs.tartu_explorer.feature.quest
-import androidx.compose.foundation.Image
+
 import androidx.compose.foundation.horizontalScroll
-import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
-import ee.ut.cs.tartu_explorer.R
+import androidx.lifecycle.viewmodel.compose.viewModel
+import coil3.compose.AsyncImage
+import ee.ut.cs.tartu_explorer.core.data.local.db.DatabaseProvider
+import ee.ut.cs.tartu_explorer.core.data.local.entities.AdventureDifficulty
+import ee.ut.cs.tartu_explorer.core.data.local.entities.AdventureEntity
+import ee.ut.cs.tartu_explorer.core.data.repository.AdventureRepository
 
 @Composable
-//Quests Screen
 fun QuestScreen(onNavigateBack: () -> Unit) {
-    //to be replaced with a function that gets the data from the backend someday
-    val easyLevelsPictures = listOf(
-        R.drawable.delta_image,
-        R.drawable.delta_image,
-        R.drawable.delta_image,
-        R.drawable.delta_image,
-        R.drawable.delta_image,
-        R.drawable.delta_image
+    val db = DatabaseProvider.getDatabase(LocalContext.current)
+    val viewModel: QuestViewModel = viewModel(
+        factory = QuestViewModelFactory(AdventureRepository(db.adventureDao()))
     )
+    val state by viewModel.state.collectAsState()
 
-    //to be replaced with a function that gets the data from the backend someday
-    val mediumLevelsPictures = listOf(
-        R.drawable.delta_image,
-        R.drawable.delta_image,
-        R.drawable.delta_image,
-        R.drawable.delta_image,
-        R.drawable.delta_image,
-        R.drawable.delta_image
-    )
+    Column(
+        verticalArrangement = Arrangement.spacedBy(12.dp)
+    ) {
 
-    //to be replaced with a function that gets the data from the backend someday
-    val hardLevelsPictures = listOf(
-        R.drawable.delta_image,
-        R.drawable.delta_image,
-        R.drawable.delta_image,
-        R.drawable.delta_image,
-        R.drawable.delta_image,
-        R.drawable.delta_image
-    )
+        DifficultyRow(
+            adventures = state.adventures,
+            difficulty = AdventureDifficulty.VERY_EASY,
+            displayName = "Very Easy"
+        )
 
-    //scroll states for the pictures on different difficulties
-    val easyScrollState = rememberScrollState()
-    val mediumScrollState = rememberScrollState()
-    val hardScrollState = rememberScrollState()
+        DifficultyRow(
+            adventures = state.adventures,
+            difficulty = AdventureDifficulty.EASY,
+            displayName = "Easy"
+        )
 
+        DifficultyRow(
+            adventures = state.adventures,
+            difficulty = AdventureDifficulty.MEDIUM,
+            displayName = "Medium"
+        )
 
-    Box(
-        modifier = Modifier.fillMaxSize(),
-        contentAlignment = Alignment.Center
-    ){
+        DifficultyRow(
+            adventures = state.adventures,
+            difficulty = AdventureDifficulty.HARD,
+            displayName = "Hard"
+        )
 
-        //to Delete
-        Text("This is Quests Screen")
+        DifficultyRow(
+            adventures = state.adventures,
+            difficulty = AdventureDifficulty.VERY_HARD,
+            displayName = "Very Hard"
+        )
 
-        //for Quest difficulties
-        Column(
-            modifier = Modifier
-                .align(Alignment.TopStart)
-                .padding(
-                    start = 20.dp,
-                    top = 70.dp
-                )
-        ){
+    Button(
+        onClick = onNavigateBack,
+        modifier = Modifier
+    ) {
+        Text("Back")
+    }
+}
 
-            //easy difficulty
-            Row {
-                Column {
-                    Text("Easy")
+}
 
-                    //pictures for easy difficulty
-                    Row(
-                        modifier = Modifier.horizontalScroll(easyScrollState) // enables scrolling
-                    ){
-                        //displays each picture from easyLevelsPictures
-                        easyLevelsPictures.forEach { picture ->
-                            Image(
-                                painter = painterResource(id = picture),
-                                contentDescription = "Easy levels",
-                                modifier = Modifier
-                                    .size(100.dp)
-                                    .padding(4.dp)
-                            )
-                        }
-                    }
-                }
+@Composable
+fun DifficultyRow(
+    adventures: Map<AdventureDifficulty, List<AdventureEntity>>,
+    difficulty: AdventureDifficulty,
+    displayName: String
+) {
+    val scrollState = rememberScrollState()
+    Row {
+        Column {
+            Text(displayName)
+            Row(
+                modifier = Modifier.horizontalScroll(scrollState) // enables scrolling
+            ) {
+                adventures.getValue(difficulty)
+                    .takeIf { it.isNotEmpty() }
+                    ?.forEach { adventure ->
+                        AsyncImage(
+                            model = adventure.thumbnailPath,
+                            contentDescription = "$displayName levels",
+                            modifier = Modifier
+                                .size(100.dp)
+                                .padding(4.dp)
+                        )
+                    } ?: Text("There are no $displayName quests yet.")
             }
-
-            //medium difficulty
-            Row {
-                Column {
-                    Text("Medium")
-                    //pictures for medium difficulty
-                    Row(
-                        modifier = Modifier.horizontalScroll(mediumScrollState) // enables scrolling
-                    ){
-                        //displays each picture from mediumLevelsPictures
-                        mediumLevelsPictures.forEach { picture ->
-                            Image(
-                                painter = painterResource(id = picture),
-                                contentDescription = "Easy levels",
-                                modifier = Modifier
-                                    .size(100.dp)
-                                    .padding(4.dp)
-                            )
-                        }
-                    }
-                }
-            }
-
-            //hard difficulty
-            Row {
-                Column {
-                    Text("Hard")
-                    //pictures for hard difficulty
-                    Row(
-                        modifier = Modifier.horizontalScroll(hardScrollState) // enables scrolling
-                    ){
-                        //displays each picture from hardLevelsPictures
-                        hardLevelsPictures.forEach { picture ->
-                            Image(
-                                painter = painterResource(id = picture),
-                                contentDescription = "Easy levels",
-                                modifier = Modifier
-                                    .size(100.dp)
-                                    .padding(4.dp)
-                            )
-                        }
-                    }
-                }
-            }
-        }
-
-        Button(
-            onClick = onNavigateBack,
-            modifier = Modifier.align(Alignment.BottomCenter)
-                .padding(bottom = 20.dp)
-        ) {
-            Text("Back")
         }
     }
-
 }

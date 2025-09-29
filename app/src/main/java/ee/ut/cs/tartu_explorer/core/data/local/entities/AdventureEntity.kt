@@ -2,6 +2,7 @@ package ee.ut.cs.tartu_explorer.core.data.local.entities
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import androidx.room.TypeConverter
 
 /**
  * Entity representing a map quest (Adventure) in the local database.
@@ -28,6 +29,3 @@ data class AdventureEntity(
     val completed: Boolean = false
 )
 
-enum class AdventureDifficulty {
-    VERY_EASY, EASY, MEDIUM, HARD, VERY_HARD
-}

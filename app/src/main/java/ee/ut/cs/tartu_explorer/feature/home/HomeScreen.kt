@@ -1,4 +1,5 @@
 package ee.ut.cs.tartu_explorer.feature.home
+
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -17,14 +18,15 @@ import androidx.compose.ui.unit.sp
 fun HomeScreen(
     onNavigateToQuest: () -> Unit,
     onNavigateToStatistics: () -> Unit,
-    onNavigateToGame: () -> Unit
+    onNavigateToGame: (adventureId: Int) -> Unit,
+    selectedAdventureId: Int? = null,
 ) {
     Column(
         modifier = Modifier
             .fillMaxSize()
             .padding(top = 100.dp),
         horizontalAlignment = Alignment.CenterHorizontally
-    ){
+    ) {
         // Game Tittle in the middle
         Text(
             text = "TARTU EXPLORER",
@@ -48,8 +50,15 @@ fun HomeScreen(
         Button(onClick = onNavigateToStatistics) {
             Text("Statistics")
         }
-        Button(onClick = onNavigateToGame) {
-            Text("Play")
+        if (selectedAdventureId != null) {
+            Text(text = "selected adventure: $selectedAdventureId")
+            Button(onClick = { onNavigateToGame(selectedAdventureId) }) {
+                Text("Play")
+            }
+        } else {
+            Button(enabled = false, onClick = {}) {
+                Text("Select an adventure to play")
+            }
         }
     }
 }

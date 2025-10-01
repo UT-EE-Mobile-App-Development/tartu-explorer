@@ -1,5 +1,6 @@
 package ee.ut.cs.tartu_explorer.feature.quest
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -23,7 +24,7 @@ import ee.ut.cs.tartu_explorer.core.data.local.entities.AdventureEntity
 import ee.ut.cs.tartu_explorer.core.data.repository.AdventureRepository
 
 @Composable
-fun QuestScreen(onNavigateBack: () -> Unit) {
+fun QuestScreen(onNavigateBack: () -> Unit, onNavigateHome: (adventureId: Int) -> Unit) {
     val db = DatabaseProvider.getDatabase(LocalContext.current)
     val viewModel: QuestViewModel = viewModel(
         factory = QuestViewModelFactory(AdventureRepository(db.adventureDao()))
@@ -35,47 +36,53 @@ fun QuestScreen(onNavigateBack: () -> Unit) {
     ) {
 
         DifficultyRow(
+            onNavigateHome = onNavigateHome,
             adventures = state.adventures,
             difficulty = AdventureDifficulty.VERY_EASY,
             displayName = "Very Easy"
         )
 
         DifficultyRow(
+            onNavigateHome = onNavigateHome,
             adventures = state.adventures,
             difficulty = AdventureDifficulty.EASY,
             displayName = "Easy"
         )
 
         DifficultyRow(
+            onNavigateHome = onNavigateHome,
             adventures = state.adventures,
             difficulty = AdventureDifficulty.MEDIUM,
             displayName = "Medium"
         )
 
         DifficultyRow(
+            onNavigateHome = onNavigateHome,
             adventures = state.adventures,
             difficulty = AdventureDifficulty.HARD,
             displayName = "Hard"
         )
 
         DifficultyRow(
+            onNavigateHome = onNavigateHome,
             adventures = state.adventures,
             difficulty = AdventureDifficulty.VERY_HARD,
             displayName = "Very Hard"
         )
 
-    Button(
-        onClick = onNavigateBack,
-        modifier = Modifier
-    ) {
-        Text("Back")
+        Button(
+            onClick = onNavigateBack,
+            modifier = Modifier
+        ) {
+            Text("Back")
+        }
     }
-}
 
 }
 
 @Composable
 fun DifficultyRow(
+    onNavigateHome: (Int) -> Unit,
     adventures: Map<AdventureDifficulty, List<AdventureEntity>>,
     difficulty: AdventureDifficulty,
     displayName: String
@@ -96,6 +103,7 @@ fun DifficultyRow(
                             modifier = Modifier
                                 .size(100.dp)
                                 .padding(4.dp)
+                                .clickable(onClick = {onNavigateHome(adventure.id)})
                         )
                     } ?: Text("There are no $displayName quests yet.")
             }

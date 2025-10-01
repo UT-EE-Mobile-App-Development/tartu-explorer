@@ -30,10 +30,10 @@ import ee.ut.cs.tartu_explorer.core.data.local.db.DatabaseProvider
 import ee.ut.cs.tartu_explorer.core.data.repository.GameRepository
 
 @Composable
-fun GameScreen(onNavigateBack: () -> Unit) {
+fun GameScreen(adventureId:Int, onNavigateBack: () -> Unit) {
     val db = DatabaseProvider.getDatabase(LocalContext.current)
     val viewModel: GameViewModel = viewModel(
-        factory = GameViewModelFactory(GameRepository(db.questDao(), db.hintDao()))
+        factory = GameViewModelFactory(adventureId, GameRepository(db.questDao(), db.hintDao()))
     )
     val state by viewModel.state.collectAsState()
 

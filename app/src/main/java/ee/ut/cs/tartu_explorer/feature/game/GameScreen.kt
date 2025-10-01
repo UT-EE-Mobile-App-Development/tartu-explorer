@@ -30,7 +30,7 @@ import ee.ut.cs.tartu_explorer.core.data.local.db.DatabaseProvider
 import ee.ut.cs.tartu_explorer.core.data.repository.GameRepository
 
 @Composable
-fun GameScreen(adventureId:Int, onNavigateBack: () -> Unit) {
+fun GameScreen(adventureId: Int, onNavigateBack: () -> Unit) {
     val db = DatabaseProvider.getDatabase(LocalContext.current)
     val viewModel: GameViewModel = viewModel(
         factory = GameViewModelFactory(adventureId, GameRepository(db.questDao(), db.hintDao()))
@@ -49,7 +49,7 @@ fun GameScreen(adventureId:Int, onNavigateBack: () -> Unit) {
         )
 
         state.hints
-            .filter { it -> it.index <= state.currentHint }
+            .filterIndexed { index, _ -> index <= state.currentHint }
             .forEach { hint ->
                 Column(
                     modifier = Modifier
@@ -79,7 +79,7 @@ fun GameScreen(adventureId:Int, onNavigateBack: () -> Unit) {
             onUseHint = { viewModel.requestNextHint() },
             onGuess = { viewModel.nextQuest() },
             modifier = Modifier.fillMaxWidth(),
-            hintDisabled = state.currentHint >= state.hints.size,
+            hintDisabled = state.currentHint + 1 > state.hints.size - 1,
         )
     }
 }
@@ -90,7 +90,7 @@ fun ProgressBar(currentStep: Int, totalSteps: Int, modifier: Modifier = Modifier
         modifier = modifier
             .padding(20.dp)
     ) {
-        val progress = currentStep/(totalSteps-1).toFloat()
+        val progress = currentStep / (totalSteps - 1).toFloat()
         Box(
             modifier = Modifier
                 .align(Alignment.Center)

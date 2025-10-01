@@ -16,10 +16,11 @@ import kotlinx.serialization.Serializable
 @Serializable
 sealed class Screen(val route: String) {
     @Serializable
-    data class Home(val selectedQuest:Int? = null): Screen("home")
+    data class Home(val selectedAdventureId:Int? = null): Screen("home")
     object Quest : Screen("quest")
     object Statistics : Screen("statistics")
-    object Game : Screen("game")
+    @Serializable
+    data class Game(val adventureId:Int) : Screen("game")
 }
 
 
@@ -31,10 +32,10 @@ fun AppNavGraph(navController: NavHostController) {
         composable<Screen.Home> { backStackEntry ->
             val home: Screen.Home = backStackEntry.toRoute()
             HomeScreen(
-                selectedAdventureId = home.selectedQuest,
+                selectedAdventureId = home.selectedAdventureId,
                 onNavigateToQuest = { navController.navigate(Screen.Quest.route) },
                 onNavigateToStatistics = { navController.navigate(Screen.Statistics.route) },
-                onNavigateToGame = { navController.navigate(Screen.Game.route) }
+                onNavigateToGame = { adventureId -> navController.navigate(Screen.Game(adventureId)) }
             )
         }
         //Quests Screen button navigation
@@ -53,8 +54,10 @@ fun AppNavGraph(navController: NavHostController) {
         }
 
         //Game Screen button navigation
-        composable(Screen.Game.route) {
+        composable<Screen.Game> { backStackEntry ->
+            val game: Screen.Game = backStackEntry.toRoute()
             GameScreen(
+                adventureId = game.adventureId,
                 onNavigateBack = { navController.popBackStack() }
             )
         }

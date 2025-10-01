@@ -4,6 +4,7 @@ plugins {
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.kotlin.ksp)
     alias(libs.plugins.androidx.room)
+    alias(libs.plugins.kotlinx.serialization)
 }
 
 android {
@@ -61,6 +62,7 @@ dependencies {
     // persistance
     implementation(libs.androidx.room.ktx)
     implementation(libs.androidx.lifecycle.viewmodel.compose)
+    implementation(libs.kotlinx.serialization.json)
     ksp(libs.androidx.room.compiler)
 
     // internet images

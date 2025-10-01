@@ -33,9 +33,10 @@ class GameViewModel(
         }
         .flatMapLatest { it ->
             if(_quests.value.isEmpty() || it.currentQuest > _quests.value.size) {
-                return@flatMapLatest flow { emptyList<HintEntity>() }
+                flow { emptyList<HintEntity>() }
+            } else {
+                repository.getHintsByQuest(_quests.value[it.currentQuest].id)
             }
-            repository.getHintsByQuest(_quests.value[it.currentQuest].id)
         }
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
     val state = combine(_state, _quests, _hints) { state: GameState, quests, hints ->

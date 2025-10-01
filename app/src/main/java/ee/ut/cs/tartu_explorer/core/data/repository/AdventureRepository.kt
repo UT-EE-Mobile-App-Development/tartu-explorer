@@ -24,6 +24,8 @@ class AdventureRepository(private val dao: AdventureDao) {
 
     suspend fun getQuestWithSteps(questId: Int): AdventureWithQuests? = dao.getAdventureWithQuests(questId)
 
+    fun getAdventures() = dao.getAllAdventures()
+
     suspend fun getAllQuestsWithSteps(): List<AdventureWithQuests> = dao.getAllAdventuresWithQuests()
 
     suspend fun deleteAllQuests() = dao.deleteAllAdventures()

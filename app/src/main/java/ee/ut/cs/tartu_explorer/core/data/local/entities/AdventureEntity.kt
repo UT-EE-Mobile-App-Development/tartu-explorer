@@ -28,6 +28,3 @@ data class AdventureEntity(
     val completed: Boolean = false
 )
 
-enum class AdventureDifficulty {
-    VERY_EASY, EASY, MEDIUM, HARD, VERY_HARD
-}

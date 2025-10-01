@@ -8,6 +8,7 @@ import androidx.room.Transaction
 import ee.ut.cs.tartu_explorer.core.data.local.entities.AdventureEntity
 import ee.ut.cs.tartu_explorer.core.data.local.entities.QuestEntity
 import ee.ut.cs.tartu_explorer.core.data.local.relations.AdventureWithQuests
+import kotlinx.coroutines.flow.Flow
 
 /**
  * Data Access Object (DAO) for managing operations related to `MapQuestEntity`
@@ -29,6 +30,9 @@ interface AdventureDao {
     @Transaction
     @Query("SELECT * FROM adventure")
     suspend fun getAllAdventuresWithQuests(): List<AdventureWithQuests>
+
+    @Query("SELECT * FROM adventure")
+    fun getAllAdventures(): Flow<List<AdventureEntity>>
 
     @Query("DELETE FROM adventure")
     suspend fun deleteAllAdventures()

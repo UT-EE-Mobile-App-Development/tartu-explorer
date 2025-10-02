@@ -9,4 +9,11 @@ data class GameState(
 
     val hints: List<HintEntity> = emptyList(),
     val currentHint: Int = 0,
+
+    val guessState: GuessState? = null
+)
+
+data class GuessState(
+    val distanceFromTarget: Float,
+    val inRange: Boolean
 )

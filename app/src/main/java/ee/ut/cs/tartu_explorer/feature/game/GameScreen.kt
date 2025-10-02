@@ -28,12 +28,17 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import coil3.compose.AsyncImage
 import ee.ut.cs.tartu_explorer.core.data.local.db.DatabaseProvider
 import ee.ut.cs.tartu_explorer.core.data.repository.GameRepository
+import ee.ut.cs.tartu_explorer.core.location.LocationRepository
 
 @Composable
 fun GameScreen(adventureId: Int, onNavigateBack: () -> Unit) {
     val db = DatabaseProvider.getDatabase(LocalContext.current)
+    val locationRepository = LocationRepository(LocalContext.current)
     val viewModel: GameViewModel = viewModel(
-        factory = GameViewModelFactory(adventureId, GameRepository(db.questDao(), db.hintDao()))
+        factory = GameViewModelFactory(
+            adventureId,
+            GameRepository(db.questDao(), db.hintDao()), locationRepository
+        )
     )
     val state by viewModel.state.collectAsState()
 
@@ -77,10 +82,20 @@ fun GameScreen(adventureId: Int, onNavigateBack: () -> Unit) {
         GameControls(
             onNavigateBack,
             onUseHint = { viewModel.requestNextHint() },
-            onGuess = { viewModel.nextQuest() },
+            onGuess = { viewModel.guessPosition() },
             modifier = Modifier.fillMaxWidth(),
             hintDisabled = state.currentHint + 1 > state.hints.size - 1,
         )
+
+        if(state.guessState != null) {
+            val guess: GuessState = state.guessState!!
+            DebugGuessDialog(
+                onContinueAnyway = { viewModel.nextQuest() },
+                onDismiss = { viewModel.resetDebugGuessDialogue() },
+                distance = guess.distanceFromTarget,
+                inRange = guess.inRange
+            )
+        }
     }
 }
 

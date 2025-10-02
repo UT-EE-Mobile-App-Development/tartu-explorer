@@ -1,10 +1,13 @@
 package ee.ut.cs.tartu_explorer.feature.game
 
+import android.location.Location
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import ee.ut.cs.tartu_explorer.core.data.local.entities.HintEntity
 import ee.ut.cs.tartu_explorer.core.data.repository.GameRepository
+import ee.ut.cs.tartu_explorer.core.location.LocationRepository
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -13,10 +16,12 @@ import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 
 class GameViewModel(
     private val adventureId: Int,
     private val repository: GameRepository,
+    private val locationRepository: LocationRepository
 ) : ViewModel() {
     private val _state = MutableStateFlow(GameState())
 
@@ -32,7 +37,7 @@ class GameViewModel(
             )
         }
         .flatMapLatest { it ->
-            if(_quests.value.isEmpty() || it.currentQuest > _quests.value.size) {
+            if (_quests.value.isEmpty() || it.currentQuest > _quests.value.size) {
                 flow { emptyList<HintEntity>() }
             } else {
                 repository.getHintsByQuest(_quests.value[it.currentQuest].id)
@@ -46,9 +51,35 @@ class GameViewModel(
         )
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), GameState())
 
+    fun guessPosition() {
+        val currentQuest = state.value.quests[state.value.currentQuest]
+        val targetLocation = Location("")
+        targetLocation.latitude = currentQuest.latitude
+        targetLocation.longitude = currentQuest.longitude
+
+        viewModelScope.launch(Dispatchers.IO) {
+            val location = locationRepository.getLastLocation()
+            if (location != null) {
+                val distanceToTarget = location.distanceTo(targetLocation)
+                val inRadius = distanceToTarget <= currentQuest.radius
+                _state.update { it -> it.copy(guessState = GuessState(distanceToTarget, inRadius)) }
+            }
+        }
+    }
+
+    fun resetDebugGuessDialogue() {
+        _state.update { it -> it.copy(guessState = null) }
+    }
+
     fun nextQuest() {
         if (_state.value.currentQuest < state.value.quests.size) {
-            _state.update { it -> it.copy(currentQuest = it.currentQuest + 1, currentHint = 0) }
+            _state.update { it ->
+                it.copy(
+                    currentQuest = it.currentQuest + 1,
+                    currentHint = 0,
+                    guessState = null
+                )
+            }
         }
     }
 
@@ -61,11 +92,15 @@ class GameViewModel(
     }
 }
 
-class GameViewModelFactory(private val adventureId: Int, private val repository: GameRepository) : ViewModelProvider.Factory {
+class GameViewModelFactory(
+    private val adventureId: Int,
+    private val repository: GameRepository,
+    private val locationRepository: LocationRepository
+) : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(GameViewModel::class.java)) {
             @Suppress("UNCHECKED_CAST")
-            return GameViewModel(adventureId, repository) as T
+            return GameViewModel(adventureId, repository, locationRepository) as T
         }
         throw IllegalArgumentException("Unknown ViewModel class")
     }

@@ -112,7 +112,7 @@ fun HomeScreen(
     // Cycle background every 5 seconds
     LaunchedEffect(Unit) {
         while (true) {
-            delay(5000)
+            delay(60000)
             currentIndex = (currentIndex + 1) % backgrounds.size
         }
     }
@@ -122,7 +122,7 @@ fun HomeScreen(
             initialValue = 0.6f,
             targetValue = 1f,
             animationSpec = infiniteRepeatable(
-                tween(5000, easing = LinearEasing),
+                tween(60000, easing = LinearEasing),
                 RepeatMode.Reverse
             ),
             label = "alpha"

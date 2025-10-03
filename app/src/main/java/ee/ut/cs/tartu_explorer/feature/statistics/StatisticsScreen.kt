@@ -35,47 +35,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import kotlinx.coroutines.delay
 import ee.ut.cs.tartu_explorer.R
+import ee.ut.cs.tartu_explorer.core.ui.theme.components.CustomBackButton
 
-@Composable
-fun CustomBackButton(onClick: () -> Unit) {
-    Box(
-        modifier = Modifier
-            .size(48.dp)
-            .border(width = 2.dp, color = Color.Black, shape = RoundedCornerShape(8.dp))
-            .background(color = Color(0xFFFFA500), shape = RoundedCornerShape(8.dp))
-            .clickable { onClick() },
-        contentAlignment = Alignment.Center
-    ) {
-        val offsets = listOf(
-            Pair(-1.dp, -1.dp),
-            Pair(0.dp, -1.dp),
-            Pair(1.dp, -1.dp),
-            Pair(-1.dp, 0.dp),
-            Pair(1.dp, 0.dp),
-            Pair(-1.dp, 1.dp),
-            Pair(0.dp, 1.dp),
-            Pair(1.dp, 1.dp)
-        )
-
-        offsets.forEach { (x, y) ->
-            Icon(
-                imageVector = Icons.Default.ArrowBack,
-                contentDescription = "Back",
-                tint = Color.Black,
-                modifier = Modifier
-                    .offset(x = x, y = y)
-                    .size(24.dp)
-            )
-        }
-
-        Icon(
-            imageVector = Icons.Default.ArrowBack,
-            contentDescription = "Back",
-            tint = Color.White,
-            modifier = Modifier.size(24.dp)
-        )
-    }
-}
 
 @Composable
 fun StatisticsScreen(onNavigateBack: () -> Unit) {
@@ -88,6 +49,8 @@ fun StatisticsScreen(onNavigateBack: () -> Unit) {
     var currentIndex by remember { mutableStateOf(0) }
 
     // Cycle background every 5 seconds
+    // comment: delay should be longer adn the pictures move out of the screen a bit
+    // maybe have only 1 picture, bg3 doesn't look the best
     LaunchedEffect(Unit) {
         while (true) {
             delay(5000)

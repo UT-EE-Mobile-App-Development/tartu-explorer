@@ -59,53 +59,10 @@ import ee.ut.cs.tartu_explorer.core.data.local.db.DatabaseProvider
 import ee.ut.cs.tartu_explorer.core.data.local.entities.AdventureDifficulty
 import ee.ut.cs.tartu_explorer.core.data.local.entities.AdventureEntity
 import ee.ut.cs.tartu_explorer.core.data.repository.AdventureRepository
+import ee.ut.cs.tartu_explorer.core.ui.theme.components.CustomBackButton
 import kotlinx.coroutines.delay
 
-@Composable
-fun CustomBackButton(onClick: () -> Unit) {
-    Box(
-        modifier = Modifier
-            .size(48.dp) // button size
-            .border(width = 2.dp, color = Color.Black, shape = RoundedCornerShape(8.dp))
-            .background(color = Color(0xFFFFA500), shape = RoundedCornerShape(8.dp)) // orange fill
-            .clickable { onClick() },
-        contentAlignment = Alignment.Center
-    ) {
-        // White arrow with black outline
-        Box {
-            val offsets = listOf(
-                Pair(-1.dp, -1.dp),
-                Pair(0.dp, -1.dp),
-                Pair(1.dp, -1.dp),
-                Pair(-1.dp, 0.dp),
-                Pair(1.dp, 0.dp),
-                Pair(-1.dp, 1.dp),
-                Pair(0.dp, 1.dp),
-                Pair(1.dp, 1.dp)
-            )
 
-            // Draw black outline for arrow
-            offsets.forEach { (x, y) ->
-                Icon(
-                    imageVector = Icons.Default.ArrowBack,
-                    contentDescription = "Back",
-                    tint = Color.Black,
-                    modifier = Modifier
-                        .offset(x = x, y = y)
-                        .size(24.dp)
-                )
-            }
-
-            // Draw white top arrow
-            Icon(
-                imageVector = Icons.Default.ArrowBack,
-                contentDescription = "Back",
-                tint = Color.White,
-                modifier = Modifier.size(24.dp)
-            )
-        }
-    }
-}
 
 @Composable
 fun QuestScreen(onNavigateBack: () -> Unit, onNavigateHome: (adventureId: Int) -> Unit) {
@@ -124,6 +81,8 @@ fun QuestScreen(onNavigateBack: () -> Unit, onNavigateHome: (adventureId: Int) -
     var currentIndex by remember { mutableStateOf(0) }
 
     // Cycle background every 5 seconds
+    // comment: delay should be longer adn the pictures move out of the screen a bit
+    // maybe have only 1 picture, bg3 doesn't look the best
     LaunchedEffect(Unit) {
         while (true) {
             delay(5000)

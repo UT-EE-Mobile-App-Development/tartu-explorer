@@ -13,7 +13,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-
+import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Brush
 
 @Composable
 fun HomeGameButton(
@@ -22,6 +23,10 @@ fun HomeGameButton(
     enabled: Boolean = true,
     modifier: Modifier = Modifier
 ) {
+    val borderColor = if (enabled) Color(0xFF8B4500) else Color.Gray
+
+
+
     Button(
         onClick = onClick,
         enabled = enabled,
@@ -33,7 +38,26 @@ fun HomeGameButton(
             containerColor = Color(0xFFFFA500),
             contentColor = Color.Black
         ),
-        border = BorderStroke(2.dp, Color.Black)
+        //border
+        border = BorderStroke(
+            3.dp,
+            Brush.verticalGradient(
+
+                colors = if(enabled){
+                    listOf(
+                        Color(0xFFFFE0A0), // light top highlight
+                        Color(0xFFFFA000), // mid-orange
+                        Color(0xFF8B3A00)  // dark bottom shadow
+                    )
+                }else{
+                    listOf(
+                        Color(0xFFCCCCCC), // light gray top
+                        Color(0xFFAAAAAA), // mid gray
+                        Color(0xFF888888)  // dark gray bottom
+                    )
+                }
+            )
+        )
     ) {
         if(enabled){
             OutlinedText(text = text)

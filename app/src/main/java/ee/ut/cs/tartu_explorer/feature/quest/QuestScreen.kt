@@ -41,14 +41,25 @@ fun QuestScreen(
     val state by viewModel.state.collectAsState()
 
     //background images
-    val backgrounds = listOf(R.drawable.bg1, R.drawable.bg2, R.drawable.bg3)
+    val backgrounds = listOf(
+        R.drawable.bg1,
+        R.drawable.bg2,
+        //R.drawable.bg3
+        )
 
     AnimatedBackground(backgrounds) {
         Box(modifier = Modifier.fillMaxSize()) {
-            // Back button top-left
-            CustomBackButton(
-                onClick = onNavigateBack,
-            )
+
+            // Top row with back button + spacing
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier
+                    .align(Alignment.TopStart)   // Place at the top start of the Box
+                    .padding(16.dp)         // Add padding from edges
+            ) {
+                CustomBackButton(onClick = onNavigateBack)
+                Spacer(modifier = Modifier.width(8.dp))
+            }
 
             // Quest list card centered
             QuestListCard(

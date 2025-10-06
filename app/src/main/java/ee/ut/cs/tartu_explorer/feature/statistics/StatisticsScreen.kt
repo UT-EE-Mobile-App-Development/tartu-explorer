@@ -23,7 +23,7 @@ fun StatisticsScreen(onNavigateBack: () -> Unit) {
     val backgrounds = listOf(
         R.drawable.bg1,
         R.drawable.bg2,
-        R.drawable.bg3
+        //R.drawable.bg3
     )
 
     AnimatedBackground(backgrounds) {

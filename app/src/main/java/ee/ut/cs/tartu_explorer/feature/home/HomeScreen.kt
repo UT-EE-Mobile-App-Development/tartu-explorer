@@ -27,7 +27,7 @@ fun HomeScreen(
     val backgrounds = listOf(
         ee.ut.cs.tartu_explorer.R.drawable.bg1,
         ee.ut.cs.tartu_explorer.R.drawable.bg2,
-        ee.ut.cs.tartu_explorer.R.drawable.bg3
+        //ee.ut.cs.tartu_explorer.R.drawable.bg3
     )
 
     AnimatedBackground(backgrounds) {

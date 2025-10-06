@@ -24,7 +24,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.delay
 
-
+// A full-screen animated background that cycles through a list of drawable resources.
 @Composable
 fun AnimatedBackground(
     backgrounds: List<Int>,
@@ -33,43 +33,50 @@ fun AnimatedBackground(
 ) {
     var currentIndex by remember { mutableStateOf(0) }
 
+    // Automatically switch the background every 60 seconds
     LaunchedEffect(Unit) {
         while (true) {
             delay(60000)
             currentIndex = (currentIndex + 1) % backgrounds.size
         }
     }
-
+    // Create an infinite animation transition
     val infiniteTransition = rememberInfiniteTransition(label = "bg_anim")
+
+    // Animate image alpha to subtly pulse between 0.6 and 1.0
     val alphaAnim by infiniteTransition.animateFloat(
         initialValue = 0.6f,
         targetValue = 1f,
         animationSpec = infiniteRepeatable(
-            tween(60000, easing = LinearEasing),
+            tween(10000, easing = LinearEasing), //10 sec to change transparency
             RepeatMode.Reverse
         ),
         label = "alpha"
     )
+
+    // Animate vertical offset between -20.dp and +20.dp for slow drift effect
     val offsetAnim by infiniteTransition.animateFloat(
         initialValue = -30f,
         targetValue = 30f,
         animationSpec = infiniteRepeatable(
-            tween(12000, easing = LinearEasing),
+            tween(10000, easing = LinearEasing), //10 sec to move up and down
             RepeatMode.Reverse
         ),
         label = "offset"
     )
 
     Box(modifier = modifier.fillMaxSize()) {
+        // Background image with zoom, blur, alpha, and motion
         Image(
             painter = painterResource(id = backgrounds[currentIndex]),
             contentDescription = null,
             contentScale = ContentScale.Crop,
             modifier = Modifier
                 .matchParentSize()
+                // Slightly zooms the image in to prevent edges from showing when offset
                 .graphicsLayer {
-                    scaleX = 1.1f
-                    scaleY = 1.1f
+                    scaleX = 1.25f
+                    scaleY = 1.25f
                 }
                 .offset(y = offsetAnim.dp)
                 .alpha(alphaAnim)

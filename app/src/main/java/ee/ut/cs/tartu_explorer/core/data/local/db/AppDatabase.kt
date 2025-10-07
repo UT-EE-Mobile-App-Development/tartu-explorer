@@ -7,10 +7,15 @@ import ee.ut.cs.tartu_explorer.core.data.local.dao.AdventureDao
 import ee.ut.cs.tartu_explorer.core.data.local.dao.HintDao
 import ee.ut.cs.tartu_explorer.core.data.local.dao.PlayerDao
 import ee.ut.cs.tartu_explorer.core.data.local.dao.QuestDao
+import ee.ut.cs.tartu_explorer.core.data.local.dao.StatisticsDao
 import ee.ut.cs.tartu_explorer.core.data.local.entities.AdventureDifficultyConverter
 import ee.ut.cs.tartu_explorer.core.data.local.entities.HintEntity
 import ee.ut.cs.tartu_explorer.core.data.local.entities.AdventureEntity
+import ee.ut.cs.tartu_explorer.core.data.local.entities.AdventureSessionEntity
+import ee.ut.cs.tartu_explorer.core.data.local.entities.HintUsageEntity
+import ee.ut.cs.tartu_explorer.core.data.local.entities.PlayerAdventureProgressEntity
 import ee.ut.cs.tartu_explorer.core.data.local.entities.PlayerEntity
+import ee.ut.cs.tartu_explorer.core.data.local.entities.QuestAttemptEntity
 import ee.ut.cs.tartu_explorer.core.data.local.entities.QuestEntity
 
 /**
@@ -24,6 +29,10 @@ import ee.ut.cs.tartu_explorer.core.data.local.entities.QuestEntity
         QuestEntity::class,
         HintEntity::class,
         PlayerEntity::class,
+        AdventureSessionEntity::class,
+        QuestAttemptEntity::class,
+        HintUsageEntity::class,
+        PlayerAdventureProgressEntity::class
     ],
     version = 3
 )
@@ -33,4 +42,5 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun questDao(): QuestDao
     abstract fun hintDao(): HintDao
     abstract fun playerDao(): PlayerDao
+    abstract fun statisticsDao(): StatisticsDao
 }

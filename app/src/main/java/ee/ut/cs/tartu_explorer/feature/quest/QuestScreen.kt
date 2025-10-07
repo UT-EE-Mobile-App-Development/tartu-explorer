@@ -45,7 +45,7 @@ fun QuestScreen(
         R.drawable.bg1,
         R.drawable.bg2,
         //R.drawable.bg3
-        )
+    )
 
     AnimatedBackground(backgrounds) {
         Box(modifier = Modifier.fillMaxSize()) {
@@ -127,7 +127,10 @@ fun DifficultyRow(
 ) {
     val scrollState = rememberScrollState()
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
-        Text(displayName)
+        Text(
+            displayName,
+            color = Color.Black
+        )
         Row(
             modifier = Modifier
                 .horizontalScroll(scrollState)
@@ -145,7 +148,10 @@ fun DifficultyRow(
                             .clickable { onNavigateHome(adventure.id) }
                     )
 
-                } ?: Text("There are no $displayName quests yet.")
+                } ?: Text(
+                "There are no $displayName quests yet.",
+                color = Color.Black
+            )
         }
     }
 }

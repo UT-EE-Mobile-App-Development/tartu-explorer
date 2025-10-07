@@ -73,11 +73,15 @@ fun StatisticsScreen(
                             Column(horizontalAlignment = Alignment.CenterHorizontally) {
                                 Text(
                                     "Error loading statistics:\n${s.message}",
-                                    textAlign = TextAlign.Center
+                                    textAlign = TextAlign.Center,
+                                    color = Color.Black
                                 )
                                 Spacer(Modifier.height(12.dp))
                                 Button(onClick = { vm.refresh() }) {
-                                    Text("Try again")
+                                    Text(
+                                        "Try again",
+                                        color = Color.Black
+                                    )
                                 }
                             }
                         }
@@ -96,7 +100,10 @@ fun StatisticsScreen(
                             Box(
                                 modifier = Modifier
                                     .fillMaxSize()
-                                    .background(color = Color(0xCCFFFFFF), shape = RoundedCornerShape(16.dp))
+                                    .background(
+                                        color = Color(0xCCFFFFFF),
+                                        shape = RoundedCornerShape(16.dp)
+                                    )
                                     .border(2.dp, Color.Black, shape = RoundedCornerShape(16.dp))
                                     .padding(16.dp)
                             ) {
@@ -110,39 +117,110 @@ fun StatisticsScreen(
                                             text = "Statistics",
                                             fontSize = 28.sp,
                                             fontWeight = FontWeight.Bold,
-                                            modifier = Modifier.padding(bottom = 8.dp)
+                                            modifier = Modifier.padding(bottom = 8.dp),
+                                            color = Color.Black
                                         )
                                     }
 
                                     // Completed quests by difficulty
-                                    item { Text("Completed quests by difficulty", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold) }
+                                    item {
+                                        Text(
+                                            "Completed quests by difficulty",
+                                            style = MaterialTheme.typography.titleMedium,
+                                            fontWeight = FontWeight.SemiBold,
+                                            color = Color.Black
+                                        )
+                                    }
                                     if (data.completedByDifficulty.isEmpty()) {
-                                        item { Text("No completed quests available.") }
+                                        item {
+                                            Text(
+                                                "No completed quests available.",
+                                                color = Color.Black
+                                            )
+                                        }
                                     } else {
                                         items(data.completedByDifficulty) { entry ->
                                             Row(
                                                 modifier = Modifier.fillMaxWidth(),
                                                 horizontalArrangement = Arrangement.SpaceBetween
                                             ) {
-                                                Text(entry.difficulty)
-                                                Text("${entry.count}")
+                                                Text(
+                                                    entry.difficulty,
+                                                    color = Color.Black
+                                                )
+                                                Text(
+                                                    "${entry.count}",
+                                                    color = Color.Black
+                                                )
                                             }
                                         }
                                     }
 
                                     item { Spacer(Modifier.height(8.dp)) }
 
-                                    item { Text("Required hints (total)", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold) }
-                                    item { Text("${data.totalHintsUsed}", style = MaterialTheme.typography.bodyLarge) }
+                                    item {
+                                        Text(
+                                            "Required hints (total)",
+                                            style = MaterialTheme.typography.titleMedium,
+                                            fontWeight = FontWeight.SemiBold,
+                                            color = Color.Black
+                                        )
+                                    }
+                                    item {
+                                        Text(
+                                            "${data.totalHintsUsed}",
+                                            style = MaterialTheme.typography.bodyLarge,
+                                            color = Color.Black
+                                        )
+                                    }
 
-                                    item { Text("Ø Hints per quest (successful)", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold) }
-                                    item { Text(formatDoubleOrDash(data.avgHintsPerQuest), style = MaterialTheme.typography.bodyLarge) }
+                                    item {
+                                        Text(
+                                            "Ø Hints per quest (successful)",
+                                            style = MaterialTheme.typography.titleMedium,
+                                            fontWeight = FontWeight.SemiBold,
+                                            color = Color.Black
+                                        )
+                                    }
+                                    item {
+                                        Text(
+                                            formatDoubleOrDash(data.avgHintsPerQuest),
+                                            style = MaterialTheme.typography.bodyLarge,
+                                            color = Color.Black
+                                        )
+                                    }
 
-                                    item { Text("Ø Time for an adventure", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold) }
-                                    item { Text(formatDurationOrDash(data.avgAdventureDurationMs), style = MaterialTheme.typography.bodyLarge) }
+                                    item {
+                                        Text(
+                                            "Ø Time for an adventure",
+                                            style = MaterialTheme.typography.titleMedium,
+                                            fontWeight = FontWeight.SemiBold,
+                                            color = Color.Black
+                                        )
+                                    }
+                                    item {
+                                        Text(
+                                            formatDurationOrDash(data.avgAdventureDurationMs),
+                                            style = MaterialTheme.typography.bodyLarge,
+                                            color = Color.Black
+                                        )
+                                    }
 
-                                    item { Text("Ø Time until first hint", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold) }
-                                    item { Text(formatDurationOrDash(data.avgTimeToFirstHintMs), style = MaterialTheme.typography.bodyLarge) }
+                                    item {
+                                        Text(
+                                            "Ø Time until first hint",
+                                            style = MaterialTheme.typography.titleMedium,
+                                            fontWeight = FontWeight.SemiBold,
+                                            color = Color.Black
+                                        )
+                                    }
+                                    item {
+                                        Text(
+                                            formatDurationOrDash(data.avgTimeToFirstHintMs),
+                                            style = MaterialTheme.typography.bodyLarge,
+                                            color = Color.Black
+                                        )
+                                    }
                                 }
                             }
                         }

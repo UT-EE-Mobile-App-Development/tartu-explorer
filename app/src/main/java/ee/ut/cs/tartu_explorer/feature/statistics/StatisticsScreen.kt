@@ -3,92 +3,168 @@ package ee.ut.cs.tartu_explorer.feature.statistics
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.viewmodel.compose.viewModel
 import ee.ut.cs.tartu_explorer.R
 import ee.ut.cs.tartu_explorer.core.ui.theme.components.AnimatedBackground
 import ee.ut.cs.tartu_explorer.core.ui.theme.components.CustomBackButton
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.viewmodel.compose.viewModel
 import kotlin.math.roundToInt
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.Scaffold
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.style.TextAlign
 
 @OptIn(ExperimentalMaterial3Api::class)
-
 @Composable
-fun StatisticsScreen(onNavigateBack: () -> Unit) {
+fun StatisticsScreen(
+    onNavigateBack: () -> Unit,
+    modifier: Modifier = Modifier,
+    vm: StatisticsViewModel = viewModel()
+) {
+    val state by vm.uiState.collectAsStateWithLifecycle()
+
     val backgrounds = listOf(
         R.drawable.bg1,
-        R.drawable.bg2,
-        //R.drawable.bg3
+        R.drawable.bg2
     )
 
     AnimatedBackground(backgrounds) {
-        Box(modifier = Modifier.fillMaxSize()) {
-
-            // Top row with back button + spacing
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier
-                    .align(Alignment.TopStart)   // Place at the top start of the Box
-                    .padding(16.dp)         // Add padding from edges
+        Scaffold(
+            topBar = {
+                TopAppBar(
+                    title = { Text("Statistics") },
+                    navigationIcon = { CustomBackButton(onClick = onNavigateBack) },
+                    colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.Transparent)
+                )
+            },
+            containerColor = Color.Transparent
+        ) { innerPadding ->
+            Box(
+                modifier = modifier
+                    .fillMaxSize()
+                    .padding(innerPadding)
             ) {
-                CustomBackButton(onClick = onNavigateBack)
-                Spacer(modifier = Modifier.width(8.dp))
-            }
+                when (val s = state) {
+                    is StatsUiState.Loading -> {
+                        Box(
+                            modifier = Modifier.fillMaxSize(),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            CircularProgressIndicator()
+                        }
+                    }
 
-            // Centered stats card
-            StatsCard(
-                modifier = Modifier
-                    .fillMaxWidth(0.85f)
-                    .fillMaxHeight(0.8f)
-                    .align(Alignment.Center)
-            )
+                    is StatsUiState.Error -> {
+                        Box(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .padding(16.dp),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                                Text(
+                                    "Error loading statistics:\n${s.message}",
+                                    textAlign = TextAlign.Center
+                                )
+                                Spacer(Modifier.height(12.dp))
+                                Button(onClick = { vm.refresh() }) {
+                                    Text("Try again")
+                                }
+                            }
+                        }
+                    }
+
+                    is StatsUiState.Loaded -> {
+                        val data = s.data // hier kommt das StatsData-Objekt vom ViewModel
+
+                        // Card zentriert in der Box (align() ist hier erlaubt, da wir uns im BoxScope befinden)
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth(0.85f)
+                                .fillMaxHeight(0.8f)
+                                .align(Alignment.Center)
+                        ) {
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxSize()
+                                    .background(color = Color(0xCCFFFFFF), shape = RoundedCornerShape(16.dp))
+                                    .border(2.dp, Color.Black, shape = RoundedCornerShape(16.dp))
+                                    .padding(16.dp)
+                            ) {
+                                LazyColumn(
+                                    modifier = Modifier.fillMaxSize(),
+                                    verticalArrangement = Arrangement.spacedBy(12.dp),
+                                    horizontalAlignment = Alignment.CenterHorizontally
+                                ) {
+                                    item {
+                                        Text(
+                                            text = "Statistics",
+                                            fontSize = 28.sp,
+                                            fontWeight = FontWeight.Bold,
+                                            modifier = Modifier.padding(bottom = 8.dp)
+                                        )
+                                    }
+
+                                    // Completed quests by difficulty
+                                    item { Text("Completed quests by difficulty", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold) }
+                                    if (data.completedByDifficulty.isEmpty()) {
+                                        item { Text("No completed quests available.") }
+                                    } else {
+                                        items(data.completedByDifficulty) { entry ->
+                                            Row(
+                                                modifier = Modifier.fillMaxWidth(),
+                                                horizontalArrangement = Arrangement.SpaceBetween
+                                            ) {
+                                                Text(entry.difficulty)
+                                                Text("${entry.count}")
+                                            }
+                                        }
+                                    }
+
+                                    item { Spacer(Modifier.height(8.dp)) }
+
+                                    item { Text("Required hints (total)", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold) }
+                                    item { Text("${data.totalHintsUsed}", style = MaterialTheme.typography.bodyLarge) }
+
+                                    item { Text("Ø Hints per quest (successful)", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold) }
+                                    item { Text(formatDoubleOrDash(data.avgHintsPerQuest), style = MaterialTheme.typography.bodyLarge) }
+
+                                    item { Text("Ø Time for an adventure", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold) }
+                                    item { Text(formatDurationOrDash(data.avgAdventureDurationMs), style = MaterialTheme.typography.bodyLarge) }
+
+                                    item { Text("Ø Time until first hint", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold) }
+                                    item { Text(formatDurationOrDash(data.avgTimeToFirstHintMs), style = MaterialTheme.typography.bodyLarge) }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         }
     }
 }
 
+private fun formatDoubleOrDash(value: Double?): String =
+    if (value == null) "—" else ((value * 100.0).roundToInt() / 100.0).toString()
 
-// Statistics information
-@Composable
-private fun StatsCard(modifier: Modifier = Modifier) {
-    Box(
-        modifier = modifier
-            .background(color = Color(0xCCFFFFFF), shape = RoundedCornerShape(16.dp))
-            .border(2.dp, Color.Black, shape = RoundedCornerShape(16.dp))
-            .padding(16.dp)
-    ) {
-        Column(
-            modifier = Modifier.fillMaxSize(),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Top
-        ) {
-            Text(
-                text = "Statistics",
-                fontSize = 28.sp,
-                fontWeight = FontWeight.Bold,
-                modifier = Modifier.padding(bottom = 16.dp)
-            )
-
-            Text(
-                text = "Your stats will appear here.",
-                fontSize = 18.sp,
-                textAlign = TextAlign.Center
-            )
-        }
+private fun formatDurationOrDash(ms: Double?): String {
+    if (ms == null) return "—"
+    val totalSeconds = (ms / 1000.0).roundToInt()
+    val hours = totalSeconds / 3600
+    val minutes = (totalSeconds % 3600) / 60
+    val seconds = totalSeconds % 60
+    return when {
+        hours > 0 -> String.format("%dh %02dmin %02ds", hours, minutes, seconds)
+        minutes > 0 -> String.format("%dmin %02ds", minutes, seconds)
+        else -> String.format("%ds", seconds)
     }
 }

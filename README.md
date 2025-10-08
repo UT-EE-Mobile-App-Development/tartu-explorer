@@ -11,12 +11,12 @@ Madis Puu (madsipuu) - Editor <br/>
 ## Data Model and Local Storage
 
 Tartu Explorer uses a **local Room database** to store all gameplay-related data persistently on the device.  
-The database is designed around several key entities that represent the structure of the game world and the player’s progress:
+The database is designed around several key entities that represent the structure of the game and the player’s progress:
 
 - **AdventureEntity** – defines each adventure with a title, description, difficulty, and estimated duration.  
-- **QuestEntity** – represents a single location or step within an adventure, including GPS coordinates and a target radius.  
+- **QuestEntity** – represents a single location (step) within an adventure, including GPS coordinates and a target radius.  
 - **HintEntity** – stores optional hints (text or image) for each quest.  
-- **PlayerEntity** – tracks player information such as name, completed quests, total steps, and experience points.  
+- **PlayerEntity** – tracks player information such as name (and some basic statistics and experience points)  
 - **AdventureSessionEntity** – logs each play session, linking a player to an adventure, including start and completion times.  
 - **QuestAttemptEntity** – stores attempts for each quest, tracking success and duration.  
 - **HintUsageEntity** – records when and which hints were used during an attempt.  
@@ -46,8 +46,13 @@ All entities are connected through **foreign key relationships**, enabling effic
   The database schema (based on Room) includes all core entities such as Player, Adventure, Quest, Hint, and tracking tables for sessions, progress, and hint usage.
 
 - **Work in progress:**  
-  Dynamic updates to the **Statistics Page** (based on live database data) are currently under development on the `dev` branches.
+  Dynamic updates to the **Statistics Page** (based on live database data) are currently under development on the `dev` branche.
 
+## Challenges and Solutions
+
+- **Data flow complexity:**  
+  It was initially difficult to maintain an overview of the data flow between entities (IDs, foreign keys, and relationships).  
+  Integrating the **Statistics feature** required a structural refactor of the database and data layer to improve clarity and maintainability.
 
 
 ## User Stories

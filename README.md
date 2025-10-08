@@ -3,10 +3,10 @@
 Pervasive Game Geo-Quest: A game like geoguessr, where you see a picture and have to find the location in real life. If you visit the place, you get points (various hints if you don't know the place in the picture)
 
 ## Team members and roles
-Philipp Rebeschieß - Project Leader <br/>
-Timo Schwarzbach - Lead Developer <br/>
-Rando Roosik - Researcher <br/>
-Madis Puu - Editor <br/>
+Philipp Rebeschieß (MaytrixIT Philipp) - Project Leader <br/>
+Timo Schwarzbach (timoschwarzbach timoschwarzbach) - Lead Developer <br/>
+Rando Roosik (Orants Rando Roosik) - Researcher <br/>
+Madis Puu (madsipuu) - Editor <br/>
 
 ## Features
 * As a user I want to be able to select different tracks, so that I can choose the type of experience I get

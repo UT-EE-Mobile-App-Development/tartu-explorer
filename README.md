@@ -8,7 +8,49 @@ Timo Schwarzbach (timoschwarzbach timoschwarzbach) - Lead Developer <br/>
 Rando Roosik (Orants Rando Roosik) - Researcher <br/>
 Madis Puu (madsipuu) - Editor <br/>
 
+## Data Model and Local Storage
+
+Tartu Explorer uses a **local Room database** to store all gameplay-related data persistently on the device.  
+The database is designed around several key entities that represent the structure of the game world and the player’s progress:
+
+- **AdventureEntity** – defines each adventure with a title, description, difficulty, and estimated duration.  
+- **QuestEntity** – represents a single location or step within an adventure, including GPS coordinates and a target radius.  
+- **HintEntity** – stores optional hints (text or image) for each quest.  
+- **PlayerEntity** – tracks player information such as name, completed quests, total steps, and experience points.  
+- **AdventureSessionEntity** – logs each play session, linking a player to an adventure, including start and completion times.  
+- **QuestAttemptEntity** – stores attempts for each quest, tracking success and duration.  
+- **HintUsageEntity** – records when and which hints were used during an attempt.  
+- **PlayerAdventureProgressEntity** – saves the player’s current position within an adventure, so progress can be resumed later.
+
+All entities are connected through **foreign key relationships**, enabling efficient queries such as:
+- total hints used per player  
+- completed adventures and success rates  
+- average time per quest or session  
+
+
 ## Features
+
+- **All core pages implemented:**  
+  The app currently includes all main sections — **Main Menu**, **Statistics**, **Map Selection**, and **Game View**.  
+  - The **Main Menu** and **Statistics Page** are already fully designed and functional.  
+  - The **Map Selection** and **Game View** currently use placeholder graphics, serving as prototypes for navigation and gameplay flow.
+
+- **Adventure loading from backend:**  
+  The **Game View** dynamically loads available **Adventures** and their corresponding **Quests** (the steps of each Adventure) from the backend.  
+  Players must first select an Adventure via the **Map Selection** screen before starting the game.
+
+- **Hint system integrated:**  
+  In the Game View, players can tap on **Hints**, which are fetched directly from the local database and displayed contextually during gameplay.
+
+- **Complete backend database structure:**  
+  The database schema (based on Room) includes all core entities such as Player, Adventure, Quest, Hint, and tracking tables for sessions, progress, and hint usage.
+
+- **Work in progress:**  
+  Dynamic updates to the **Statistics Page** (based on live database data) are currently under development on the `dev` branches.
+
+
+
+## User Stories
 * As a user I want to be able to select different tracks, so that I can choose the type of experience I get
 * As a user i want to be able to see my location in the app, so i can use it for navigation
 * As a user I want to be able to see a picture of the place that i must find

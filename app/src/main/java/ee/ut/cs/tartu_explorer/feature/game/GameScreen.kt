@@ -1,5 +1,6 @@
 package ee.ut.cs.tartu_explorer.feature.game
 
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -14,6 +15,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -29,6 +31,7 @@ import coil3.compose.AsyncImage
 import ee.ut.cs.tartu_explorer.core.data.local.db.DatabaseProvider
 import ee.ut.cs.tartu_explorer.core.data.repository.GameRepository
 import ee.ut.cs.tartu_explorer.core.location.LocationRepository
+import kotlinx.coroutines.flow.SharedFlow
 
 @Composable
 fun GameScreen(adventureId: Int, onNavigateBack: () -> Unit) {
@@ -41,6 +44,7 @@ fun GameScreen(adventureId: Int, onNavigateBack: () -> Unit) {
         )
     )
     val state by viewModel.state.collectAsState()
+    val locationPermissionToastEvent = viewModel.locationPermissionToastEvent
 
     Column(
         modifier = Modifier,
@@ -87,7 +91,7 @@ fun GameScreen(adventureId: Int, onNavigateBack: () -> Unit) {
             hintDisabled = state.currentHint + 1 > state.hints.size - 1,
         )
 
-        if(state.guessState != null) {
+        if (state.guessState != null) {
             val guess: GuessState = state.guessState!!
             DebugGuessDialog(
                 onContinueAnyway = { viewModel.nextQuest() },
@@ -96,6 +100,7 @@ fun GameScreen(adventureId: Int, onNavigateBack: () -> Unit) {
                 inRange = guess.inRange
             )
         }
+        NoPermissionInfo(locationPermissionToastEvent)
     }
 }
 
@@ -176,6 +181,21 @@ fun GameControls(
             Text(
                 text = "GUESS"
             )
+        }
+    }
+}
+
+@Composable
+fun NoPermissionInfo(locationPermissionToastEvent: SharedFlow<Boolean>) {
+    // todo: instead of a toast disable the guess button and show a tooltip
+    val context = LocalContext.current
+    LaunchedEffect(Unit) {
+        locationPermissionToastEvent.collect { it ->
+            if (it) {
+                val toast =
+                    Toast.makeText(context, "permission locations required", Toast.LENGTH_SHORT)
+                toast.show()
+            }
         }
     }
 }

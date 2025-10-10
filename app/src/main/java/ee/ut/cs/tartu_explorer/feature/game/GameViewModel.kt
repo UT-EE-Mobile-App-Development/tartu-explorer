@@ -11,6 +11,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flow
@@ -51,6 +52,9 @@ class GameViewModel(
         )
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), GameState())
 
+    private val _locationPermissionToastEvent = MutableStateFlow<Boolean>(false)
+    val locationPermissionToastEvent = _locationPermissionToastEvent.asSharedFlow()
+
     fun guessPosition() {
         val currentQuest = state.value.quests[state.value.currentQuest]
         val targetLocation = Location("")
@@ -63,6 +67,8 @@ class GameViewModel(
                 val distanceToTarget = location.distanceTo(targetLocation)
                 val inRadius = distanceToTarget <= currentQuest.radius
                 _state.update { it -> it.copy(guessState = GuessState(distanceToTarget, inRadius)) }
+            } else {
+                _locationPermissionToastEvent.emit(true)
             }
         }
     }

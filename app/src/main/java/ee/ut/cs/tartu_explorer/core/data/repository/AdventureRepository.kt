@@ -22,7 +22,7 @@ class AdventureRepository(private val dao: AdventureDao) {
 
     suspend fun insertSteps(steps: List<QuestEntity>) = dao.insertQuests(steps)
 
-    suspend fun getQuestWithSteps(questId: Int): AdventureWithQuests? = dao.getAdventureWithQuests(questId)
+    suspend fun getQuestWithSteps(questId: Long): AdventureWithQuests? = dao.getAdventureWithQuests(questId)
 
     fun getAdventures() = dao.getAllAdventures()
 

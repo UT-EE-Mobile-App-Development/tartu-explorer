@@ -32,10 +32,9 @@ import androidx.room.PrimaryKey
     indices = [Index(value = ["adventureId"])]
 )
 data class QuestEntity(
-    @PrimaryKey(autoGenerate = true)
-    val id: Int = 0,
-    val adventureId: Int,
+    @PrimaryKey(autoGenerate = true) val id: Long = 0,
+    val adventureId: Long,
     val latitude: Double,
     val longitude: Double,
-    val radius: Float = 25f
+    val radius: Double = 25.0
 )

@@ -32,7 +32,7 @@ import ee.ut.cs.tartu_explorer.core.ui.theme.components.CustomBackButton
 @Composable
 fun QuestScreen(
     onNavigateBack: () -> Unit,
-    onNavigateHome: (adventureId: Int) -> Unit
+    onNavigateHome: (adventureId: Long) -> Unit
 ) {
     val db = DatabaseProvider.getDatabase(LocalContext.current)
     val viewModel: QuestViewModel = viewModel(
@@ -119,7 +119,7 @@ fun QuestListCard(
 
 @Composable
 fun DifficultyRow(
-    onNavigateHome: (Int) -> Unit,
+    onNavigateHome: (Long) -> Unit,
     adventures: Map<AdventureDifficulty, List<AdventureEntity>>,
     difficulty: AdventureDifficulty,
     displayName: String,

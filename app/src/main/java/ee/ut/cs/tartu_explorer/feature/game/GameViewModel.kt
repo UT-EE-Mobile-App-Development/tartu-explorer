@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import ee.ut.cs.tartu_explorer.core.data.local.entities.HintEntity
+import ee.ut.cs.tartu_explorer.core.data.local.entities.HintUsageEntity
 import ee.ut.cs.tartu_explorer.core.data.repository.GameRepository
 import ee.ut.cs.tartu_explorer.core.location.LocationRepository
 import kotlinx.coroutines.Dispatchers
@@ -20,7 +21,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class GameViewModel(
-    private val adventureId: Int,
+    private val adventureId: Long,
     private val repository: GameRepository,
     private val locationRepository: LocationRepository
 ) : ViewModel() {
@@ -90,16 +91,21 @@ class GameViewModel(
     }
 
     fun requestNextHint() {
-        if (_state.value.currentHint < state.value.hints.size) {
+        val nextHintIndex = _state.value.currentHint + 1
+        if (nextHintIndex < state.value.hints.size) {
+            val hintToTrack = state.value.hints[nextHintIndex]
+            viewModelScope.launch {
+                repository.trackHintUsed(HintUsageEntity(hintId = hintToTrack.id, adventureId = adventureId))
+            }
             _state.update { it ->
-                it.copy(currentHint = _state.value.currentHint + 1)
+                it.copy(currentHint = nextHintIndex)
             }
         }
     }
 }
 
 class GameViewModelFactory(
-    private val adventureId: Int,
+    private val adventureId: Long,
     private val repository: GameRepository,
     private val locationRepository: LocationRepository
 ) : ViewModelProvider.Factory {

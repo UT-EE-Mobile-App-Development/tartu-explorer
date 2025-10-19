@@ -18,14 +18,14 @@ import kotlinx.coroutines.flow.Flow
 interface AdventureDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertAdventure(quest: AdventureEntity)
+    suspend fun insertAdventure(newAdventure: AdventureEntity): Long
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertQuests(steps: List<QuestEntity>)
 
     @Transaction
     @Query("SELECT * FROM adventure WHERE id = :adventureId")
-    suspend fun getAdventureWithQuests(adventureId: Int): AdventureWithQuests?
+    suspend fun getAdventureWithQuests(adventureId: Long): AdventureWithQuests?
 
     @Transaction
     @Query("SELECT * FROM adventure")

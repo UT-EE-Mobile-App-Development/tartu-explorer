@@ -15,7 +15,7 @@ import androidx.room.PrimaryKey
  */
 @Entity(tableName = "player")
 data class PlayerEntity(
-    @PrimaryKey val id: Int = 1,  // Standardmäßig nur ein Spieler
+    @PrimaryKey(autoGenerate = true) val id: Int = 0,
     val name: String,
     val completedQuests: Int = 0,
     val totalSteps: Int = 0,

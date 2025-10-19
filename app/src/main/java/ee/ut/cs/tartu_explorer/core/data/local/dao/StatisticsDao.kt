@@ -29,14 +29,18 @@ interface StatisticsDao {
     suspend fun completedQuestsByDifficulty(playerId: Long): List<DifficultyCount>
 
     // 2) Total number of hints used
+    /*
     @Query("""
         SELECT COUNT(*) FROM hint_usage hu
         JOIN adventure_session s ON s.id = hu.sessionId
         WHERE s.playerId = :playerId
     """)
-    suspend fun totalHintsUsed(playerId: Long): Long
+
+     */
+    //suspend fun totalHintsUsed(playerId: Long): Long
 
     // 3) Average hints required per quest (average hints per successful attempt)
+    /*
     @Query("""
         WITH hints_per_attempt AS (
             SELECT qa.id AS attemptId, COUNT(hu.id) AS hintCount
@@ -49,7 +53,9 @@ interface StatisticsDao {
         SELECT AVG(hintCount * 1.0) AS value
         FROM hints_per_attempt
     """)
-    suspend fun avgHintsPerQuest(playerId: Long): AvgDouble?
+
+     */
+    //suspend fun avgHintsPerQuest(playerId: Long): AvgDouble?
 
     // 4) Average time for an adventure (completed sessions only)
     @Query("""
@@ -60,6 +66,7 @@ interface StatisticsDao {
     suspend fun avgAdventureDurationMs(playerId: Long): AvgValue?
 
     // 5) Average time to first hint (per attempt with at least one hint)
+    /*
     @Query("""
         WITH first_hint AS (
             SELECT qa.id AS attemptId,
@@ -73,5 +80,7 @@ interface StatisticsDao {
         SELECT AVG(deltaMs * 1.0) AS valueMs
         FROM first_hint
     """)
-    suspend fun avgTimeToFirstHintMs(playerId: Long): AvgValue?
+
+     */
+    //suspend fun avgTimeToFirstHintMs(playerId: Long): AvgValue?
 }

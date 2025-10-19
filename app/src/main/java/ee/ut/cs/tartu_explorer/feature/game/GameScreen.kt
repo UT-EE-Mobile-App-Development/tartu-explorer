@@ -34,13 +34,13 @@ import ee.ut.cs.tartu_explorer.core.location.LocationRepository
 import kotlinx.coroutines.flow.SharedFlow
 
 @Composable
-fun GameScreen(adventureId: Int, onNavigateBack: () -> Unit) {
+fun GameScreen(adventureId: Long, onNavigateBack: () -> Unit) {
     val db = DatabaseProvider.getDatabase(LocalContext.current)
     val locationRepository = LocationRepository(LocalContext.current)
     val viewModel: GameViewModel = viewModel(
         factory = GameViewModelFactory(
             adventureId,
-            GameRepository(db.questDao(), db.hintDao()), locationRepository
+            GameRepository(db.questDao(), db.hintDao(), db.hintUsageDao()), locationRepository
         )
     )
     val state by viewModel.state.collectAsState()
@@ -70,7 +70,7 @@ fun GameScreen(adventureId: Int, onNavigateBack: () -> Unit) {
                     if (hint.imageUrl != null) {
                         AsyncImage(
                             model = hint.imageUrl,
-                            contentDescription = "Image for Hint ${hint.index}",
+                            contentDescription = "Image for Hint ${hint.id}",
                             contentScale = ContentScale.Crop,
                             modifier = Modifier
                                 .clip(RoundedCornerShape(20.dp))

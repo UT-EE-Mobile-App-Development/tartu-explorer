@@ -5,6 +5,7 @@ import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import ee.ut.cs.tartu_explorer.core.data.local.dao.AdventureDao
 import ee.ut.cs.tartu_explorer.core.data.local.dao.HintDao
+import ee.ut.cs.tartu_explorer.core.data.local.dao.HintUsageDao
 import ee.ut.cs.tartu_explorer.core.data.local.dao.PlayerDao
 import ee.ut.cs.tartu_explorer.core.data.local.dao.QuestDao
 import ee.ut.cs.tartu_explorer.core.data.local.dao.StatisticsDao
@@ -34,7 +35,7 @@ import ee.ut.cs.tartu_explorer.core.data.local.entities.QuestEntity
         HintUsageEntity::class,
         PlayerAdventureProgressEntity::class
     ],
-    version = 3
+    version = 5
 )
 @TypeConverters(AdventureDifficultyConverter::class)
 abstract class AppDatabase : RoomDatabase() {
@@ -43,4 +44,5 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun hintDao(): HintDao
     abstract fun playerDao(): PlayerDao
     abstract fun statisticsDao(): StatisticsDao
+    abstract fun hintUsageDao(): HintUsageDao
 }

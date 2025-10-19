@@ -25,7 +25,7 @@ import androidx.room.*
     indices = [Index(value = ["sessionId"]), Index(value = ["questId"]), Index(value = ["sessionId","questId"])]
 )
 data class QuestAttemptEntity(
-    @PrimaryKey(autoGenerate = true) val id: Int = 0,
+    @PrimaryKey(autoGenerate = true) val id: Long = 0,
     val sessionId: Long,
     val questId: Long,
     val startedAt: Long = System.currentTimeMillis(),

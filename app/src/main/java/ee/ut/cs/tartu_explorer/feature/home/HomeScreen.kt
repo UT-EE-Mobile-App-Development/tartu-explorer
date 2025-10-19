@@ -21,8 +21,8 @@ import ee.ut.cs.tartu_explorer.core.ui.theme.components.OutlinedText
 fun HomeScreen(
     onNavigateToQuest: () -> Unit,
     onNavigateToStatistics: () -> Unit,
-    onNavigateToGame: (adventureId: Int) -> Unit,
-    selectedAdventureId: Int? = null,
+    onNavigateToGame: (adventureId: Long) -> Unit,
+    selectedAdventureId: Long? = null,
 ) {
     val backgrounds = listOf(
         ee.ut.cs.tartu_explorer.R.drawable.bg1,

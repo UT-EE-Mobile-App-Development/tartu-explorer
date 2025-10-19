@@ -19,7 +19,7 @@ import androidx.room.PrimaryKey
 
 @Entity(tableName = "adventure")
 data class AdventureEntity(
-    @PrimaryKey(autoGenerate = true) val id: Int = 0,
+    @PrimaryKey(autoGenerate = true) val id: Long = 0,
     val title: String,
     val description: String,
     val difficulty: AdventureDifficulty,

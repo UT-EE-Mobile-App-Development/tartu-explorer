@@ -21,35 +21,27 @@ import androidx.room.*
     tableName = "hint_usage",
     foreignKeys = [
         ForeignKey(
-            entity = AdventureSessionEntity::class,
+            entity = AdventureEntity::class,
             parentColumns = ["id"],
-            childColumns = ["sessionId"],
-            onDelete = ForeignKey.CASCADE
-        ),
-        ForeignKey(
-            entity = QuestAttemptEntity::class,
-            parentColumns = ["id"],
-            childColumns = ["attemptId"],
+            childColumns = ["adventureId"],
             onDelete = ForeignKey.CASCADE
         ),
         ForeignKey(
             entity = HintEntity::class,
-            parentColumns = ["questId", "index"],
-            childColumns = ["hintQuestId", "hintIndex"],
-            onDelete = ForeignKey.SET_NULL
+            parentColumns = ["id"],
+            childColumns = ["hintId"],
+            onDelete = ForeignKey.CASCADE
         ),
     ],
     indices = [
-        Index(value = ["sessionId"]),
-        Index(value = ["attemptId"]),
-        Index(value = ["hintQuestId", "hintIndex"])
+        Index(value = ["adventureId"]),
+        Index(value = ["hintId"])
     ]
 )
+
 data class HintUsageEntity(
     @PrimaryKey(autoGenerate = true) val id: Long = 0,
-    val sessionId: Long,
-    val attemptId: Long,
-    val hintQuestId: Int?,
-    val hintIndex: Int?,
+    val adventureId: Long,
+    val hintId: Long,
     val usedAt: Long = System.currentTimeMillis()
 )

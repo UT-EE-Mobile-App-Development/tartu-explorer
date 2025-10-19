@@ -29,7 +29,7 @@ class QuestRepository(
         return adventureDao.getAllAdventuresWithQuests()
     }
 
-    suspend fun getQuestWithSteps(questId: Int): AdventureWithQuests? {
+    suspend fun getQuestWithSteps(questId: Long): AdventureWithQuests? {
         return adventureDao.getAdventureWithQuests(questId)
     }
 
@@ -38,7 +38,7 @@ class QuestRepository(
         return playerDao.getPlayerById()
     }
 
-    suspend fun insertAdventure(quest: AdventureEntity) {
+    suspend fun insertAdventure(quest: AdventureEntity): Long {
         return adventureDao.insertAdventure(quest)
     }
 

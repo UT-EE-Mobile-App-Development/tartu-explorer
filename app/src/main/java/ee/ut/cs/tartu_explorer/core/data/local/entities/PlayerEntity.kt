@@ -15,10 +15,7 @@ import androidx.room.PrimaryKey
  */
 @Entity(tableName = "player")
 data class PlayerEntity(
-    @PrimaryKey(autoGenerate = true) val id: Int = 0,
+    @PrimaryKey(autoGenerate = true) val id: Long = 0,
     val name: String,
-    val completedQuests: Int = 0,
-    val totalSteps: Int = 0,
-    val hintsUsed: Int = 0,
     val experiencePoints: Int = 0
 )

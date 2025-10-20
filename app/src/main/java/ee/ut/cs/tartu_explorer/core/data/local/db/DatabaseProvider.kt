@@ -15,7 +15,7 @@ import kotlinx.coroutines.launch
 object DatabaseProvider {
     @Volatile
     private var INSTANCE: AppDatabase? = null
-    private const val FORCE_RECREATE = true  // false to keep the data in the database
+    private const val FORCE_RECREATE = false  // false to keep the data in the database
 
     fun getDatabase(context: Context): AppDatabase {
         val prefs = context.getSharedPreferences("app_prefs", Context.MODE_PRIVATE)

@@ -1,4 +1,4 @@
-package ee.ut.cs.tartu_explorer.core.data.local.db
+package ee.ut.cs.tartu_explorer.core.data.local.dao
 
 import androidx.room.Dao
 import androidx.room.Insert
@@ -10,7 +10,7 @@ import ee.ut.cs.tartu_explorer.core.data.local.entities.SessionStatus
 @Dao
 interface AdventureSessionDao {
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Insert(onConflict = OnConflictStrategy.Companion.REPLACE)
     suspend fun insertSession(session: AdventureSessionEntity): Long
 
     @Query("SELECT * FROM adventure_session WHERE id = :sessionId")

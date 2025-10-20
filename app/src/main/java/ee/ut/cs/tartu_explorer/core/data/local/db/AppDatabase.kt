@@ -4,6 +4,7 @@ import androidx.room.Database
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import ee.ut.cs.tartu_explorer.core.data.local.dao.AdventureDao
+import ee.ut.cs.tartu_explorer.core.data.local.dao.AdventureSessionDao
 import ee.ut.cs.tartu_explorer.core.data.local.dao.HintDao
 import ee.ut.cs.tartu_explorer.core.data.local.dao.HintUsageDao
 import ee.ut.cs.tartu_explorer.core.data.local.dao.PlayerDao

@@ -1,6 +1,6 @@
 package ee.ut.cs.tartu_explorer.core.data.repository
 
-import ee.ut.cs.tartu_explorer.core.data.local.db.AdventureSessionDao
+import ee.ut.cs.tartu_explorer.core.data.local.dao.AdventureSessionDao
 import ee.ut.cs.tartu_explorer.core.data.local.dao.HintDao
 import ee.ut.cs.tartu_explorer.core.data.local.dao.HintUsageDao
 import ee.ut.cs.tartu_explorer.core.data.local.dao.QuestDao

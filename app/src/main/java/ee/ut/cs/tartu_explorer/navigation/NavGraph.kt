@@ -5,6 +5,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.toRoute
+import ee.ut.cs.tartu_explorer.feature.dev.DevScreen
 import ee.ut.cs.tartu_explorer.feature.game.GameScreen
 import ee.ut.cs.tartu_explorer.feature.home.HomeScreen
 import ee.ut.cs.tartu_explorer.feature.quest.QuestScreen
@@ -19,6 +20,7 @@ sealed class Screen(val route: String) {
     data class Home(val selectedAdventureId:Long? = null): Screen("home")
     object Quest : Screen("quest")
     object Statistics : Screen("statistics")
+    object Dev : Screen("dev") // New route for Dev Panel
     @Serializable
     data class Game(val adventureId:Long) : Screen("game")
 }
@@ -35,7 +37,8 @@ fun AppNavGraph(navController: NavHostController) {
                 selectedAdventureId = home.selectedAdventureId,
                 onNavigateToQuest = { navController.navigate(Screen.Quest.route) },
                 onNavigateToStatistics = { navController.navigate(Screen.Statistics.route) },
-                onNavigateToGame = { adventureId -> navController.navigate(Screen.Game(adventureId)) }
+                onNavigateToGame = { adventureId -> navController.navigate(Screen.Game(adventureId)) },
+                onNavigateToDev = { navController.navigate(Screen.Dev.route) } // Navigate to Dev Panel
             )
         }
         //Quests Screen button navigation
@@ -62,6 +65,12 @@ fun AppNavGraph(navController: NavHostController) {
             )
         }
 
+        // Dev Screen button navigation
+        composable(Screen.Dev.route) {
+            DevScreen(
+                onNavigateBack = { navController.popBackStack() }
+            )
+        }
+
     }
 }
-

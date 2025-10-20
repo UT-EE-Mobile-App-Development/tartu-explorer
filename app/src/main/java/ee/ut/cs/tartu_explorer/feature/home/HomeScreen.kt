@@ -1,12 +1,14 @@
 package ee.ut.cs.tartu_explorer.feature.home
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -31,6 +33,7 @@ fun HomeScreen(
     onNavigateToQuest: () -> Unit,
     onNavigateToStatistics: () -> Unit,
     onNavigateToGame: (adventureId: Long) -> Unit,
+    onNavigateToDev: () -> Unit, // New navigation function
     selectedAdventureId: Long? = null,
 ) {
     // ViewModel initialisieren
@@ -44,47 +47,59 @@ fun HomeScreen(
     )
 
     AnimatedBackground(backgrounds) {
-        // Wenn `showNamePrompt` true ist, zeige den Dialog
-        if (uiState.showNamePrompt) {
-            PlayerNamePromptDialog(
-                playerName = uiState.playerNameInput,
-                onPlayerNameChange = viewModel::onPlayerNameChange,
-                onSave = viewModel::savePlayer
-            )
-        }
-
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(top = 200.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            OutlinedText(
-                text = "TARTU EXPLORER",
-                fontSize = 75.sp,
-                fontWeight = FontWeight.Bold,
-                textAlign = TextAlign.Center,
-                lineHeight = 65.sp
-            )
-
-            // Willkommensnachricht, wenn der Spieler eingeloggt ist
-            uiState.player?.let {
-                Text("Welcome, ${it.name}!", fontSize = 24.sp, fontWeight = FontWeight.SemiBold)
+        Box(modifier = Modifier.fillMaxSize()) { // Use Box for layering
+            // Wenn `showNamePrompt` true ist, zeige den Dialog
+            if (uiState.showNamePrompt) {
+                PlayerNamePromptDialog(
+                    playerName = uiState.playerNameInput,
+                    onPlayerNameChange = viewModel::onPlayerNameChange,
+                    onSave = viewModel::savePlayer
+                )
             }
 
             Column(
-                verticalArrangement = Arrangement.spacedBy(16.dp, Alignment.CenterVertically),
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(top = 200.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                HomeGameButton("QUESTS", onNavigateToQuest)
-                HomeGameButton("STATISTICS", onNavigateToStatistics)
+                OutlinedText(
+                    text = "TARTU EXPLORER",
+                    fontSize = 75.sp,
+                    fontWeight = FontWeight.Bold,
+                    textAlign = TextAlign.Center,
+                    lineHeight = 65.sp
+                )
 
-                if (selectedAdventureId != null) {
-                    Text("selected adventure: $selectedAdventureId")
-                    HomeGameButton("PLAY", { onNavigateToGame(selectedAdventureId) })
-                } else {
-                    HomeGameButton("Select an adventure to play", {}, enabled = false)
+                // Willkommensnachricht, wenn der Spieler eingeloggt ist
+                uiState.player?.let {
+                    Text("Welcome, ${it.name}!", fontSize = 24.sp, fontWeight = FontWeight.SemiBold)
                 }
+
+                Column(
+                    verticalArrangement = Arrangement.spacedBy(16.dp, Alignment.CenterVertically),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    HomeGameButton("QUESTS", onNavigateToQuest)
+                    HomeGameButton("STATISTICS", onNavigateToStatistics)
+
+                    if (selectedAdventureId != null) {
+                        Text("selected adventure: $selectedAdventureId")
+                        HomeGameButton("PLAY", { onNavigateToGame(selectedAdventureId) })
+                    } else {
+                        HomeGameButton("Select an adventure to play", {}, enabled = false)
+                    }
+                }
+            }
+
+            // Dev Panel Button at the bottom right
+            TextButton(
+                onClick = onNavigateToDev,
+                modifier = Modifier
+                    .align(Alignment.BottomEnd)
+                    .padding(16.dp)
+            ) {
+                Text("Dev-Panel")
             }
         }
     }
@@ -99,7 +114,7 @@ fun PlayerNamePromptDialog(
     AlertDialog(
         onDismissRequest = { /* Dialog kann nicht ohne Eingabe geschlossen werden */ },
         title = { Text("Welcome to Tartu Explorer!") },
-        text = { 
+        text = {
             Column {
                 Text("Please enter your name to begin.")
                 TextField(

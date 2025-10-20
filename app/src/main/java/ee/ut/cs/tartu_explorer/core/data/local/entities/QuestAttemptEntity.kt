@@ -2,20 +2,6 @@ package ee.ut.cs.tartu_explorer.core.data.local.entities
 
 import androidx.room.*
 
-/**
- * Represents a single quest attempt within an adventure session.
- *
- * Links:
- * - `sessionId` → {AdventureSessionEntity}
- * - `questId` → {QuestEntity}
- *
- * Tracks:
- * - `startedAt`, `completedAt` → timestamps
- * - `succeeded` → success status
- * - `attemptIndex` → retry count
- *
- * Indexed by `sessionId`, `questId`, and their combination.
- */
 @Entity(
     tableName = "quest_attempt",
     foreignKeys = [
@@ -28,8 +14,6 @@ data class QuestAttemptEntity(
     @PrimaryKey(autoGenerate = true) val id: Long = 0,
     val sessionId: Long,
     val questId: Long,
-    val startedAt: Long = System.currentTimeMillis(),
-    val completedAt: Long? = null,
-    val succeeded: Boolean = false,
-    val attemptIndex: Int = 1
+    val wasCorrect: Boolean,
+    val timestamp: Long = System.currentTimeMillis()
 )

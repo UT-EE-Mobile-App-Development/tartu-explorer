@@ -29,6 +29,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil3.compose.AsyncImage
 import ee.ut.cs.tartu_explorer.core.data.local.db.DatabaseProvider
+import ee.ut.cs.tartu_explorer.core.data.repository.AdventureSessionRepository
 import ee.ut.cs.tartu_explorer.core.data.repository.GameRepository
 import ee.ut.cs.tartu_explorer.core.data.repository.PlayerRepository
 import ee.ut.cs.tartu_explorer.core.location.LocationRepository
@@ -40,13 +41,15 @@ fun GameScreen(adventureId: Long, onNavigateBack: () -> Unit) {
     val db = DatabaseProvider.getDatabase(context)
     val locationRepository = LocationRepository(context)
     val playerRepository = PlayerRepository.from(context)
+    val adventureSessionRepository = AdventureSessionRepository(db.adventureSessionDao())
 
     val viewModel: GameViewModel = viewModel(
         factory = GameViewModelFactory(
             adventureId,
-            GameRepository(db.questDao(), db.hintDao(), db.hintUsageDao()), 
+            GameRepository(db.questDao(), db.hintDao(), db.hintUsageDao(), db.adventureSessionDao()),
             locationRepository,
-            playerRepository
+            playerRepository,
+            adventureSessionRepository
         )
     )
     val state by viewModel.state.collectAsState()

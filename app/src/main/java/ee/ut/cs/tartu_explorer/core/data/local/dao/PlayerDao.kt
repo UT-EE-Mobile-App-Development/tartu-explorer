@@ -23,6 +23,9 @@ interface PlayerDao {
     @Update
     suspend fun updatePlayer(player: PlayerEntity)
 
+    @Query("SELECT * FROM player LIMIT 1")
+    fun getPlayer(): Flow<PlayerEntity?>
+
     @Query("SELECT * FROM player WHERE id = :id")
     suspend fun getPlayerById(id: Int = DEFAULT_PLAYER_ID): PlayerEntity?
 

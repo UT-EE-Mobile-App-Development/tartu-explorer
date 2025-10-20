@@ -14,8 +14,10 @@ object DatabaseProvider {
 
     fun getDatabase(context: Context): AppDatabase {
         val prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
-        val forceRecreateOnce = prefs.getBoolean(KEY_FORCE_RECREATE_ONCE, false)
+        var forceRecreateOnce = prefs.getBoolean(KEY_FORCE_RECREATE_ONCE, false)
         val resetOnEveryStart = prefs.getBoolean(KEY_RESET_ON_START, false)
+
+        //forceRecreateOnce = true
 
         if (forceRecreateOnce || resetOnEveryStart) {
             // If any flag is set, delete the database.

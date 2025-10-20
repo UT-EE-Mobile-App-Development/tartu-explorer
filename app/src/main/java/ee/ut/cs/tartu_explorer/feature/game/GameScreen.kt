@@ -30,17 +30,23 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import coil3.compose.AsyncImage
 import ee.ut.cs.tartu_explorer.core.data.local.db.DatabaseProvider
 import ee.ut.cs.tartu_explorer.core.data.repository.GameRepository
+import ee.ut.cs.tartu_explorer.core.data.repository.PlayerRepository
 import ee.ut.cs.tartu_explorer.core.location.LocationRepository
 import kotlinx.coroutines.flow.SharedFlow
 
 @Composable
 fun GameScreen(adventureId: Long, onNavigateBack: () -> Unit) {
-    val db = DatabaseProvider.getDatabase(LocalContext.current)
-    val locationRepository = LocationRepository(LocalContext.current)
+    val context = LocalContext.current
+    val db = DatabaseProvider.getDatabase(context)
+    val locationRepository = LocationRepository(context)
+    val playerRepository = PlayerRepository.from(context)
+
     val viewModel: GameViewModel = viewModel(
         factory = GameViewModelFactory(
             adventureId,
-            GameRepository(db.questDao(), db.hintDao(), db.hintUsageDao()), locationRepository
+            GameRepository(db.questDao(), db.hintDao(), db.hintUsageDao()), 
+            locationRepository,
+            playerRepository
         )
     )
     val state by viewModel.state.collectAsState()

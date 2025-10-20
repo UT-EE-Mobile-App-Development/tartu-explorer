@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import ee.ut.cs.tartu_explorer.core.data.local.entities.HintEntity
 import ee.ut.cs.tartu_explorer.core.data.local.entities.HintUsageEntity
 import ee.ut.cs.tartu_explorer.core.data.repository.GameRepository
+import ee.ut.cs.tartu_explorer.core.data.repository.PlayerRepository
 import ee.ut.cs.tartu_explorer.core.location.LocationRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -14,6 +15,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.stateIn
@@ -23,7 +25,8 @@ import kotlinx.coroutines.launch
 class GameViewModel(
     private val adventureId: Long,
     private val repository: GameRepository,
-    private val locationRepository: LocationRepository
+    private val locationRepository: LocationRepository,
+    private val playerRepository: PlayerRepository // Added PlayerRepository
 ) : ViewModel() {
     private val _state = MutableStateFlow(GameState())
 
@@ -93,9 +96,21 @@ class GameViewModel(
     fun requestNextHint() {
         val nextHintIndex = _state.value.currentHint + 1
         if (nextHintIndex < state.value.hints.size) {
-            val hintToTrack = state.value.hints[nextHintIndex]
             viewModelScope.launch {
-                repository.trackHintUsed(HintUsageEntity(hintId = hintToTrack.id, adventureId = adventureId))
+                // Get all necessary IDs
+                val player = playerRepository.getPlayer().firstOrNull()
+                if (player == null) return@launch // Safety check
+
+                val currentQuest = _quests.value[state.value.currentQuest]
+                val hintToTrack = state.value.hints[nextHintIndex]
+
+                val usage = HintUsageEntity(
+                    playerId = player.id,
+                    adventureId = adventureId,
+                    questId = currentQuest.id,
+                    hintId = hintToTrack.id
+                )
+                repository.trackHintUsed(usage)
             }
             _state.update { it ->
                 it.copy(currentHint = nextHintIndex)
@@ -107,12 +122,13 @@ class GameViewModel(
 class GameViewModelFactory(
     private val adventureId: Long,
     private val repository: GameRepository,
-    private val locationRepository: LocationRepository
+    private val locationRepository: LocationRepository,
+    private val playerRepository: PlayerRepository // Added PlayerRepository
 ) : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(GameViewModel::class.java)) {
             @Suppress("UNCHECKED_CAST")
-            return GameViewModel(adventureId, repository, locationRepository) as T
+            return GameViewModel(adventureId, repository, locationRepository, playerRepository) as T
         }
         throw IllegalArgumentException("Unknown ViewModel class")
     }

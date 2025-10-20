@@ -14,10 +14,10 @@ import ee.ut.cs.tartu_explorer.core.data.local.entities.HintEntity
 import ee.ut.cs.tartu_explorer.core.data.local.entities.AdventureEntity
 import ee.ut.cs.tartu_explorer.core.data.local.entities.AdventureSessionEntity
 import ee.ut.cs.tartu_explorer.core.data.local.entities.HintUsageEntity
-import ee.ut.cs.tartu_explorer.core.data.local.entities.PlayerAdventureProgressEntity
 import ee.ut.cs.tartu_explorer.core.data.local.entities.PlayerEntity
 import ee.ut.cs.tartu_explorer.core.data.local.entities.QuestAttemptEntity
 import ee.ut.cs.tartu_explorer.core.data.local.entities.QuestEntity
+import ee.ut.cs.tartu_explorer.core.data.local.entities.SessionStatusConverter
 
 /**
  * AppDatabase is the Room database for the app, containing all the entities.
@@ -33,11 +33,10 @@ import ee.ut.cs.tartu_explorer.core.data.local.entities.QuestEntity
         AdventureSessionEntity::class,
         QuestAttemptEntity::class,
         HintUsageEntity::class,
-        PlayerAdventureProgressEntity::class
     ],
-    version = 5
+    version = 6
 )
-@TypeConverters(AdventureDifficultyConverter::class)
+@TypeConverters(AdventureDifficultyConverter::class, SessionStatusConverter::class)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun adventureDao(): AdventureDao
     abstract fun questDao(): QuestDao
@@ -45,4 +44,5 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun playerDao(): PlayerDao
     abstract fun statisticsDao(): StatisticsDao
     abstract fun hintUsageDao(): HintUsageDao
+    abstract fun adventureSessionDao(): AdventureSessionDao
 }

@@ -19,7 +19,7 @@ interface StatisticsDao {
         FROM quest_attempt qa
         JOIN quest q ON q.id = qa.questId
         JOIN adventure a ON a.id = q.adventureId
-        WHERE qa.succeeded = 1 AND EXISTS (
+        WHERE qa.wasCorrect = 1 AND EXISTS (
             SELECT 1 FROM adventure_session s
             WHERE s.id = qa.sessionId AND s.playerId = :playerId
         )
@@ -47,7 +47,7 @@ interface StatisticsDao {
             FROM quest_attempt qa
             LEFT JOIN hint_usage hu ON hu.attemptId = qa.id
             JOIN adventure_session s ON s.id = qa.sessionId
-            WHERE qa.succeeded = 1 AND s.playerId = :playerId
+            WHERE qa.wasCorrect = 1 AND s.playerId = :playerId
             GROUP BY qa.id
         )
         SELECT AVG(hintCount * 1.0) AS value
@@ -59,9 +59,9 @@ interface StatisticsDao {
 
     // 4) Average time for an adventure (completed sessions only)
     @Query("""
-        SELECT AVG((s.completedAt - s.startedAt) * 1.0) AS valueMs
+        SELECT AVG((s.endTime - s.startTime) * 1.0) AS valueMs
         FROM adventure_session s
-        WHERE s.playerId = :playerId AND s.completedAt IS NOT NULL AND s.status = 'COMPLETED'
+        WHERE s.playerId = :playerId AND s.endTime IS NOT NULL AND s.status = 'COMPLETED'
     """)
     suspend fun avgAdventureDurationMs(playerId: Long): AvgValue?
 

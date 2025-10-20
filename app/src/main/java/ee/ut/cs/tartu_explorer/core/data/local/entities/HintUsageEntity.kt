@@ -9,15 +9,9 @@ import androidx.room.PrimaryKey
     tableName = "hint_usage",
     foreignKeys = [
         ForeignKey(
-            entity = AdventureEntity::class,
+            entity = AdventureSessionEntity::class,
             parentColumns = ["id"],
-            childColumns = ["adventureId"],
-            onDelete = ForeignKey.CASCADE
-        ),
-        ForeignKey(
-            entity = QuestEntity::class,
-            parentColumns = ["id"],
-            childColumns = ["questId"],
+            childColumns = ["sessionId"],
             onDelete = ForeignKey.CASCADE
         ),
         ForeignKey(
@@ -25,26 +19,13 @@ import androidx.room.PrimaryKey
             parentColumns = ["id"],
             childColumns = ["hintId"],
             onDelete = ForeignKey.CASCADE
-        ),
-        ForeignKey(
-            entity = PlayerEntity::class,
-            parentColumns = ["id"],
-            childColumns = ["playerId"],
-            onDelete = ForeignKey.CASCADE
-        ),
+        )
     ],
-    indices = [
-        Index(value = ["adventureId"]),
-        Index(value = ["questId"]),
-        Index(value = ["hintId"]),
-        Index(value = ["playerId"])
-    ]
+    indices = [Index(value = ["sessionId"]), Index(value = ["hintId"])]
 )
 data class HintUsageEntity(
     @PrimaryKey(autoGenerate = true) val id: Long = 0,
-    val adventureId: Long,
-    val questId: Long,
+    val sessionId: Long,
     val hintId: Long,
-    val playerId: Long,
     val usedAt: Long = System.currentTimeMillis()
 )

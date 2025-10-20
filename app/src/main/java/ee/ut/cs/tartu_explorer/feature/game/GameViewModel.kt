@@ -6,29 +6,24 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import ee.ut.cs.tartu_explorer.core.data.local.entities.HintEntity
 import ee.ut.cs.tartu_explorer.core.data.local.entities.HintUsageEntity
+import ee.ut.cs.tartu_explorer.core.data.repository.AdventureSessionRepository
 import ee.ut.cs.tartu_explorer.core.data.repository.GameRepository
 import ee.ut.cs.tartu_explorer.core.data.repository.PlayerRepository
 import ee.ut.cs.tartu_explorer.core.location.LocationRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.asSharedFlow
-import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.firstOrNull
-import kotlinx.coroutines.flow.flatMapLatest
-import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.stateIn
-import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
 class GameViewModel(
     private val adventureId: Long,
     private val repository: GameRepository,
     private val locationRepository: LocationRepository,
-    private val playerRepository: PlayerRepository // Added PlayerRepository
+    private val playerRepository: PlayerRepository,
+    private val adventureSessionRepository: AdventureSessionRepository
 ) : ViewModel() {
     private val _state = MutableStateFlow(GameState())
+    private val _sessionId = MutableStateFlow<Long?>(null)
 
     private var _quests = repository
         .getQuestsByAdventure(adventureId)
@@ -42,7 +37,7 @@ class GameViewModel(
             )
         }
         .flatMapLatest { it ->
-            if (_quests.value.isEmpty() || it.currentQuest > _quests.value.size) {
+            if (_quests.value.isEmpty() || it.currentQuest >= _quests.value.size) {
                 flow { emptyList<HintEntity>() }
             } else {
                 repository.getHintsByQuest(_quests.value[it.currentQuest].id)
@@ -58,6 +53,25 @@ class GameViewModel(
 
     private val _locationPermissionToastEvent = MutableStateFlow<Boolean>(false)
     val locationPermissionToastEvent = _locationPermissionToastEvent.asSharedFlow()
+
+    init {
+        viewModelScope.launch {
+            val player = playerRepository.getPlayer().firstOrNull() ?: return@launch
+            val activeSession = adventureSessionRepository.getActiveSession(adventureId, player.id)
+            if (activeSession != null) {
+                _sessionId.value = activeSession.id
+                _state.update {
+                    it.copy(
+                        currentQuest = activeSession.currentQuestIndex,
+                        currentHint = activeSession.currentHintIndex
+                    )
+                }
+            } else {
+                val newSessionId = adventureSessionRepository.startNewSession(adventureId, player.id)
+                _sessionId.value = newSessionId
+            }
+        }
+    }
 
     fun guessPosition() {
         val currentQuest = state.value.quests[state.value.currentQuest]
@@ -82,14 +96,25 @@ class GameViewModel(
     }
 
     fun nextQuest() {
-        if (_state.value.currentQuest < state.value.quests.size) {
+        if (state.value.currentQuest < state.value.quests.size - 1) {
+            val newQuestIndex = state.value.currentQuest + 1
             _state.update { it ->
                 it.copy(
-                    currentQuest = it.currentQuest + 1,
+                    currentQuest = newQuestIndex,
                     currentHint = 0,
                     guessState = null
                 )
             }
+            viewModelScope.launch {
+                _sessionId.value?.let { sessionId ->
+                    adventureSessionRepository.updateProgress(sessionId, newQuestIndex, 0)
+                }
+            }
+        } else {
+            viewModelScope.launch {
+                _sessionId.value?.let { adventureSessionRepository.completeSession(it) }
+            }
+            _state.update { it.copy(guessState = null) }
         }
     }
 
@@ -97,20 +122,15 @@ class GameViewModel(
         val nextHintIndex = _state.value.currentHint + 1
         if (nextHintIndex < state.value.hints.size) {
             viewModelScope.launch {
-                // Get all necessary IDs
-                val player = playerRepository.getPlayer().firstOrNull()
-                if (player == null) return@launch // Safety check
-
-                val currentQuest = _quests.value[state.value.currentQuest]
+                val sessionId = _sessionId.value ?: return@launch
                 val hintToTrack = state.value.hints[nextHintIndex]
 
                 val usage = HintUsageEntity(
-                    playerId = player.id,
-                    adventureId = adventureId,
-                    questId = currentQuest.id,
+                    sessionId = sessionId,
                     hintId = hintToTrack.id
                 )
                 repository.trackHintUsed(usage)
+                adventureSessionRepository.updateProgress(sessionId, state.value.currentQuest, nextHintIndex)
             }
             _state.update { it ->
                 it.copy(currentHint = nextHintIndex)
@@ -123,12 +143,13 @@ class GameViewModelFactory(
     private val adventureId: Long,
     private val repository: GameRepository,
     private val locationRepository: LocationRepository,
-    private val playerRepository: PlayerRepository // Added PlayerRepository
+    private val playerRepository: PlayerRepository,
+    private val adventureSessionRepository: AdventureSessionRepository
 ) : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(GameViewModel::class.java)) {
             @Suppress("UNCHECKED_CAST")
-            return GameViewModel(adventureId, repository, locationRepository, playerRepository) as T
+            return GameViewModel(adventureId, repository, locationRepository, playerRepository, adventureSessionRepository) as T
         }
         throw IllegalArgumentException("Unknown ViewModel class")
     }

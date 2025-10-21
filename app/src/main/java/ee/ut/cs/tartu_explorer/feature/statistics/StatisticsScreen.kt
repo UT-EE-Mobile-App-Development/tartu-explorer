@@ -4,6 +4,8 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
@@ -93,7 +95,7 @@ fun StatisticsScreen(
                         // Card zentriert in der Box (align() ist hier erlaubt, da wir uns im BoxScope befinden)
                         Box(
                             modifier = Modifier
-                                .fillMaxWidth(0.85f)
+                                .fillMaxWidth(0.9f)
                                 .fillMaxHeight(0.8f)
                                 .align(Alignment.Center)
                         ) {
@@ -159,67 +161,42 @@ fun StatisticsScreen(
                                     item { Spacer(Modifier.height(8.dp)) }
 
                                     item {
-                                        Text(
-                                            "Required hints (total)",
-                                            style = MaterialTheme.typography.titleMedium,
-                                            fontWeight = FontWeight.SemiBold,
-                                            color = Color.Black
-                                        )
-                                    }
-                                    item {
-                                        Text(
-                                            "${data.totalHintsUsed}",
-                                            style = MaterialTheme.typography.bodyLarge,
-                                            color = Color.Black
-                                        )
-                                    }
+                                        Column(
+                                            verticalArrangement = Arrangement.spacedBy(12.dp),
+                                            modifier = Modifier.padding(16.dp)
+                                        ) {
+                                            Row(
+                                                horizontalArrangement = Arrangement.spacedBy(12.dp),
+                                                modifier = Modifier.fillMaxWidth()
+                                            ) {
+                                                StatBox(
+                                                    title = "Required hints (total)",
+                                                    value = data.totalHintsUsed.toString(),
+                                                    modifier = Modifier.weight(1f)
+                                                )
+                                                StatBox(
+                                                    title = "Ø Hints per quest",
+                                                    value = formatDoubleOrDash(data.avgHintsPerQuest),
+                                                    modifier = Modifier.weight(1f)
+                                                )
+                                            }
+                                            Row(
+                                                horizontalArrangement = Arrangement.spacedBy(12.dp),
+                                                modifier = Modifier.fillMaxWidth()
+                                            ) {
+                                                StatBox(
+                                                    title = "Ø Time for an adventure",
+                                                    value = formatDurationOrDash(data.avgAdventureDurationMs),
+                                                    modifier = Modifier.weight(1f)
+                                                )
+                                                StatBox(
+                                                    title = "Ø Time until first hint",
+                                                    value = formatDurationOrDash(data.avgTimeToFirstHintMs),
+                                                    modifier = Modifier.weight(1f)
+                                                )
+                                            }
 
-                                    item {
-                                        Text(
-                                            "Ø Hints per quest (successful)",
-                                            style = MaterialTheme.typography.titleMedium,
-                                            fontWeight = FontWeight.SemiBold,
-                                            color = Color.Black
-                                        )
-                                    }
-                                    item {
-                                        Text(
-                                            formatDoubleOrDash(data.avgHintsPerQuest),
-                                            style = MaterialTheme.typography.bodyLarge,
-                                            color = Color.Black
-                                        )
-                                    }
-
-                                    item {
-                                        Text(
-                                            "Ø Time for an adventure",
-                                            style = MaterialTheme.typography.titleMedium,
-                                            fontWeight = FontWeight.SemiBold,
-                                            color = Color.Black
-                                        )
-                                    }
-                                    item {
-                                        Text(
-                                            formatDurationOrDash(data.avgAdventureDurationMs),
-                                            style = MaterialTheme.typography.bodyLarge,
-                                            color = Color.Black
-                                        )
-                                    }
-
-                                    item {
-                                        Text(
-                                            "Ø Time until first hint",
-                                            style = MaterialTheme.typography.titleMedium,
-                                            fontWeight = FontWeight.SemiBold,
-                                            color = Color.Black
-                                        )
-                                    }
-                                    item {
-                                        Text(
-                                            formatDurationOrDash(data.avgTimeToFirstHintMs),
-                                            style = MaterialTheme.typography.bodyLarge,
-                                            color = Color.Black
-                                        )
+                                        }
                                     }
                                 }
                             }
@@ -244,5 +221,23 @@ private fun formatDurationOrDash(ms: Double?): String {
         hours > 0 -> String.format("%dh %02dmin %02ds", hours, minutes, seconds)
         minutes > 0 -> String.format("%dmin %02ds", minutes, seconds)
         else -> String.format("%ds", seconds)
+    }
+}
+
+
+@Composable
+fun StatBox(
+    title: String,
+    value: String,
+    modifier: Modifier = Modifier
+) {
+    Column(
+        modifier = modifier
+            .background(Color.White, RoundedCornerShape(8.dp))
+            .border(1.dp, Color.Black, RoundedCornerShape(8.dp))
+            .padding(12.dp)
+    ) {
+        Text(title, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold)
+        Text(value, style = MaterialTheme.typography.bodyLarge)
     }
 }

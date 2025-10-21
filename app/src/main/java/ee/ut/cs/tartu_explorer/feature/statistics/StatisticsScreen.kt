@@ -160,11 +160,13 @@ fun StatisticsScreen(
 
                                     item { Spacer(Modifier.height(8.dp)) }
 
+                                    //2x2 grid for data
                                     item {
                                         Column(
                                             verticalArrangement = Arrangement.spacedBy(12.dp),
                                             modifier = Modifier.padding(16.dp)
                                         ) {
+                                            //First row of data
                                             Row(
                                                 horizontalArrangement = Arrangement.spacedBy(12.dp),
                                                 modifier = Modifier.fillMaxWidth()
@@ -180,6 +182,8 @@ fun StatisticsScreen(
                                                     modifier = Modifier.weight(1f)
                                                 )
                                             }
+
+                                            //Second row of data
                                             Row(
                                                 horizontalArrangement = Arrangement.spacedBy(12.dp),
                                                 modifier = Modifier.fillMaxWidth()
@@ -224,7 +228,7 @@ private fun formatDurationOrDash(ms: Double?): String {
     }
 }
 
-
+//Used to display statistics data
 @Composable
 fun StatBox(
     title: String,

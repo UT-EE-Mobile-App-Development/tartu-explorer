@@ -11,6 +11,7 @@ import ee.ut.cs.tartu_explorer.core.data.repository.AdventureSessionRepository
 import ee.ut.cs.tartu_explorer.core.data.repository.GameRepository
 import ee.ut.cs.tartu_explorer.core.data.repository.PlayerRepository
 import ee.ut.cs.tartu_explorer.core.location.LocationRepository
+import ee.ut.cs.tartu_explorer.core.util.LevelingUtil
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.*
@@ -39,12 +40,13 @@ class GameViewModel(
         }
         .flatMapLatest { it ->
             if (_quests.value.isEmpty() || it.currentQuest >= _quests.value.size) {
-                flow { emptyList<HintEntity>() }
+                flowOf(emptyList<HintEntity>()) // Use flowOf for emitting an empty list
             } else {
                 repository.getHintsByQuest(_quests.value[it.currentQuest].id)
             }
         }
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
+
     val state = combine(_state, _quests, _hints) { state: GameState, quests, hints ->
         state.copy(
             quests = quests,
@@ -57,7 +59,7 @@ class GameViewModel(
 
     init {
         viewModelScope.launch {
-            val player = playerRepository.getPlayer().firstOrNull() ?: return@launch
+            val player = playerRepository.getFirstPlayer() ?: return@launch
             val activeSession = adventureSessionRepository.getActiveSession(adventureId, player.id)
             if (activeSession != null) {
                 _sessionId.value = activeSession.id
@@ -76,6 +78,7 @@ class GameViewModel(
 
     fun guessPosition() {
         viewModelScope.launch(Dispatchers.IO) {
+            val playerId = playerRepository.getFirstPlayer()?.id ?: return@launch
             val sessionId = _sessionId.value ?: return@launch
             val currentQuestIndex = state.value.currentQuest
             val currentQuestEntity = state.value.quests.getOrNull(currentQuestIndex) ?: return@launch
@@ -94,6 +97,7 @@ class GameViewModel(
             val distanceToTarget = location.distanceTo(targetLocation)
             val inRadius = distanceToTarget <= currentQuestEntity.radius
 
+            // Always track the attempt
             val attempt = QuestAttemptEntity(
                 sessionId = sessionId,
                 questId = currentQuestEntity.id,
@@ -101,6 +105,14 @@ class GameViewModel(
             )
             repository.trackQuestAttempt(attempt)
 
+            // If the guess was correct, award experience points
+            if (inRadius) {
+                val hintsUsed = state.value.currentHint
+                val epGained = LevelingUtil.calculateEpForQuest(hintsUsed)
+                playerRepository.addExperiencePoints(playerId, epGained)
+            }
+
+            // Update the UI with the guess result
             _state.update { it.copy(guessState = GuessState(distanceToTarget, inRadius)) }
         }
     }

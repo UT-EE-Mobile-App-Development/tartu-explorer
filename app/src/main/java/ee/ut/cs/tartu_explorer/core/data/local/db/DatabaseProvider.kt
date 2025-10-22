@@ -17,8 +17,6 @@ object DatabaseProvider {
         var forceRecreateOnce = prefs.getBoolean(KEY_FORCE_RECREATE_ONCE, false)
         val resetOnEveryStart = prefs.getBoolean(KEY_RESET_ON_START, false)
 
-        //forceRecreateOnce = true
-
         if (forceRecreateOnce || resetOnEveryStart) {
             // If any flag is set, delete the database.
             context.deleteDatabase("tartuExplorer.db")

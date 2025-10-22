@@ -46,7 +46,13 @@ fun GameScreen(adventureId: Long, onNavigateBack: () -> Unit) {
     val viewModel: GameViewModel = viewModel(
         factory = GameViewModelFactory(
             adventureId,
-            GameRepository(db.questDao(), db.hintDao(), db.hintUsageDao(), db.adventureSessionDao()),
+            GameRepository(
+                db.questDao(),
+                db.hintDao(),
+                db.hintUsageDao(),
+                db.adventureSessionDao(),
+                db.questAttemptDao()
+            ),
             locationRepository,
             playerRepository,
             adventureSessionRepository

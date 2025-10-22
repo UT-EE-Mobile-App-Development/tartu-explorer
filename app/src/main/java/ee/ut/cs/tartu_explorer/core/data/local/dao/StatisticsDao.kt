@@ -1,19 +1,20 @@
 package ee.ut.cs.tartu_explorer.core.data.local.dao
 
-import androidx.room.*
+import androidx.room.Dao
+import androidx.room.Query
 
 data class DifficultyCount(
     val difficulty: String, // oder AdventureDifficulty
     val completedQuests: Long
 )
 
-data class AvgValue(val valueMs: Double)
-data class AvgDouble(val value: Double)
+data class AvgValue(val valueMs: Double?)
+data class AvgDouble(val value: Double?)
 
 @Dao
 interface StatisticsDao {
 
-    // 1) Completed quests per difficulty (counts quest attempts that were successfully completed)
+    // 1) Completed quests per difficulty
     @Query("""
         SELECT a.difficulty AS difficulty, COUNT(*) AS completedQuests
         FROM quest_attempt qa
@@ -36,23 +37,14 @@ interface StatisticsDao {
     """)
     suspend fun totalHintsUsed(playerId: Long): Long
 
-    // 3) Average hints required per quest (average hints per successful attempt)
-    /*
+    // 3) Total successful quest attempts
     @Query("""
-        WITH hints_per_attempt AS (
-            SELECT qa.id AS attemptId, COUNT(hu.id) AS hintCount
-            FROM quest_attempt qa
-            LEFT JOIN hint_usage hu ON hu.attemptId = qa.id
-            JOIN adventure_session s ON s.id = qa.sessionId
-            WHERE qa.wasCorrect = 1 AND s.playerId = :playerId
-            GROUP BY qa.id
+        SELECT COUNT(*) FROM quest_attempt
+        WHERE wasCorrect = 1 AND sessionId IN (
+            SELECT id FROM adventure_session WHERE playerId = :playerId
         )
-        SELECT AVG(hintCount * 1.0) AS value
-        FROM hints_per_attempt
     """)
-
-     */
-    //suspend fun avgHintsPerQuest(playerId: Long): AvgDouble?
+    suspend fun totalSuccessfulQuestAttempts(playerId: Long): Long
 
     // 4) Average time for an adventure (completed sessions only)
     @Query("""
@@ -62,22 +54,18 @@ interface StatisticsDao {
     """)
     suspend fun avgAdventureDurationMs(playerId: Long): AvgValue?
 
-    // 5) Average time to first hint (per attempt with at least one hint)
-    /*
+    // 5) Average time to first hint (per session with at least one hint)
     @Query("""
-        WITH first_hint AS (
-            SELECT qa.id AS attemptId,
-                   MIN(hu.usedAt) - qa.startedAt AS deltaMs
-            FROM quest_attempt qa
-            JOIN adventure_session s ON s.id = qa.sessionId
-            JOIN hint_usage hu ON hu.attemptId = qa.id
+        WITH time_to_first_hint_per_session AS (
+            SELECT MIN(hu.usedAt) - s.startTime as deltaMs
+            FROM adventure_session s
+            JOIN hint_usage hu ON s.id = hu.sessionId
             WHERE s.playerId = :playerId
-            GROUP BY qa.id
+            GROUP BY s.id, s.startTime
+            HAVING COUNT(hu.id) > 0
         )
-        SELECT AVG(deltaMs * 1.0) AS valueMs
-        FROM first_hint
+        SELECT AVG(deltaMs * 1.0) as valueMs
+        FROM time_to_first_hint_per_session
     """)
-
-     */
-    //suspend fun avgTimeToFirstHintMs(playerId: Long): AvgValue?
+    suspend fun avgTimeToFirstHintMs(playerId: Long): AvgValue?
 }

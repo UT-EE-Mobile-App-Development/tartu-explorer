@@ -19,15 +19,6 @@ data class StatsOverview(
     val avgTimeToFirstHintMs: Double?
 )
 
-/**
- * Repository class for retrieving and processing statistics-related data.
- * This class is designed to handle data aggregation and computation for player statistics
- * by interacting with the database through the provided `StatisticsDao`.
- *
- * @constructor Private constructor to enforce instantiation through the companion object.
- *
- * @property dao The data access object used for interacting with the statistics-related database tables.
- */
 class StatisticsRepository private constructor(
     private val dao: StatisticsDao
 ) {
@@ -37,6 +28,7 @@ class StatisticsRepository private constructor(
             return StatisticsRepository(db.statisticsDao())
         }
     }
+
     suspend fun loadOverview(playerId: Long): StatsOverview = coroutineScope {
         val completedByDiffDeferred = async {
             dao.completedQuestsByDifficulty(playerId).map {
@@ -44,18 +36,25 @@ class StatisticsRepository private constructor(
             }
         }
         val totalHintsDeferred = async { dao.totalHintsUsed(playerId) }
+        val totalSuccessfulQuestsDeferred = async { dao.totalSuccessfulQuestAttempts(playerId) }
         val avgAdventureDurationDeferred = async { dao.avgAdventureDurationMs(playerId)?.valueMs }
-        /*
-        val avgHintsPerQuestDeferred = async { dao.avgHintsPerQuest(playerId)?.value }
         val avgTimeToFirstHintDeferred = async { dao.avgTimeToFirstHintMs(playerId)?.valueMs }
-        */
+
+        val totalHints = totalHintsDeferred.await()
+        val totalSuccessfulQuests = totalSuccessfulQuestsDeferred.await()
+
+        val avgHintsPerQuest = if (totalSuccessfulQuests > 0) {
+            totalHints.toDouble() / totalSuccessfulQuests
+        } else {
+            null
+        }
 
         StatsOverview(
             completedByDifficulty = completedByDiffDeferred.await(),
-            totalHintsUsed = totalHintsDeferred.await(),
-            avgHintsPerQuest = null, //avgHintsPerQuestDeferred.await(),
+            totalHintsUsed = totalHints,
+            avgHintsPerQuest = avgHintsPerQuest,
             avgAdventureDurationMs = avgAdventureDurationDeferred.await(),
-            avgTimeToFirstHintMs = null //avgTimeToFirstHintDeferred.await()
+            avgTimeToFirstHintMs = avgTimeToFirstHintDeferred.await()
         )
     }
 }

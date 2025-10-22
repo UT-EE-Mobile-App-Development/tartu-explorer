@@ -48,10 +48,11 @@ fun QuestScreen(
     onNavigateBack: () -> Unit,
     onNavigateHome: (adventureId: Long) -> Unit
 ) {
-    val db = DatabaseProvider.getDatabase(LocalContext.current)
+    val context = LocalContext.current
+    val db = DatabaseProvider.getDatabase(context)
     val viewModel: QuestViewModel = viewModel(
         factory = QuestViewModelFactory(
-            AdventureRepository(db.adventureDao()),
+            AdventureRepository.from(context),
             GameRepository(db.questDao(), db.hintDao(), db.hintUsageDao(), db.adventureSessionDao(), db.questAttemptDao())
         )
     )

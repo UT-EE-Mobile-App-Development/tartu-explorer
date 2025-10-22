@@ -4,11 +4,14 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import ee.ut.cs.tartu_explorer.core.data.local.entities.PlayerEntity
+import ee.ut.cs.tartu_explorer.core.data.local.entities.SessionStatus
+import ee.ut.cs.tartu_explorer.core.data.repository.GameRepository
 import ee.ut.cs.tartu_explorer.core.data.repository.PlayerRepository
 import ee.ut.cs.tartu_explorer.core.util.LevelInfo
 import ee.ut.cs.tartu_explorer.core.util.LevelingUtil
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
@@ -16,23 +19,35 @@ data class HomeUiState(
     val showNamePrompt: Boolean = false,
     val playerNameInput: String = "",
     val player: PlayerEntity? = null,
-    val levelInfo: LevelInfo? = null
+    val levelInfo: LevelInfo? = null,
+    val adventureStatuses: Map<Long, SessionStatus> = emptyMap()
 )
 
-class HomeViewModel(private val playerRepository: PlayerRepository) : ViewModel() {
+class HomeViewModel(
+    private val playerRepository: PlayerRepository,
+    private val gameRepository: GameRepository
+) : ViewModel() {
 
     private val _uiState = MutableStateFlow(HomeUiState())
     val uiState = _uiState.asStateFlow()
 
     init {
-        // This coroutine handles REACTIVE updates to player/level info
+        // This coroutine handles REACTIVE updates to player/level info and then triggers status updates
         viewModelScope.launch {
-            playerRepository.getPlayerAsFlow().collect { player ->
-                _uiState.update { currentState ->
-                    player?.let {
-                        val levelInfo = LevelingUtil.calculateLevelInfo(it.experiencePoints)
-                        currentState.copy(player = it, levelInfo = levelInfo, showNamePrompt = false)
-                    } ?: currentState.copy(player = null, levelInfo = null)
+            playerRepository.getPlayerAsFlow().collectLatest { player ->
+                if (player != null) {
+                    val levelInfo = LevelingUtil.calculateLevelInfo(player.experiencePoints)
+                    _uiState.update {
+                        it.copy(player = player, levelInfo = levelInfo, showNamePrompt = false)
+                    }
+                    // Now that we have a player, start observing their adventure statuses
+                    gameRepository.getAdventureStatusDetails(player.id).collect { detailsMap ->
+                        _uiState.update {
+                            it.copy(adventureStatuses = detailsMap.mapValues { entry -> entry.value.status })
+                        }
+                    }
+                } else {
+                    _uiState.update { it.copy(player = null, levelInfo = null, adventureStatuses = emptyMap()) }
                 }
             }
         }
@@ -60,11 +75,14 @@ class HomeViewModel(private val playerRepository: PlayerRepository) : ViewModel(
 }
 
 // Factory to create the ViewModel with the repository
-class HomeViewModelFactory(private val playerRepository: PlayerRepository) : ViewModelProvider.Factory {
+class HomeViewModelFactory(
+    private val playerRepository: PlayerRepository,
+    private val gameRepository: GameRepository
+) : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(HomeViewModel::class.java)) {
             @Suppress("UNCHECKED_CAST")
-            return HomeViewModel(playerRepository) as T
+            return HomeViewModel(playerRepository, gameRepository) as T
         }
         throw IllegalArgumentException("Unknown ViewModel class")
     }

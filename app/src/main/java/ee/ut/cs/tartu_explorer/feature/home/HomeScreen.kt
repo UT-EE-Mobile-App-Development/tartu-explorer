@@ -14,7 +14,6 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -29,6 +28,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import ee.ut.cs.tartu_explorer.R
+import ee.ut.cs.tartu_explorer.core.data.local.db.DatabaseProvider
+import ee.ut.cs.tartu_explorer.core.data.local.entities.SessionStatus
+import ee.ut.cs.tartu_explorer.core.data.repository.GameRepository
 import ee.ut.cs.tartu_explorer.core.data.repository.PlayerRepository
 import ee.ut.cs.tartu_explorer.core.ui.theme.components.AnimatedBackground
 import ee.ut.cs.tartu_explorer.core.ui.theme.components.HomeGameButton
@@ -44,7 +46,13 @@ fun HomeScreen(
     selectedAdventureId: Long? = null,
 ) {
     val context = LocalContext.current
-    val viewModel: HomeViewModel = viewModel(factory = HomeViewModelFactory(PlayerRepository.from(context)))
+    val db = DatabaseProvider.getDatabase(context)
+    val viewModel: HomeViewModel = viewModel(
+        factory = HomeViewModelFactory(
+            PlayerRepository.from(context),
+            GameRepository(db.questDao(), db.hintDao(), db.hintUsageDao(), db.adventureSessionDao(), db.questAttemptDao())
+        )
+    )
     val uiState by viewModel.uiState.collectAsState()
 
     val backgrounds = listOf(
@@ -99,7 +107,12 @@ fun HomeScreen(
 
                     if (selectedAdventureId != null && selectedAdventureId > 0) {
                         Text("selected adventure: $selectedAdventureId")
-                        HomeGameButton("PLAY", { onNavigateToGame(selectedAdventureId) })
+                        val isCompleted = uiState.adventureStatuses[selectedAdventureId] == SessionStatus.COMPLETED
+                        if (isCompleted) {
+                            HomeGameButton("Adventure completed", {}, enabled = false)
+                        } else {
+                            HomeGameButton("PLAY", { onNavigateToGame(selectedAdventureId) })
+                        }
                     } else {
                         HomeGameButton("Select an adventure to play", {}, enabled = false)
                     }

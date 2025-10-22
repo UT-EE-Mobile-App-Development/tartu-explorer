@@ -46,16 +46,16 @@ class PrepopulateCallback(private val context: Context) : RoomDatabase.Callback(
             val quest1Id = questDao.insert(
                 QuestEntity(
                     adventureId = adventure1Id,
-                    latitude = 58.3825,
-                    longitude = 26.7212,
-                    radius = 50.0
+                    latitude = 58.385317,
+                    longitude = 26.725464,
+                    radius = 100.0
                 )
             )
             val quest2Id = questDao.insert(
                 QuestEntity(
                     adventureId = adventure1Id,
-                    latitude = 58.3807,
-                    longitude = 26.723,
+                    latitude = 58.382572,
+                    longitude = 26.732026,
                     radius = 50.0
                 )
             )

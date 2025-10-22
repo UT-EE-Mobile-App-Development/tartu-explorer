@@ -6,41 +6,31 @@ import androidx.lifecycle.viewModelScope
 import ee.ut.cs.tartu_explorer.core.data.local.entities.AdventureDifficulty
 import ee.ut.cs.tartu_explorer.core.data.repository.AdventureRepository
 import ee.ut.cs.tartu_explorer.core.data.repository.GameRepository
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
-import kotlinx.coroutines.launch
 
 class QuestViewModel(
-    private val adventureRepository: AdventureRepository,
-    private val gameRepository: GameRepository
+    adventureRepository: AdventureRepository,
+    gameRepository: GameRepository
 ) : ViewModel() {
-    private val _state = MutableStateFlow(QuestState())
 
-    private var _adventures = adventureRepository
-        .getAdventures()
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
+    private val adventuresFlow = adventureRepository.getAdventures()
+    // Player ID is hardcoded for now, you can change this later
+    private val statusDetailsFlow = gameRepository.getAdventureStatusDetails(1L)
 
-    val state = _state.combine(_adventures) { state: QuestState, adventures ->
-        state.copy(
-            adventures = mapOf(
-                AdventureDifficulty.VERY_EASY to adventures.filter { it -> it.difficulty == AdventureDifficulty.VERY_EASY },
-                AdventureDifficulty.EASY to adventures.filter { it -> it.difficulty == AdventureDifficulty.EASY },
-                AdventureDifficulty.MEDIUM to adventures.filter { it -> it.difficulty == AdventureDifficulty.MEDIUM },
-                AdventureDifficulty.HARD to adventures.filter { it -> it.difficulty == AdventureDifficulty.HARD },
-                AdventureDifficulty.VERY_HARD to adventures.filter { it -> it.difficulty == AdventureDifficulty.VERY_HARD },
-            ),
+    val state = combine(
+        adventuresFlow,
+        statusDetailsFlow
+    ) { adventures, details ->
+        val statuses = details.mapValues { it.value.status }
+        QuestState(
+            adventures = adventures.groupBy { it.difficulty },
+            adventureStatuses = statuses,
+            adventureStatusDetails = details
         )
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), QuestState())
 
-    init {
-        viewModelScope.launch {
-            // Assuming a logged-in user with ID 1L for now
-            val statuses = gameRepository.getAdventureStatuses(1L)
-            _state.value = _state.value.copy(adventureStatuses = statuses)
-        }
-    }
 }
 
 class QuestViewModelFactory(

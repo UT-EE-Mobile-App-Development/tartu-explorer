@@ -37,10 +37,11 @@ import ee.ut.cs.tartu_explorer.core.data.local.entities.AdventureDifficulty
 import ee.ut.cs.tartu_explorer.core.data.local.entities.AdventureEntity
 import ee.ut.cs.tartu_explorer.core.data.local.entities.SessionStatus
 import ee.ut.cs.tartu_explorer.core.data.repository.AdventureRepository
+import ee.ut.cs.tartu_explorer.core.data.repository.AdventureStatusDetails
 import ee.ut.cs.tartu_explorer.core.data.repository.GameRepository
 import ee.ut.cs.tartu_explorer.core.ui.theme.components.AnimatedBackground
 import ee.ut.cs.tartu_explorer.core.ui.theme.components.CustomBackButton
-
+import java.util.concurrent.TimeUnit
 
 @Composable
 fun QuestScreen(
@@ -51,40 +52,34 @@ fun QuestScreen(
     val viewModel: QuestViewModel = viewModel(
         factory = QuestViewModelFactory(
             AdventureRepository(db.adventureDao()),
-            GameRepository(db.questDao(), db.hintDao(), db.hintUsageDao(), db.adventureSessionDao())
+            GameRepository(db.questDao(), db.hintDao(), db.hintUsageDao(), db.adventureSessionDao(), db.questAttemptDao())
         )
     )
     val state by viewModel.state.collectAsState()
 
-    //background images
     val backgrounds = listOf(
         R.drawable.bg1,
         R.drawable.bg2,
-        //R.drawable.bg3
     )
 
     AnimatedBackground(backgrounds) {
         Box(modifier = Modifier.fillMaxSize()) {
-
-            // Top row with back button + spacing
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier
-                    .align(Alignment.TopStart)   // Place at the top start of the Box
-                    .padding(16.dp)         // Add padding from edges
+                    .align(Alignment.TopStart)
+                    .padding(16.dp)
             ) {
                 CustomBackButton(onClick = onNavigateBack)
                 Spacer(modifier = Modifier.width(8.dp))
             }
 
-            // Quest list card centered
             QuestListCard(
                 modifier = Modifier
                     .fillMaxWidth(0.95f)
                     .fillMaxHeight(0.85f)
                     .align(Alignment.Center)
             ) {
-                // Scrollable list of quests grouped by difficulty
                 Column(
                     modifier = Modifier
                         .verticalScroll(rememberScrollState())
@@ -103,6 +98,7 @@ fun QuestScreen(
                             onNavigateHome = onNavigateHome,
                             adventures = state.adventures,
                             adventureStatuses = state.adventureStatuses,
+                            adventureStatusDetails = state.adventureStatusDetails,
                             difficulty = difficulty,
                             displayName = displayName,
                             thumbnailSize = 120.dp
@@ -114,7 +110,6 @@ fun QuestScreen(
     }
 }
 
-// Card container for displaying a vertical list of quests or other content.
 @Composable
 fun QuestListCard(
     modifier: Modifier = Modifier,
@@ -139,6 +134,7 @@ fun DifficultyRow(
     onNavigateHome: (Long) -> Unit,
     adventures: Map<AdventureDifficulty, List<AdventureEntity>>,
     adventureStatuses: Map<Long, SessionStatus>,
+    adventureStatusDetails: Map<Long, AdventureStatusDetails>,
     difficulty: AdventureDifficulty,
     displayName: String,
     thumbnailSize: Dp = 100.dp
@@ -158,24 +154,43 @@ fun DifficultyRow(
             adventures[difficulty]
                 ?.takeIf { it.isNotEmpty() }
                 ?.forEach { adventure ->
-                    val borderColor = when (adventureStatuses[adventure.id]) {
+                    val status = adventureStatuses[adventure.id]
+                    val details = adventureStatusDetails[adventure.id]
+                    val borderColor = when (status) {
                         SessionStatus.IN_PROGRESS -> Color.Yellow
                         SessionStatus.COMPLETED -> Color.Green
                         else -> Color.Transparent
                     }
-                    AsyncImage(
-                        model = adventure.thumbnailPath,
-                        contentDescription = "$displayName levels",
-                        modifier = Modifier
-                            .size(thumbnailSize)
-                            .border(2.dp, borderColor, RoundedCornerShape(8.dp))
-                            .clickable { onNavigateHome(adventure.id) }
-                    )
-
+                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                        AsyncImage(
+                            model = adventure.thumbnailPath,
+                            contentDescription = "$displayName levels",
+                            modifier = Modifier
+                                .size(thumbnailSize)
+                                .border(2.dp, borderColor, RoundedCornerShape(8.dp))
+                                .clickable { onNavigateHome(adventure.id) }
+                        )
+                        if (details != null) {
+                            Text("Hints: ${details.hintsUsed}", color = Color.Black)
+                            Text("Quests: ${details.completedQuests}/${details.totalQuests}", color = Color.Black)
+                            Text("Time: ${formatDuration(details.durationMs)}", color = Color.Black)
+                        }
+                    }
                 } ?: Text(
                 "There are no $displayName quests yet.",
                 color = Color.Black
             )
         }
+    }
+}
+
+fun formatDuration(millis: Long): String {
+    val hours = TimeUnit.MILLISECONDS.toHours(millis)
+    val minutes = TimeUnit.MILLISECONDS.toMinutes(millis) % 60
+    val seconds = TimeUnit.MILLISECONDS.toSeconds(millis) % 60
+    return when {
+        hours > 0 -> String.format("%dh %02dmin %02ds", hours, minutes, seconds)
+        minutes > 0 -> String.format("%dmin %02ds", minutes, seconds)
+        else -> String.format("%ds", seconds)
     }
 }

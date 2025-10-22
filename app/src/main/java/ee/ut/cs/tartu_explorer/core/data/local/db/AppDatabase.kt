@@ -8,6 +8,7 @@ import ee.ut.cs.tartu_explorer.core.data.local.dao.AdventureSessionDao
 import ee.ut.cs.tartu_explorer.core.data.local.dao.HintDao
 import ee.ut.cs.tartu_explorer.core.data.local.dao.HintUsageDao
 import ee.ut.cs.tartu_explorer.core.data.local.dao.PlayerDao
+import ee.ut.cs.tartu_explorer.core.data.local.dao.QuestAttemptDao
 import ee.ut.cs.tartu_explorer.core.data.local.dao.QuestDao
 import ee.ut.cs.tartu_explorer.core.data.local.dao.StatisticsDao
 import ee.ut.cs.tartu_explorer.core.data.local.entities.AdventureDifficultyConverter
@@ -35,7 +36,7 @@ import ee.ut.cs.tartu_explorer.core.data.local.entities.SessionStatusConverter
         QuestAttemptEntity::class,
         HintUsageEntity::class,
     ],
-    version = 6
+    version = 7
 )
 @TypeConverters(AdventureDifficultyConverter::class, SessionStatusConverter::class)
 abstract class AppDatabase : RoomDatabase() {
@@ -46,4 +47,5 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun statisticsDao(): StatisticsDao
     abstract fun hintUsageDao(): HintUsageDao
     abstract fun adventureSessionDao(): AdventureSessionDao
+    abstract fun questAttemptDao(): QuestAttemptDao
 }

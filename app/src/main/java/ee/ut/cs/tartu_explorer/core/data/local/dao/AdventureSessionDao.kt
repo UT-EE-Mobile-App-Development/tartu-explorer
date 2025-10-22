@@ -6,11 +6,12 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import ee.ut.cs.tartu_explorer.core.data.local.entities.AdventureSessionEntity
 import ee.ut.cs.tartu_explorer.core.data.local.entities.SessionStatus
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface AdventureSessionDao {
 
-    @Insert(onConflict = OnConflictStrategy.Companion.REPLACE)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertSession(session: AdventureSessionEntity): Long
 
     @Query("SELECT * FROM adventure_session WHERE id = :sessionId")
@@ -27,4 +28,7 @@ interface AdventureSessionDao {
 
     @Query("SELECT * FROM adventure_session WHERE playerId = :playerId")
     suspend fun getAllSessionsForPlayer(playerId: Long): List<AdventureSessionEntity>
+
+    @Query("SELECT * FROM adventure_session WHERE playerId = :playerId ORDER BY startTime DESC")
+    fun getAllSessionsForPlayerAsFlow(playerId: Long): Flow<List<AdventureSessionEntity>>
 }

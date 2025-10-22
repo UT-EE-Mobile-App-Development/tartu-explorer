@@ -1,6 +1,8 @@
 package ee.ut.cs.tartu_explorer.core.data.repository
 
+import android.content.Context
 import ee.ut.cs.tartu_explorer.core.data.local.dao.AdventureDao
+import ee.ut.cs.tartu_explorer.core.data.local.db.DatabaseProvider
 import ee.ut.cs.tartu_explorer.core.data.local.entities.AdventureEntity
 import ee.ut.cs.tartu_explorer.core.data.local.entities.QuestEntity
 import ee.ut.cs.tartu_explorer.core.data.local.relations.AdventureWithQuests
@@ -16,7 +18,7 @@ import ee.ut.cs.tartu_explorer.core.data.local.relations.AdventureWithQuests
  * @property deleteAllQuests Deletes all MapQuestEntity entries from the database.
  * @property deleteAllSteps Deletes all QuestStepEntity entries from the database.
  */
-class AdventureRepository(private val dao: AdventureDao) {
+class AdventureRepository private constructor(private val dao: AdventureDao) {
 
     suspend fun insertQuest(quest: AdventureEntity) = dao.insertAdventure(quest)
 
@@ -31,4 +33,17 @@ class AdventureRepository(private val dao: AdventureDao) {
     suspend fun deleteAllQuests() = dao.deleteAllAdventures()
 
     suspend fun deleteAllSteps() = dao.deleteAllQuests()
+
+    companion object {
+        @Volatile
+        private var INSTANCE: AdventureRepository? = null
+
+        fun from(context: Context): AdventureRepository {
+            return INSTANCE ?: synchronized(this) {
+                val instance = AdventureRepository(DatabaseProvider.getDatabase(context).adventureDao())
+                INSTANCE = instance
+                instance
+            }
+        }
+    }
 }

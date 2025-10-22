@@ -29,15 +29,12 @@ interface StatisticsDao {
     suspend fun completedQuestsByDifficulty(playerId: Long): List<DifficultyCount>
 
     // 2) Total number of hints used
-    /*
     @Query("""
         SELECT COUNT(*) FROM hint_usage hu
         JOIN adventure_session s ON s.id = hu.sessionId
         WHERE s.playerId = :playerId
     """)
-
-     */
-    //suspend fun totalHintsUsed(playerId: Long): Long
+    suspend fun totalHintsUsed(playerId: Long): Long
 
     // 3) Average hints required per quest (average hints per successful attempt)
     /*

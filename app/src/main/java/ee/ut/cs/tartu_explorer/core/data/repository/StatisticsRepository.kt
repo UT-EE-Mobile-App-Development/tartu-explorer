@@ -43,26 +43,19 @@ class StatisticsRepository private constructor(
                 CompletedByDifficulty(difficulty = it.difficulty, count = it.completedQuests)
             }
         }
-        /*
         val totalHintsDeferred = async { dao.totalHintsUsed(playerId) }
-        val avgHintsPerQuestDeferred = async { dao.avgHintsPerQuest(playerId)?.value }
         val avgAdventureDurationDeferred = async { dao.avgAdventureDurationMs(playerId)?.valueMs }
+        /*
+        val avgHintsPerQuestDeferred = async { dao.avgHintsPerQuest(playerId)?.value }
         val avgTimeToFirstHintDeferred = async { dao.avgTimeToFirstHintMs(playerId)?.valueMs }
+        */
 
         StatsOverview(
             completedByDifficulty = completedByDiffDeferred.await(),
             totalHintsUsed = totalHintsDeferred.await(),
-            avgHintsPerQuest = avgHintsPerQuestDeferred.await(),
+            avgHintsPerQuest = null, //avgHintsPerQuestDeferred.await(),
             avgAdventureDurationMs = avgAdventureDurationDeferred.await(),
-            avgTimeToFirstHintMs = avgTimeToFirstHintDeferred.await()
-        )
-         */
-        StatsOverview(
-            completedByDifficulty = emptyList(),
-            totalHintsUsed = 0L,
-            avgHintsPerQuest = 0.0,
-            avgAdventureDurationMs = 0.0,
-            avgTimeToFirstHintMs = 0.0
+            avgTimeToFirstHintMs = null //avgTimeToFirstHintDeferred.await()
         )
     }
 }

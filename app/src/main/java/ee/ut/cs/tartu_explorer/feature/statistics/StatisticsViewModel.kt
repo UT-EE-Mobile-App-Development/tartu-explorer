@@ -4,10 +4,12 @@ package ee.ut.cs.tartu_explorer.feature.statistics
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
+import ee.ut.cs.tartu_explorer.core.data.repository.PlayerRepository
 import ee.ut.cs.tartu_explorer.core.data.repository.StatisticsRepository
 import ee.ut.cs.tartu_explorer.core.data.repository.StatsOverview
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
 
 sealed class StatsUiState {
@@ -18,13 +20,11 @@ sealed class StatsUiState {
 
 class StatisticsViewModel(application: Application) : AndroidViewModel(application) {
 
-    private val repository = StatisticsRepository.from(application)
+    private val statisticsRepository = StatisticsRepository.from(application)
+    private val playerRepository = PlayerRepository.from(application)
 
     private val _uiState = MutableStateFlow<StatsUiState>(StatsUiState.Loading)
     val uiState: StateFlow<StatsUiState> = _uiState
-
-    // DEBUG Only one Player at the moment
-    private val currentPlayerId: Long = 1L
 
     init {
         refresh()
@@ -34,8 +34,13 @@ class StatisticsViewModel(application: Application) : AndroidViewModel(applicati
         _uiState.value = StatsUiState.Loading
         viewModelScope.launch {
             try {
-                val stats = repository.loadOverview(currentPlayerId)
-                _uiState.value = StatsUiState.Loaded(stats)
+                val player = playerRepository.getPlayer().firstOrNull()
+                if (player != null) {
+                    val stats = statisticsRepository.loadOverview(player.id)
+                    _uiState.value = StatsUiState.Loaded(stats)
+                } else {
+                    _uiState.value = StatsUiState.Error("Current player could not be loaded.")
+                }
             } catch (t: Throwable) {
                 _uiState.value = StatsUiState.Error(t.message ?: "Unknown Error")
             }

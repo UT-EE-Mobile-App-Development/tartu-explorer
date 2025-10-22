@@ -6,19 +6,43 @@ import ee.ut.cs.tartu_explorer.core.data.local.db.DatabaseProvider
 import ee.ut.cs.tartu_explorer.core.data.local.entities.PlayerEntity
 import kotlinx.coroutines.flow.Flow
 
-/**
- * Repository class for managing player-related operations.
- * @param dao The Data Access Object for PlayerEntity.
- */
 class PlayerRepository private constructor(private val dao: PlayerDao) {
-    fun getPlayer(): Flow<PlayerEntity?> = dao.getPlayer()
-    fun getAllPlayers(): Flow<List<PlayerEntity>> = dao.getAllPlayers()
-    suspend fun insertPlayer(player: PlayerEntity) = dao.insertPlayer(player)
+
+    /**
+     * Retrieves the first available player from the database once.
+     */
+    suspend fun getFirstPlayer(): PlayerEntity? = dao.getFirstPlayer()
+
+    /**
+     * Observes the first available player as a Flow, emitting new values upon change.
+     */
+    fun getPlayerAsFlow(): Flow<PlayerEntity?> = dao.getPlayerAsFlow()
+
+    /**
+     * Inserts a new player and returns the complete entity with its new ID.
+     */
+    suspend fun insertPlayer(player: PlayerEntity): PlayerEntity? {
+        val newId = dao.insertPlayer(player)
+        return dao.getPlayerById(newId)
+    }
+
+    /**
+     * Adds a specified number of experience points to a player's total.
+     */
+    suspend fun addExperiencePoints(playerId: Long, points: Int) {
+        dao.addExperiencePoints(playerId, points)
+    }
 
     companion object {
+        @Volatile
+        private var INSTANCE: PlayerRepository? = null
+
         fun from(context: Context): PlayerRepository {
-            val db = DatabaseProvider.getDatabase(context)
-            return PlayerRepository(db.playerDao())
+            return INSTANCE ?: synchronized(this) {
+                val instance = PlayerRepository(DatabaseProvider.getDatabase(context).playerDao())
+                INSTANCE = instance
+                instance
+            }
         }
     }
 }

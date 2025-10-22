@@ -3,7 +3,6 @@ package ee.ut.cs.tartu_explorer.feature.quest
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
-import ee.ut.cs.tartu_explorer.core.data.local.entities.AdventureDifficulty
 import ee.ut.cs.tartu_explorer.core.data.repository.AdventureRepository
 import ee.ut.cs.tartu_explorer.core.data.repository.GameRepository
 import kotlinx.coroutines.flow.SharingStarted
@@ -16,8 +15,7 @@ class QuestViewModel(
 ) : ViewModel() {
 
     private val adventuresFlow = adventureRepository.getAdventures()
-    // Player ID is hardcoded for now, you can change this later
-    private val statusDetailsFlow = gameRepository.getAdventureStatusDetails(1L)
+    private val statusDetailsFlow = gameRepository.getAdventureStatusDetails(1L) // TODO change later Assuming player ID 1L
 
     val state = combine(
         adventuresFlow,
@@ -30,7 +28,6 @@ class QuestViewModel(
             adventureStatusDetails = details
         )
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), QuestState())
-
 }
 
 class QuestViewModelFactory(

@@ -57,10 +57,7 @@ fun QuestScreen(
     )
     val state by viewModel.state.collectAsState()
 
-    val backgrounds = listOf(
-        R.drawable.bg1,
-        R.drawable.bg2,
-    )
+    val backgrounds = listOf(R.drawable.bg1, R.drawable.bg2)
 
     AnimatedBackground(backgrounds) {
         Box(modifier = Modifier.fillMaxSize()) {
@@ -71,7 +68,6 @@ fun QuestScreen(
                     .padding(16.dp)
             ) {
                 CustomBackButton(onClick = onNavigateBack)
-                Spacer(modifier = Modifier.width(8.dp))
             }
 
             QuestListCard(

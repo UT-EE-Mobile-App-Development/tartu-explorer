@@ -34,7 +34,7 @@ class StatisticsViewModel(application: Application) : AndroidViewModel(applicati
         _uiState.value = StatsUiState.Loading
         viewModelScope.launch {
             try {
-                val player = playerRepository.getPlayer().firstOrNull()
+                val player = playerRepository.getFirstPlayer()
                 if (player != null) {
                     val stats = statisticsRepository.loadOverview(player.id)
                     _uiState.value = StatsUiState.Loaded(stats)

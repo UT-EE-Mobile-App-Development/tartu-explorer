@@ -88,9 +88,7 @@ fun StatisticsScreen(
                     }
 
                     is StatsUiState.Loaded -> {
-                        val data = s.data // hier kommt das StatsData-Objekt vom ViewModel
-
-                        // Card zentriert in der Box (align() ist hier erlaubt, da wir uns im BoxScope befinden)
+                        val data = s.data
                         Box(
                             modifier = Modifier
                                 .fillMaxWidth(0.85f)

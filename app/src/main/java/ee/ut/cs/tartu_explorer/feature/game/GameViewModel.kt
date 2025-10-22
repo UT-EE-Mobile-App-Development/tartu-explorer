@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import ee.ut.cs.tartu_explorer.core.data.local.entities.HintEntity
 import ee.ut.cs.tartu_explorer.core.data.local.entities.HintUsageEntity
+import ee.ut.cs.tartu_explorer.core.data.local.entities.QuestAttemptEntity
 import ee.ut.cs.tartu_explorer.core.data.repository.AdventureSessionRepository
 import ee.ut.cs.tartu_explorer.core.data.repository.GameRepository
 import ee.ut.cs.tartu_explorer.core.data.repository.PlayerRepository
@@ -74,20 +75,33 @@ class GameViewModel(
     }
 
     fun guessPosition() {
-        val currentQuest = state.value.quests[state.value.currentQuest]
-        val targetLocation = Location("")
-        targetLocation.latitude = currentQuest.latitude
-        targetLocation.longitude = currentQuest.longitude
-
         viewModelScope.launch(Dispatchers.IO) {
+            val sessionId = _sessionId.value ?: return@launch
+            val currentQuestIndex = state.value.currentQuest
+            val currentQuestEntity = state.value.quests.getOrNull(currentQuestIndex) ?: return@launch
+
             val location = locationRepository.getLastLocation()
-            if (location != null) {
-                val distanceToTarget = location.distanceTo(targetLocation)
-                val inRadius = distanceToTarget <= currentQuest.radius
-                _state.update { it -> it.copy(guessState = GuessState(distanceToTarget, inRadius)) }
-            } else {
+            if (location == null) {
                 _locationPermissionToastEvent.emit(true)
+                return@launch
             }
+
+            val targetLocation = Location("").apply {
+                latitude = currentQuestEntity.latitude
+                longitude = currentQuestEntity.longitude
+            }
+
+            val distanceToTarget = location.distanceTo(targetLocation)
+            val inRadius = distanceToTarget <= currentQuestEntity.radius
+
+            val attempt = QuestAttemptEntity(
+                sessionId = sessionId,
+                questId = currentQuestEntity.id,
+                wasCorrect = inRadius
+            )
+            repository.trackQuestAttempt(attempt)
+
+            _state.update { it.copy(guessState = GuessState(distanceToTarget, inRadius)) }
         }
     }
 

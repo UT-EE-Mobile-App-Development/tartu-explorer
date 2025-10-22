@@ -2,6 +2,7 @@ package ee.ut.cs.tartu_explorer.core.data.repository
 
 import ee.ut.cs.tartu_explorer.core.data.local.dao.* // ktlint-disable no-wildcard-imports
 import ee.ut.cs.tartu_explorer.core.data.local.entities.HintUsageEntity
+import ee.ut.cs.tartu_explorer.core.data.local.entities.QuestAttemptEntity
 import ee.ut.cs.tartu_explorer.core.data.local.entities.SessionStatus
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
@@ -31,8 +32,20 @@ class GameRepository(
         hintUsageDao.insert(hintUsage)
     }
 
+    suspend fun trackQuestAttempt(questAttempt: QuestAttemptEntity) {
+        questAttemptDao.insert(questAttempt)
+    }
+
     fun getAdventureStatusDetails(playerId: Long): Flow<Map<Long, AdventureStatusDetails>> {
-        return adventureSessionDao.getAllSessionsForPlayerAsFlow(playerId).flatMapLatest { sessions ->
+        // Triggers that fire whenever the underlying tables change
+        val sessionTrigger = adventureSessionDao.getAllSessionsForPlayerAsFlow(playerId)
+        val attemptTrigger = questAttemptDao.observeQuestAttemptChanges()
+        val hintTrigger = hintUsageDao.observeHintUsageChanges()
+
+        // Combine the triggers. The flatMapLatest will re-execute whenever ANY of them emit a new value.
+        return combine(sessionTrigger, attemptTrigger, hintTrigger) { sessions, _, _ ->
+            sessions // Pass the sessions through, we only need the trigger
+        }.flatMapLatest { sessions ->
             if (sessions.isEmpty()) {
                 return@flatMapLatest flowOf(emptyMap())
             }
@@ -41,6 +54,7 @@ class GameRepository(
             val adventureIds = latestSessions.keys.toList()
             val sessionIds = latestSessions.values.map { it.id }
 
+            // These flows will now fetch the latest data because this whole block is re-executed
             val questCountsFlow = questDao.getQuestCountsForAdventures(adventureIds)
             val hintCountsFlow = hintUsageDao.getHintCountForSessions(sessionIds)
             val successfulQuestsFlow = questAttemptDao.getSuccessfulAttemptsCountForSessions(sessionIds)

@@ -2,20 +2,23 @@ package ee.ut.cs.tartu_explorer.feature.statistics
 
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 
-import androidx.compose.foundation.lazy.items
+
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
 
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Color.Companion.White
+import androidx.compose.ui.graphics.Color.Companion.Transparent
+
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -23,9 +26,10 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import ee.ut.cs.tartu_explorer.R
-import ee.ut.cs.tartu_explorer.core.ui.theme.Pink40
+
 import ee.ut.cs.tartu_explorer.core.ui.theme.components.AnimatedBackground
 import ee.ut.cs.tartu_explorer.core.ui.theme.components.CustomBackButton
+import kotlin.collections.listOf
 import kotlin.math.roundToInt
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -44,6 +48,7 @@ fun StatisticsScreen(
 
     AnimatedBackground(backgrounds) {
         Scaffold(
+            // Top bar
             topBar = {
                 CenterAlignedTopAppBar(
                     title = {
@@ -67,18 +72,20 @@ fun StatisticsScreen(
                             CustomBackButton(onClick = onNavigateBack)
                         }
                     },
-                    colors = TopAppBarDefaults.topAppBarColors(containerColor = Pink40),
+                    colors = TopAppBarDefaults.topAppBarColors(containerColor = Transparent),
                     modifier = Modifier.height(64.dp),
                     windowInsets = WindowInsets(0) //remove extra system padding
                 )
             },
+            // So i can make it small, that the body has more room
             bottomBar = {
                 BottomAppBar(
-                    modifier = Modifier.height(32.dp), // 👈 make it smaller
-                    windowInsets = WindowInsets(0) //remove extra system padding
+                    modifier = Modifier.height(32.dp),
+                    windowInsets = WindowInsets(0), //remove extra system padding
+                    containerColor = Transparent
                 ) {
                     Text(
-                        "Bottom Navigation",
+                        "",
                         modifier = Modifier.padding(horizontal = 8.dp)
                     )
                 }
@@ -138,7 +145,7 @@ fun StatisticsScreen(
                                 modifier = Modifier
                                     .fillMaxSize()
                                     .background(
-                                        color = White,
+                                        color = Transparent,
                                         shape = RoundedCornerShape(8.dp)
                                     )
 
@@ -166,14 +173,24 @@ fun StatisticsScreen(
                                                 StatBox(
                                                     title = "Required hints (total)",
                                                     value = data.totalHintsUsed.toString(),
-                                                    color = Pink40,
-                                                    modifier = Modifier.weight(1f)
+                                                    color = Color(0xFF81C784),
+                                                    modifier = Modifier.weight(1f),
+                                                    gradientColors = listOf(
+                                                        Color(0xFF66BB6A),
+                                                        Color(0xFF4CAF50),
+                                                        Color(0xFF388E3C)
+                                                    )
                                                 )
                                                 StatBox(
                                                     title = "Ø Hints per quest",
                                                     value = formatDoubleOrDash(data.avgHintsPerQuest),
-                                                    color = Pink40,
-                                                    modifier = Modifier.weight(1f)
+                                                    color = Color(0xFFE57373),
+                                                    modifier = Modifier.weight(1f),
+                                                    gradientColors = listOf(
+                                                        Color(0xFF66BB6A),
+                                                        Color(0xFF4CAF50),
+                                                        Color(0xFF388E3C)
+                                                    )
                                                 )
                                             }
 
@@ -185,14 +202,24 @@ fun StatisticsScreen(
                                                 StatBox(
                                                     title = "Ø Time for an adventure",
                                                     value = formatDurationOrDash(data.avgAdventureDurationMs),
-                                                    color = Pink40,
-                                                    modifier = Modifier.weight(1f)
+                                                    color = Color(0xFFFFF176),
+                                                    modifier = Modifier.weight(1f),
+                                                    gradientColors = listOf(
+                                                        Color(0xFF66BB6A),
+                                                        Color(0xFF4CAF50),
+                                                        Color(0xFF388E3C)
+                                                    )
                                                 )
                                                 StatBox(
                                                     title = "Ø Time until first hint",
                                                     value = formatDurationOrDash(data.avgTimeToFirstHintMs),
-                                                    color = Pink40,
-                                                    modifier = Modifier.weight(1f)
+                                                    color = Color(0xFF64B5F6),
+                                                    modifier = Modifier.weight(1f),
+                                                    gradientColors = listOf(
+                                                        Color(0xFF66BB6A),
+                                                        Color(0xFF4CAF50),
+                                                        Color(0xFF388E3C)
+                                                    )
                                                 )
                                             }
 
@@ -200,6 +227,8 @@ fun StatisticsScreen(
                                     }
 
                                     item { Spacer(Modifier.height(4.dp)) }
+
+
                                     // Completed quests by difficulty
                                     item {
                                         Text(
@@ -212,28 +241,33 @@ fun StatisticsScreen(
                                     if (data.completedByDifficulty.isEmpty()) {
                                         item {
                                             BigStatBox(
-                                                title = "No completed quests available.",
-                                                value = "NO",
-                                                color = Pink40,
+                                                title = "Completed quests by difficulty",
+                                                value = "No completed quests available.",
+                                                color = Color(0xFF4CAF50),
+                                                gradientColors = listOf(
+                                                    Color(0xFF66BB6A),
+                                                    Color(0xFF4CAF50),
+                                                    Color(0xFF388E3C)
+                                                )
                                             )
 
                                         }
                                     } else {
-                                        items(data.completedByDifficulty) { entry ->
-                                            Row(
-                                                //maybe create a fancier row element eventually
-                                                modifier = Modifier.fillMaxWidth(),
-                                                horizontalArrangement = Arrangement.SpaceBetween
-                                            ) {
-                                                Text(
-                                                    entry.difficulty,
-                                                    color = Color.Black
+                                        // Build a multiline string with all difficulty entries
+                                        val difficultySummary = data.completedByDifficulty.joinToString("\n") { entry ->
+                                            "${entry.difficulty}: ${entry.count}"
+                                        }
+                                        item {
+                                            BigStatBox(
+                                                title = "Completed quests by difficulty",
+                                                value = difficultySummary,
+                                                color = Color(0xFF4CAF50),
+                                                gradientColors = listOf(
+                                                    Color(0xFF66BB6A),
+                                                    Color(0xFF4CAF50),
+                                                    Color(0xFF388E3C)
                                                 )
-                                                Text(
-                                                    "${entry.count}",
-                                                    color = Color.Black
-                                                )
-                                            }
+                                            )
                                         }
                                     }
                                 }
@@ -268,12 +302,18 @@ fun StatBox(
     title: String,
     value: String,
     color: Color,
+    gradientColors: List<Color>,
     modifier: Modifier = Modifier
 ) {
     Column(
         modifier = modifier
             .fillMaxWidth()
             .aspectRatio(1.3f) // makes each box the correct shape and same size
+            .border(
+                width = 3.dp,
+                brush = Brush.verticalGradient(gradientColors),
+                shape = RoundedCornerShape(24.dp)
+            )
             .background(color, RoundedCornerShape(24.dp))
             .padding(16.dp),
         verticalArrangement = Arrangement.SpaceBetween,
@@ -295,17 +335,27 @@ fun StatBox(
 
 
 //used fot the bigger bottom box on the statistics screen
+// RIGHT NOW ITS NOT MUCH DIFFERNET FROM THE StatBox BUT
+// MAYBE WE NEED TO MAKE LAYOUT CHANGE TO THE BIGGER BOX SO YES
+// THIS MAY BE DELETED LATER THEN
 @Composable
 fun BigStatBox(
     title: String,
     value: String,
     color: Color,
+    gradientColors: List<Color>,
     modifier: Modifier = Modifier
 ) {
+
     Column(
         modifier = modifier
             .fillMaxWidth()
-            .aspectRatio(1.3f) // makes each box the correct shape and same size
+            .aspectRatio(1.3f)
+            .border(
+                width = 3.dp,
+                brush = Brush.verticalGradient(gradientColors),
+                shape = RoundedCornerShape(24.dp)
+            )
             .background(color, RoundedCornerShape(24.dp))
             .padding(16.dp),
         verticalArrangement = Arrangement.SpaceBetween,
@@ -319,7 +369,7 @@ fun BigStatBox(
 
         Text(
             text = value,
-            style = MaterialTheme.typography.headlineSmall.copy(fontWeight = FontWeight.Bold),
+            style = MaterialTheme.typography.headlineSmall.copy(fontWeight = FontWeight.Medium),
             color = Color.Black
         )
     }

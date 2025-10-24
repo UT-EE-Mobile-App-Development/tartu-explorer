@@ -219,18 +219,11 @@ fun StatisticsScreen(
                                         }
                                     }
 
-                                    item { Spacer(Modifier.height(4.dp)) }
+                                    item { Spacer(Modifier.height(16.dp)) }
 
 
                                     // Completed quests by difficulty
-                                    item {
-                                        Text(
-                                            "Completed quests by difficulty",
-                                            style = MaterialTheme.typography.titleMedium,
-                                            fontWeight = FontWeight.SemiBold,
-                                            color = Color.Black
-                                        )
-                                    }
+
                                     if (data.completedByDifficulty.isEmpty()) {
                                         item {
                                             BigStatBox(

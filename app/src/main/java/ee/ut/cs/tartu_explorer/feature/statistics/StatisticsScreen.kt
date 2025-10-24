@@ -66,7 +66,7 @@ fun StatisticsScreen(
                         }
                     },
                     colors = TopAppBarDefaults.topAppBarColors(containerColor = Transparent),
-                    modifier = Modifier.height(64.dp),
+                    modifier = Modifier.height(96.dp),
                     windowInsets = WindowInsets(0) //remove extra system padding
                 )
             },

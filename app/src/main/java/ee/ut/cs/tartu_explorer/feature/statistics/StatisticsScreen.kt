@@ -1,13 +1,9 @@
 package ee.ut.cs.tartu_explorer.feature.statistics
 
-
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-
-
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
@@ -15,10 +11,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
-
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Color.Companion.Transparent
-
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -26,7 +20,6 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import ee.ut.cs.tartu_explorer.R
-
 import ee.ut.cs.tartu_explorer.core.ui.theme.components.AnimatedBackground
 import ee.ut.cs.tartu_explorer.core.ui.theme.components.CustomBackButton
 import kotlin.collections.listOf
@@ -173,23 +166,23 @@ fun StatisticsScreen(
                                                 StatBox(
                                                     title = "Required hints (total)",
                                                     value = data.totalHintsUsed.toString(),
-                                                    color = Color(0xFF81C784),
+                                                    color = Color(0xFF4CAF50),
                                                     modifier = Modifier.weight(1f),
                                                     gradientColors = listOf(
-                                                        Color(0xFF66BB6A),
+                                                        Color(0xFF81C784),
                                                         Color(0xFF4CAF50),
-                                                        Color(0xFF388E3C)
+                                                        Color(0xFF2E7D32)
                                                     )
                                                 )
                                                 StatBox(
                                                     title = "Ø Hints per quest",
                                                     value = formatDoubleOrDash(data.avgHintsPerQuest),
-                                                    color = Color(0xFFE57373),
+                                                    color = Color(0xFFF44336),
                                                     modifier = Modifier.weight(1f),
                                                     gradientColors = listOf(
-                                                        Color(0xFF66BB6A),
-                                                        Color(0xFF4CAF50),
-                                                        Color(0xFF388E3C)
+                                                        Color(0xFFFF8A80),
+                                                        Color(0xFFF44336),
+                                                        Color(0xFFC62828)
                                                     )
                                                 )
                                             }
@@ -202,23 +195,23 @@ fun StatisticsScreen(
                                                 StatBox(
                                                     title = "Ø Time for an adventure",
                                                     value = formatDurationOrDash(data.avgAdventureDurationMs),
-                                                    color = Color(0xFFFFF176),
+                                                    color = Color(0xFFFFEB3B),
                                                     modifier = Modifier.weight(1f),
                                                     gradientColors = listOf(
-                                                        Color(0xFF66BB6A),
-                                                        Color(0xFF4CAF50),
-                                                        Color(0xFF388E3C)
+                                                        Color(0xFFFFF59D),
+                                                        Color(0xFFFFEB3B),
+                                                        Color(0xFFFBC02D)
                                                     )
                                                 )
                                                 StatBox(
                                                     title = "Ø Time until first hint",
                                                     value = formatDurationOrDash(data.avgTimeToFirstHintMs),
-                                                    color = Color(0xFF64B5F6),
+                                                    color = Color(0xFF03A9F4),
                                                     modifier = Modifier.weight(1f),
                                                     gradientColors = listOf(
-                                                        Color(0xFF66BB6A),
-                                                        Color(0xFF4CAF50),
-                                                        Color(0xFF388E3C)
+                                                        Color(0xFF81D4FA),
+                                                        Color(0xFF03A9F4),
+                                                        Color(0xFF0277BD)
                                                     )
                                                 )
                                             }
@@ -243,11 +236,11 @@ fun StatisticsScreen(
                                             BigStatBox(
                                                 title = "Completed quests by difficulty",
                                                 value = "No completed quests available.",
-                                                color = Color(0xFF4CAF50),
+                                                color = Color(0xFF9B687A),
                                                 gradientColors = listOf(
-                                                    Color(0xFF66BB6A),
-                                                    Color(0xFF4CAF50),
-                                                    Color(0xFF388E3C)
+                                                    Color(0xFFBC8BA0),
+                                                    Color(0xFF9B687A),
+                                                    Color(0xFF6D4854)
                                                 )
                                             )
 
@@ -261,11 +254,11 @@ fun StatisticsScreen(
                                             BigStatBox(
                                                 title = "Completed quests by difficulty",
                                                 value = difficultySummary,
-                                                color = Color(0xFF4CAF50),
+                                                color = Color(0xFF9B687A),
                                                 gradientColors = listOf(
-                                                    Color(0xFF66BB6A),
-                                                    Color(0xFF4CAF50),
-                                                    Color(0xFF388E3C)
+                                                    Color(0xFFBC8BA0),
+                                                    Color(0xFF9B687A),
+                                                    Color(0xFF6D4854)
                                                 )
                                             )
                                         }
@@ -310,7 +303,7 @@ fun StatBox(
             .fillMaxWidth()
             .aspectRatio(1.3f) // makes each box the correct shape and same size
             .border(
-                width = 3.dp,
+                width = 4.dp,
                 brush = Brush.verticalGradient(gradientColors),
                 shape = RoundedCornerShape(24.dp)
             )
@@ -352,7 +345,7 @@ fun BigStatBox(
             .fillMaxWidth()
             .aspectRatio(1.3f)
             .border(
-                width = 3.dp,
+                width = 5.dp,
                 brush = Brush.verticalGradient(gradientColors),
                 shape = RoundedCornerShape(24.dp)
             )

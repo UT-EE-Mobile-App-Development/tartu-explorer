@@ -63,6 +63,7 @@ dependencies {
     implementation(libs.androidx.room.ktx)
     implementation(libs.androidx.lifecycle.viewmodel.compose)
     implementation(libs.kotlinx.serialization.json)
+    implementation(libs.play.services.maps)
     ksp(libs.androidx.room.compiler)
 
     // internet images
@@ -81,4 +82,9 @@ dependencies {
     androidTestImplementation(libs.androidx.compose.ui.test.junit4)
     debugImplementation(libs.androidx.compose.ui.tooling)
     debugImplementation(libs.androidx.compose.ui.test.manifest)
+
+    // Maps
+    implementation("com.google.maps.android:maps-compose:4.4.1") // Compose Maps
+    implementation("com.google.android.gms:play-services-maps:19.0.0") // Core Maps SDK
+    implementation("com.google.android.gms:play-services-location:21.0.1") // Player Location
 }

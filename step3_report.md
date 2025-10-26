@@ -6,12 +6,12 @@ We are using the Open-Meteo Weather API. Since our app is mainly used outdoors w
 ## Example API endpoint used
 The app fetches weather data for the current quest’s location using a URL in the following format:
 https://api.open-meteo.com/v1/forecast?latitude={lat}&longitude={lon}&current_weather=true
-Where:
-{lat} -> latitude of the current quest location
-{lon} -> longitude of the current quest location
-current_weather=true -> ensures only the current weather is returned
+Where: <br>
+{lat} -> latitude of the current quest location <br>
+{lon} -> longitude of the current quest location <br>
+current_weather=true -> ensures only the current weather is returned <br>
 
-For example API request for Tartu Delta would be something like this:
+For example API request for Tartu Delta would be something like this: c
 https://api.open-meteo.com/v1/forecast?latitude=58.377&longitude=26.729&current_weather=true
 
 ## Error handling strategy

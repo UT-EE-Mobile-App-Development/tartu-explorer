@@ -1,6 +1,7 @@
 package ee.ut.cs.tartu_explorer.feature.game
 
 import android.Manifest
+import android.R.attr.data
 import android.annotation.SuppressLint
 import android.view.MotionEvent
 import android.widget.Toast
@@ -29,6 +30,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -74,6 +76,8 @@ import androidx.compose.ui.window.Popup
 import ee.ut.cs.tartu_explorer.R
 import ee.ut.cs.tartu_explorer.core.ui.theme.components.AnimatedBackground
 import ee.ut.cs.tartu_explorer.core.ui.theme.components.CustomBackButton
+import ee.ut.cs.tartu_explorer.feature.weather.WeatherState
+import ee.ut.cs.tartu_explorer.feature.weather.WeatherViewModel
 import kotlinx.coroutines.delay
 import kotlin.math.cos
 import kotlin.math.sin
@@ -112,9 +116,14 @@ fun GameScreen(adventureId: Long, onNavigateBack: () -> Unit) {
     val backgrounds = listOf(R.drawable.bg1, R.drawable.bg2)
 
     var showHintPopup by remember { mutableStateOf(false) }
+    var showWeatherPopup by remember { mutableStateOf(false) }
     var currentHintText by remember { mutableStateOf("") }
 
     var showBlueCircleOnMap by remember { mutableStateOf(false) }
+
+    val targetLatLng = state.quests.getOrNull(state.currentQuest)?.let { quest ->
+        LatLng(quest.latitude, quest.longitude)}
+
 
     AnimatedBackground(backgrounds) {
         Box(modifier = Modifier.fillMaxSize()) {
@@ -139,8 +148,8 @@ fun GameScreen(adventureId: Long, onNavigateBack: () -> Unit) {
             ) {
                 Column(
                     modifier = Modifier
-                        .fillMaxSize()
-                        .verticalScroll(rememberScrollState()),
+                        .fillMaxSize(),
+                        //.verticalScroll(rememberScrollState()),
                     verticalArrangement = Arrangement.spacedBy(24.dp),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
@@ -226,8 +235,6 @@ fun GameScreen(adventureId: Long, onNavigateBack: () -> Unit) {
                         // Update current hint text for popup
                         currentHintText = currentHint.text ?: ""
                     }
-                    val targetLatLng = state.quests.getOrNull(state.currentQuest)?.let { quest ->
-                        LatLng(quest.latitude, quest.longitude)}
 
                     // Game Controls
                     GameControls(
@@ -248,9 +255,11 @@ fun GameScreen(adventureId: Long, onNavigateBack: () -> Unit) {
                         modifier = Modifier.fillMaxWidth(),
                         hintDisabled = state.currentHint >= 2 || showBlueCircleOnMap,
                         showHintPopup = { showHintPopup = it },
+                        showWeatherPopup = { showWeatherPopup  = it },
                         showBlueCircleOnMap = showBlueCircleOnMap,
                         targetLatLng = targetLatLng
                     )
+
 
                     if (state.guessState != null) {
                         val guess = state.guessState!!
@@ -287,9 +296,30 @@ fun GameScreen(adventureId: Long, onNavigateBack: () -> Unit) {
                         )
                     }
                 }
+
             }
+            // Centered Hint Popup
+            if (showWeatherPopup && targetLatLng != null) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(Color.Black.copy(alpha = 0.5f)),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Card(
+                        shape = RoundedCornerShape(16.dp),
+                        modifier = Modifier.padding(32.dp)
+                    ) {
+                        WeatherCard(lat = targetLatLng.latitude, lon = targetLatLng.longitude)
+
+                    }
+                }
+            }
+
         }
+
     }
+
 }
 
 
@@ -342,6 +372,7 @@ fun GameControls(
     modifier: Modifier = Modifier,
     hintDisabled: Boolean = false,
     showHintPopup: (Boolean) -> Unit,
+    showWeatherPopup: (Boolean) -> Unit,
     showBlueCircleOnMap: Boolean = false,
     targetLatLng: LatLng? = null
 ) {
@@ -403,6 +434,25 @@ fun GameControls(
             ) {
                 Text("i", color = Color.Black, fontSize = 24.sp)
             }
+            // Weather button
+            Box(
+                contentAlignment = Alignment.Center,
+                modifier = Modifier
+                    .size(50.dp)
+                    .border(2.dp, Color.Black, RoundedCornerShape(12.dp))
+                    .background(Color.LightGray, RoundedCornerShape(12.dp))
+                    .pointerInput(Unit) {
+                        detectTapGestures(
+                            onPress = {
+                                showWeatherPopup(true)
+                                tryAwaitRelease()
+                                showWeatherPopup(false)
+                            }
+                        )
+                    }
+            ) {
+                Text("☁", fontSize = 24.sp) // icon for weather
+            }
 
             Button(onClick = onUseHint, enabled = !hintDisabled) { Text("HINTS") }
         }
@@ -423,7 +473,7 @@ fun GameControls(
                 if (showBlueCircleOnMap && targetLatLng != null) {
                     val randomCenter = randomCircle(targetLatLng, 200.0)
                     com.google.maps.android.compose.Circle(
-                        center = targetLatLng,
+                        center = randomCenter,
                         radius = 200.0, // in meters
                         fillColor = Color.Blue.copy(alpha = 0.3f),
                         strokeColor = Color.Blue,
@@ -462,4 +512,74 @@ fun randomCircle(target: LatLng, maxRadiusMeters: Double): LatLng {
     val offsetLng = distance / (111_000 * cos(Math.toRadians(target.latitude))) * cos(angle)
 
     return LatLng(target.latitude + offsetLat, target.longitude + offsetLng)
+}
+
+@Composable
+fun WeatherCard(lat: Double, lon: Double) {
+    val viewModel: WeatherViewModel = viewModel()
+    val state by viewModel.state.collectAsState()
+    val context = LocalContext.current
+
+    LaunchedEffect(lat, lon) {
+        viewModel.fetchWeather(lat, lon)
+    }
+
+    when (val s = state) {
+        is WeatherState.Loading -> {
+            Box(Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
+                CircularProgressIndicator()
+            }
+        }
+        is WeatherState.Success -> {
+            val data = s.data
+            Card(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(8.dp)
+            ) {
+                Row(
+                    modifier = Modifier
+                        .padding(16.dp)
+                        .fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    Column(
+                        verticalArrangement = Arrangement.spacedBy(4.dp)
+                    ) {
+                        Text("Weather at current quest", fontWeight = FontWeight.Bold)
+                        Text("Temperature: ${data.current_weather.temperature}°C")
+                        Text("Wind: ${data.current_weather.windspeed} m/s")
+                        Text("Weather code: ${data.current_weather.weathercode}")
+                    }
+
+                    // Right-side icon
+                    AsyncImage(
+                        model = weatherIcons(data.current_weather.weathercode), // Use your drawable mapping
+                        contentDescription = "Weather Icon",
+                        modifier = Modifier.size(64.dp)
+                    )
+                }
+            }
+        }
+        is WeatherState.Error -> {
+            Toast.makeText(context, s.message, Toast.LENGTH_SHORT).show()
+        }
+        else -> {}
+    }
+}
+
+// Takes Weather code and chooses correct icon for it
+fun weatherIcons(code: Int): Int {
+    return when(code) {
+        0, 1 -> R.drawable.ic_sunny
+        2, 3 -> R.drawable.ic_cloudy
+        45, 48 -> R.drawable.ic_fog
+        51, 53, 55 -> R.drawable.ic_drizzle
+        61, 63 -> R.drawable.ic_rain
+        65, 80 -> R.drawable.ic_heavyrain
+        71, 73, 75 -> R.drawable.ic_snow
+        95 -> R.drawable.ic_thunder
+        else -> R.drawable.ic_unknown
+    }
 }

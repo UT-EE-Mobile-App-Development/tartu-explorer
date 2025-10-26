@@ -87,4 +87,11 @@ dependencies {
     implementation("com.google.maps.android:maps-compose:4.4.1") // Compose Maps
     implementation("com.google.android.gms:play-services-maps:19.0.0") // Core Maps SDK
     implementation("com.google.android.gms:play-services-location:21.0.1") // Player Location
+
+    // Networking
+    implementation("com.squareup.retrofit2:retrofit:2.9.0")
+    implementation("com.squareup.retrofit2:converter-moshi:2.9.0")
+
+    // Coroutines
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
 }

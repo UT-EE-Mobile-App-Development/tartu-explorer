@@ -5,7 +5,7 @@ We are using the Open-Meteo Weather API. Since our app is mainly used outdoors w
 
 ## Example API endpoint used
 The app fetches weather data for the current quest’s location using a URL in the following format: <br>
-https://api.open-meteo.com/v1/forecast?latitude={lat}&longitude={lon}&current_weather=true
+https://api.open-meteo.com/v1/forecast?latitude={lat}&longitude={lon}&current_weather=true <br>
 Where: <br>
 {lat} -> latitude of the current quest location <br>
 {lon} -> longitude of the current quest location <br>

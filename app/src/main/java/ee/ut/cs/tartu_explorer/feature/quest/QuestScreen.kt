@@ -1,5 +1,6 @@
 package ee.ut.cs.tartu_explorer.feature.quest
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -19,10 +20,16 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.AssistChip
+import androidx.compose.material3.ElevatedCard
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -91,7 +98,8 @@ fun QuestScreen(
                         AdventureDifficulty.HARD to "Hard",
                         AdventureDifficulty.VERY_HARD to "Very Hard"
                     ).forEach { (difficulty, displayName) ->
-                        DifficultyRow(
+                        QuestCardWithDifficulty(
+                            questName = displayName,
                             onNavigateHome = onNavigateHome,
                             adventures = state.adventures,
                             adventureStatuses = state.adventureStatuses,
@@ -103,6 +111,9 @@ fun QuestScreen(
                     }
                 }
             }
+
+
+
         }
     }
 }
@@ -138,10 +149,6 @@ fun DifficultyRow(
 ) {
     val scrollState = rememberScrollState()
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
-        Text(
-            displayName,
-            color = Color.Black
-        )
         Row(
             modifier = Modifier
                 .horizontalScroll(scrollState)
@@ -191,3 +198,51 @@ fun formatDuration(millis: Long): String {
         else -> String.format("%ds", seconds)
     }
 }
+
+@Composable
+fun QuestCardWithDifficulty(
+    questName: String,
+    onNavigateHome: (Long) -> Unit,
+    adventures: Map<AdventureDifficulty, List<AdventureEntity>>,
+    adventureStatuses: Map<Long, SessionStatus>,
+    adventureStatusDetails: Map<Long, AdventureStatusDetails>,
+    difficulty: AdventureDifficulty,
+    displayName: String,
+    thumbnailSize: Dp = 100.dp
+) {
+    var expanded by remember { mutableStateOf(false) }
+
+    ElevatedCard(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(8.dp)
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .clickable { expanded = !expanded }
+                .padding(16.dp)
+        ) {
+            Text(
+                text = questName,
+                style = MaterialTheme.typography.titleMedium
+            )
+        }
+
+            // Show DifficultyRow when expanded
+            AnimatedVisibility(visible = expanded) {
+                DifficultyRow(
+                    onNavigateHome = onNavigateHome,
+                    adventures = adventures,
+                    adventureStatuses = adventureStatuses,
+                    adventureStatusDetails = adventureStatusDetails,
+                    difficulty = difficulty,
+                    displayName = displayName,
+                    thumbnailSize = thumbnailSize
+                )
+            }
+        }
+    }
+
+
+

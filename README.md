@@ -8,6 +8,11 @@ Timo Schwarzbach (timoschwarzbach timoschwarzbach) - Lead Developer <br/>
 Rando Roosik (Orants Rando Roosik) - Researcher <br/>
 Madis Puu (madsipuu) - Editor <br/>
 
+## API Documentation ##
+
+see step3_report.md
+
+
 ## Data Model and Local Storage
 
 Tartu Explorer uses a **local Room database** to store all gameplay-related data persistently on the device.  
@@ -39,21 +44,22 @@ All entities are connected through **foreign key relationships**, enabling effic
   The **Game View** dynamically loads available **Adventures** and their corresponding **Quests** (the steps of each Adventure) from the backend.  
   Players must first select an Adventure via the **Map Selection** screen before starting the game.
 
-- **Hint system integrated:**  
+- **Hint system:**  
   In the Game View, players can tap on **Hints**, which are fetched directly from the local database and displayed contextually during gameplay.
 
 - **Complete backend database structure:**  
   The database schema (based on Room) includes all core entities such as Player, Adventure, Quest, Hint, and tracking tables for sessions, progress, and hint usage.
 
-- **Work in progress:**  
-  Dynamic updates to the **Statistics Page** (based on live database data) are currently under development on the `dev` branche.
+- **Statistic Page:**  
+  Dynamic updates to the **Statistics Page** (based on live database data).
 
 ## Challenges and Solutions
 
 - **Data flow complexity:**  
   It was initially difficult to maintain an overview of the data flow between entities (IDs, foreign keys, and relationships).  
   Integrating the **Statistics feature** required a structural refactor of the database and data layer to improve clarity and maintainability.
-
+- **Finding API:**  
+  Find an API that works without a token and is free to use.
 
 ## User Stories
 * As a user I want to be able to select different tracks, so that I can choose the type of experience I get

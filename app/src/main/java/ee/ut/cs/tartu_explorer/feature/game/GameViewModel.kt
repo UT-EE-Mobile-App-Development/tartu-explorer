@@ -59,7 +59,7 @@ class GameViewModel(
 
     init {
         viewModelScope.launch {
-            val player = playerRepository.getFirstPlayer() ?: return@launch
+            val player = playerRepository.getActivePlayer() ?: return@launch
             val activeSession = adventureSessionRepository.getActiveSession(adventureId, player.id)
             if (activeSession != null) {
                 _sessionId.value = activeSession.id
@@ -78,7 +78,7 @@ class GameViewModel(
 
     fun guessPosition() {
         viewModelScope.launch(Dispatchers.IO) {
-            val playerId = playerRepository.getFirstPlayer()?.id ?: return@launch
+            val playerId = playerRepository.getActivePlayer()?.id ?: return@launch
             val sessionId = _sessionId.value ?: return@launch
             val currentQuestIndex = state.value.currentQuest
             val currentQuestEntity = state.value.quests.getOrNull(currentQuestIndex) ?: return@launch

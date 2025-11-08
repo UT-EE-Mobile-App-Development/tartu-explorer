@@ -23,10 +23,6 @@ class QuestRepository(
         return adventureDao.getAdventureWithQuests(questId)
     }
 
-    suspend fun getPlayer(): PlayerEntity? {
-        return playerDao.getFirstPlayer()
-    }
-
     suspend fun insertAdventure(quest: AdventureEntity): Long {
         return adventureDao.insertAdventure(quest)
     }

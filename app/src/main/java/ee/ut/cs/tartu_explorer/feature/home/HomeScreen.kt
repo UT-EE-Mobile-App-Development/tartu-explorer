@@ -3,12 +3,22 @@ package ee.ut.cs.tartu_explorer.feature.home
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -29,6 +39,7 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import ee.ut.cs.tartu_explorer.R
 import ee.ut.cs.tartu_explorer.core.data.local.db.DatabaseProvider
+import ee.ut.cs.tartu_explorer.core.data.local.entities.PlayerEntity
 import ee.ut.cs.tartu_explorer.core.data.local.entities.SessionStatus
 import ee.ut.cs.tartu_explorer.core.data.repository.GameRepository
 import ee.ut.cs.tartu_explorer.core.data.repository.PlayerRepository
@@ -63,6 +74,20 @@ fun HomeScreen(
     AnimatedBackground(backgrounds) {
         Box(modifier = Modifier.fillMaxSize()) { // Use Box for layering
 
+            // Top Left Profile Switcher
+            if (uiState.player != null) {
+                Box(modifier = Modifier.align(Alignment.TopStart).padding(16.dp)) {
+                    IconButton(onClick = viewModel::showProfileSwitcher) {
+                        Icon(
+                            imageVector = Icons.Default.AccountCircle,
+                            contentDescription = "Switch Profile",
+                            modifier = Modifier.size(48.dp),
+                            tint = Color.White // Make icon more visible on background
+                        )
+                    }
+                }
+            }
+
             // Top Right Level Indicator
             uiState.levelInfo?.let {
                 Box(modifier = Modifier.align(Alignment.TopEnd).padding(16.dp)) {
@@ -78,6 +103,20 @@ fun HomeScreen(
                     onSave = viewModel::savePlayer
                 )
             }
+
+            // Show profile switcher dialog if needed
+            if (uiState.showProfileSwitcher) {
+                ProfileSwitcherDialog(
+                    players = uiState.players,
+                    activePlayerId = uiState.player?.id,
+                    newPlayerName = uiState.newPlayerName,
+                    onNewPlayerNameChange = viewModel::onNewPlayerNameChange,
+                    onSwitchPlayer = viewModel::switchPlayer,
+                    onCreatePlayer = viewModel::createNewPlayer,
+                    onDismiss = viewModel::dismissProfileSwitcher
+                )
+            }
+
 
             Column(
                 modifier = Modifier
@@ -158,6 +197,71 @@ fun PlayerNamePromptDialog(
                 enabled = playerName.isNotBlank() // Button only enabled when text is entered
             ) {
                 Text("Save")
+            }
+        }
+    )
+}
+
+
+@Composable
+fun ProfileSwitcherDialog(
+    players: List<PlayerEntity>,
+    activePlayerId: Long?,
+    newPlayerName: String,
+    onNewPlayerNameChange: (String) -> Unit,
+    onSwitchPlayer: (Long) -> Unit,
+    onCreatePlayer: () -> Unit,
+    onDismiss: () -> Unit
+) {
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text("Switch or Create Profile") },
+        text = {
+            Column(
+                verticalArrangement = Arrangement.spacedBy(8.dp),
+                modifier = Modifier.padding(8.dp)
+            ) {
+                // Create new player
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    TextField(
+                        value = newPlayerName,
+                        onValueChange = onNewPlayerNameChange,
+                        placeholder = { Text("New Profile Name") },
+                        modifier = Modifier.weight(1f)
+                    )
+                    Button(
+                        onClick = onCreatePlayer,
+                        enabled = newPlayerName.isNotBlank()
+                    ) {
+                        Text("Create")
+                    }
+                }
+                // Spacer
+                Spacer(modifier = Modifier.height(16.dp))
+                // List of existing players
+                Text("Select a profile:", fontWeight = FontWeight.Bold)
+                LazyColumn(
+                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    items(players) { player ->
+                        Button(
+                            onClick = { onSwitchPlayer(player.id) },
+                            modifier = Modifier.fillMaxWidth(),
+                            enabled = player.id != activePlayerId
+                        ) {
+                            Text(player.name + if (player.id == activePlayerId) " (Active)" else "")
+                        }
+                    }
+                }
+            }
+        },
+        confirmButton = {
+            TextButton(onClick = onDismiss) {
+                Text("Close")
             }
         }
     )

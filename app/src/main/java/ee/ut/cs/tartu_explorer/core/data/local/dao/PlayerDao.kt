@@ -15,11 +15,20 @@ interface PlayerDao {
     @Query("SELECT * FROM player WHERE id = :id")
     suspend fun getPlayerById(id: Long): PlayerEntity?
 
-    @Query("SELECT * FROM player LIMIT 1")
-    suspend fun getFirstPlayer(): PlayerEntity?
+    @Query("SELECT * FROM player")
+    fun getAllPlayers(): Flow<List<PlayerEntity>>
 
-    @Query("SELECT * FROM player LIMIT 1")
-    fun getPlayerAsFlow(): Flow<PlayerEntity?>
+    @Query("SELECT * FROM player WHERE isActive = 1")
+    suspend fun getActivePlayer(): PlayerEntity?
+
+    @Query("SELECT * FROM player WHERE isActive = 1")
+    fun getActivePlayerAsFlow(): Flow<PlayerEntity?>
+
+    @Query("UPDATE player SET isActive = 0 WHERE isActive = 1")
+    suspend fun deactivateCurrentPlayer()
+
+    @Query("UPDATE player SET isActive = 1 WHERE id = :playerId")
+    suspend fun activatePlayer(playerId: Long)
 
     @Query("UPDATE player SET experiencePoints = experiencePoints + :points WHERE id = :playerId")
     suspend fun addExperiencePoints(playerId: Long, points: Int)

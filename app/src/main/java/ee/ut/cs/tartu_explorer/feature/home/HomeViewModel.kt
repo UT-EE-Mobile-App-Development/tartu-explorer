@@ -20,7 +20,10 @@ data class HomeUiState(
     val playerNameInput: String = "",
     val player: PlayerEntity? = null,
     val levelInfo: LevelInfo? = null,
-    val adventureStatuses: Map<Long, SessionStatus> = emptyMap()
+    val adventureStatuses: Map<Long, SessionStatus> = emptyMap(),
+    val showProfileSwitcher: Boolean = false,
+    val players: List<PlayerEntity> = emptyList(),
+    val newPlayerName: String = ""
 )
 
 class HomeViewModel(
@@ -34,7 +37,7 @@ class HomeViewModel(
     init {
         // This coroutine handles REACTIVE updates to player/level info and then triggers status updates
         viewModelScope.launch {
-            playerRepository.getPlayerAsFlow().collectLatest { player ->
+            playerRepository.getActivePlayerAsFlow().collectLatest { player ->
                 if (player != null) {
                     val levelInfo = LevelingUtil.calculateLevelInfo(player.experiencePoints)
                     _uiState.update {
@@ -54,8 +57,14 @@ class HomeViewModel(
 
         // This coroutine handles the ONE-TIME check for the name prompt at startup
         viewModelScope.launch {
-            if (playerRepository.getFirstPlayer() == null) {
+            if (playerRepository.getActivePlayer() == null) {
                 _uiState.update { it.copy(showNamePrompt = true) }
+            }
+        }
+
+        viewModelScope.launch {
+            playerRepository.getAllPlayers().collectLatest { players ->
+                _uiState.update { it.copy(players = players) }
             }
         }
     }
@@ -70,6 +79,35 @@ class HomeViewModel(
         viewModelScope.launch {
             val playerToInsert = PlayerEntity(name = uiState.value.playerNameInput)
             playerRepository.insertPlayer(playerToInsert)
+        }
+    }
+
+    fun showProfileSwitcher() {
+        _uiState.update { it.copy(showProfileSwitcher = true) }
+    }
+
+    fun dismissProfileSwitcher() {
+        _uiState.update { it.copy(showProfileSwitcher = false) }
+    }
+
+    fun onNewPlayerNameChange(newName: String) {
+        _uiState.update { it.copy(newPlayerName = newName) }
+    }
+
+    fun switchPlayer(playerId: Long) {
+        viewModelScope.launch {
+            playerRepository.switchActivePlayer(playerId)
+            dismissProfileSwitcher()
+        }
+    }
+
+    fun createNewPlayer() {
+        if (uiState.value.newPlayerName.isBlank()) return
+
+        viewModelScope.launch {
+            val playerToInsert = PlayerEntity(name = uiState.value.newPlayerName, isActive = false)
+            playerRepository.insertPlayer(playerToInsert)
+            _uiState.update { it.copy(newPlayerName = "") }
         }
     }
 }

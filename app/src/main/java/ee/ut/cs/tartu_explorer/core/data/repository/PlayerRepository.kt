@@ -9,21 +9,42 @@ import kotlinx.coroutines.flow.Flow
 class PlayerRepository private constructor(private val dao: PlayerDao) {
 
     /**
-     * Retrieves the first available player from the database once.
+     * Retrieves the active player from the database once.
      */
-    suspend fun getFirstPlayer(): PlayerEntity? = dao.getFirstPlayer()
+    suspend fun getActivePlayer(): PlayerEntity? = dao.getActivePlayer()
 
     /**
-     * Observes the first available player as a Flow, emitting new values upon change.
+     * Observes the active player as a Flow, emitting new values upon change.
      */
-    fun getPlayerAsFlow(): Flow<PlayerEntity?> = dao.getPlayerAsFlow()
+    fun getActivePlayerAsFlow(): Flow<PlayerEntity?> = dao.getActivePlayerAsFlow()
+    
+    /**
+     * Observes all players in the database.
+     */
+    fun getAllPlayers(): Flow<List<PlayerEntity>> = dao.getAllPlayers()
 
     /**
      * Inserts a new player and returns the complete entity with its new ID.
+     * If no player is currently active, the new player will be made active.
      */
     suspend fun insertPlayer(player: PlayerEntity): PlayerEntity? {
-        val newId = dao.insertPlayer(player)
+        val activePlayer = dao.getActivePlayer()
+        val playerToInsert = if (activePlayer == null) {
+            player.copy(isActive = true)
+        } else {
+            player.copy(isActive = false)
+        }
+
+        val newId = dao.insertPlayer(playerToInsert)
         return dao.getPlayerById(newId)
+    }
+    
+    /**
+     * Deactivates the current player and activates the one with the given Id.
+     */
+    suspend fun switchActivePlayer(playerId: Long) {
+        dao.deactivateCurrentPlayer()
+        dao.activatePlayer(playerId)
     }
 
     /**

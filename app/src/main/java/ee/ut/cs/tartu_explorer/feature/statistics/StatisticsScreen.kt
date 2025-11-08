@@ -7,9 +7,10 @@ import android.graphics.PorterDuff
 import android.graphics.PorterDuffXfermode
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.gestures.detectDragGestures
+import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -18,6 +19,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Color.Companion.Transparent
+import androidx.compose.ui.input.pointer.PointerEventType
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
@@ -139,11 +141,16 @@ fun StatisticsScreen(
 
                     is StatsUiState.Loaded -> {
                         val data = s.data
+                        var isMapTouched by remember { mutableStateOf(false) }
+                        val lazyListState = rememberLazyListState()
+
                         LazyColumn(
+                            state = lazyListState,
                             modifier = Modifier.fillMaxSize(),
                             verticalArrangement = Arrangement.spacedBy(12.dp),
                             horizontalAlignment = Alignment.CenterHorizontally,
-                            contentPadding = PaddingValues(16.dp)
+                            contentPadding = PaddingValues(16.dp),
+                            userScrollEnabled = !isMapTouched
                         ) {
 
                             item { Spacer(Modifier.height(4.dp)) }
@@ -233,11 +240,19 @@ fun StatisticsScreen(
                                         .fillMaxWidth()
                                         .height(400.dp)
                                         .border(4.dp, Color(0xFF9B687A), RoundedCornerShape(16.dp))
-                                        // Wichtig: pointerInput verhindert, dass Touch-Events zur LazyColumn weitergegeben werden
                                         .pointerInput(Unit) {
-                                            detectDragGestures { _, _ ->
-                                                // Gesten werden hier abgefangen
-                                                // Die Karte selbst verarbeitet die Touch-Events intern
+                                            awaitPointerEventScope {
+                                                while (true) {
+                                                    val event = awaitPointerEvent()
+                                                    when (event.type) {
+                                                        androidx.compose.ui.input.pointer.PointerEventType.Press -> {
+                                                            isMapTouched = true
+                                                        }
+                                                        androidx.compose.ui.input.pointer.PointerEventType.Release -> {
+                                                            isMapTouched = false
+                                                        }
+                                                    }
+                                                }
                                             }
                                         }
                                 ) {
@@ -268,8 +283,8 @@ private fun QuestMarker(questLocation: CompletedQuestLocation) {
         val loader = ImageLoader(context)
         val request = ImageRequest.Builder(context)
             .data(questLocation.adventureThumbnailPath)
-            .size(Size(128, 128)) // Load a reasonably sized image
-            .allowHardware(false) // Important for map markers
+            .size(Size(200, 200)) // Size of Images (Pins)
+            .allowHardware(false)
             .build()
 
         val imageResult = withContext(Dispatchers.IO) {

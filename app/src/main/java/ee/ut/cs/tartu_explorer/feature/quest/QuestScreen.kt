@@ -39,6 +39,7 @@ import ee.ut.cs.tartu_explorer.core.data.local.entities.SessionStatus
 import ee.ut.cs.tartu_explorer.core.data.repository.AdventureRepository
 import ee.ut.cs.tartu_explorer.core.data.repository.AdventureStatusDetails
 import ee.ut.cs.tartu_explorer.core.data.repository.GameRepository
+import ee.ut.cs.tartu_explorer.core.data.repository.PlayerRepository
 import ee.ut.cs.tartu_explorer.core.ui.theme.components.AnimatedBackground
 import ee.ut.cs.tartu_explorer.core.ui.theme.components.CustomBackButton
 import java.util.concurrent.TimeUnit
@@ -53,7 +54,8 @@ fun QuestScreen(
     val viewModel: QuestViewModel = viewModel(
         factory = QuestViewModelFactory(
             AdventureRepository.from(context),
-            GameRepository(db.questDao(), db.hintDao(), db.hintUsageDao(), db.adventureSessionDao(), db.questAttemptDao())
+            GameRepository(db.questDao(), db.hintDao(), db.hintUsageDao(), db.adventureSessionDao(), db.questAttemptDao()),
+            PlayerRepository.from(context)
         )
     )
     val state by viewModel.state.collectAsState()

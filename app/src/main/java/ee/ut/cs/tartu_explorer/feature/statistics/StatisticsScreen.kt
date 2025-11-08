@@ -7,6 +7,7 @@ import android.graphics.PorterDuff
 import android.graphics.PorterDuffXfermode
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -17,6 +18,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Color.Companion.Transparent
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -231,6 +233,13 @@ fun StatisticsScreen(
                                         .fillMaxWidth()
                                         .height(400.dp)
                                         .border(4.dp, Color(0xFF9B687A), RoundedCornerShape(16.dp))
+                                        // Wichtig: pointerInput verhindert, dass Touch-Events zur LazyColumn weitergegeben werden
+                                        .pointerInput(Unit) {
+                                            detectDragGestures { _, _ ->
+                                                // Gesten werden hier abgefangen
+                                                // Die Karte selbst verarbeitet die Touch-Events intern
+                                            }
+                                        }
                                 ) {
                                     GoogleMap(
                                         modifier = Modifier.fillMaxSize(),

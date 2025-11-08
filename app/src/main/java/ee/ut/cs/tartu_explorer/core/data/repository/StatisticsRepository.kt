@@ -3,6 +3,7 @@ package ee.ut.cs.tartu_explorer.core.data.repository
 import ee.ut.cs.tartu_explorer.core.data.local.dao.StatisticsDao
 import ee.ut.cs.tartu_explorer.core.data.local.db.DatabaseProvider
 import android.content.Context
+import ee.ut.cs.tartu_explorer.core.data.local.dao.CompletedQuestLocation
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
 
@@ -16,7 +17,8 @@ data class StatsOverview(
     val totalHintsUsed: Long,
     val avgHintsPerQuest: Double?,
     val avgAdventureDurationMs: Double?,
-    val avgTimeToFirstHintMs: Double?
+    val avgTimeToFirstHintMs: Double?,
+    val completedQuestLocations: List<CompletedQuestLocation>
 )
 
 class StatisticsRepository private constructor(
@@ -39,6 +41,7 @@ class StatisticsRepository private constructor(
         val totalSuccessfulQuestsDeferred = async { dao.totalSuccessfulQuestAttempts(playerId) }
         val avgAdventureDurationDeferred = async { dao.avgAdventureDurationMs(playerId)?.valueMs }
         val avgTimeToFirstHintDeferred = async { dao.avgTimeToFirstHintMs(playerId)?.valueMs }
+        val completedQuestLocationsDeferred = async { dao.getCompletedQuestLocations(playerId) }
 
         val totalHints = totalHintsDeferred.await()
         val totalSuccessfulQuests = totalSuccessfulQuestsDeferred.await()
@@ -54,7 +57,8 @@ class StatisticsRepository private constructor(
             totalHintsUsed = totalHints,
             avgHintsPerQuest = avgHintsPerQuest,
             avgAdventureDurationMs = avgAdventureDurationDeferred.await(),
-            avgTimeToFirstHintMs = avgTimeToFirstHintDeferred.await()
+            avgTimeToFirstHintMs = avgTimeToFirstHintDeferred.await(),
+            completedQuestLocations = completedQuestLocationsDeferred.await()
         )
     }
 }

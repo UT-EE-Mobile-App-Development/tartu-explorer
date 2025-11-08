@@ -11,6 +11,15 @@ data class DifficultyCount(
 data class AvgValue(val valueMs: Double?)
 data class AvgDouble(val value: Double?)
 
+data class CompletedQuestLocation(
+    val latitude: Double,
+    val longitude: Double,
+    // QuestEntity doesn't have a thumbnail, so we'll use the adventure thumbnail.
+    // We'll also need the quest ID if we want to show quest-specific images later.
+    val questId: Long,
+    val adventureThumbnailPath: String
+)
+
 @Dao
 interface StatisticsDao {
 
@@ -68,4 +77,16 @@ interface StatisticsDao {
         FROM time_to_first_hint_per_session
     """)
     suspend fun avgTimeToFirstHintMs(playerId: Long): AvgValue?
+
+    // 6) Locations of all successfully completed quests for the map
+    @Query("""
+        SELECT DISTINCT q.id AS questId, q.latitude, q.longitude, a.thumbnailPath as adventureThumbnailPath
+        FROM quest_attempt qa
+        JOIN quest q ON q.id = qa.questId
+        JOIN adventure a ON a.id = q.adventureId
+        WHERE qa.wasCorrect = 1 AND qa.sessionId IN (
+            SELECT id FROM adventure_session WHERE playerId = :playerId
+        )
+    """)
+    suspend fun getCompletedQuestLocations(playerId: Long): List<CompletedQuestLocation>
 }

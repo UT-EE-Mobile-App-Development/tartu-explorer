@@ -1,5 +1,7 @@
 package ee.ut.cs.tartu_explorer.feature.quest
+import android.R.color.white
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -7,16 +9,13 @@ import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -57,6 +56,7 @@ import ee.ut.cs.tartu_explorer.core.data.local.entities.SessionStatus
 import ee.ut.cs.tartu_explorer.core.data.repository.AdventureRepository
 import ee.ut.cs.tartu_explorer.core.data.repository.AdventureStatusDetails
 import ee.ut.cs.tartu_explorer.core.data.repository.GameRepository
+import ee.ut.cs.tartu_explorer.core.ui.theme.MainOrange
 import ee.ut.cs.tartu_explorer.core.ui.theme.Pink40
 
 import ee.ut.cs.tartu_explorer.core.ui.theme.components.AnimatedBackground
@@ -256,9 +256,27 @@ fun QuestCardWithDifficulty(
     ElevatedCard(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(8.dp), //padding between difficulties
+            .padding(8.dp)
+            .border(
+                width = 2.dp,
+                color = when (difficulty) {
+                    AdventureDifficulty.VERY_EASY -> Color(0xFF3A393B)
+                    AdventureDifficulty.EASY -> Color(0xFFF59F00)
+                    AdventureDifficulty.MEDIUM -> Color(0xFF270F0C)
+                    AdventureDifficulty.HARD -> Color(0xFFF59F00)
+                    AdventureDifficulty.VERY_HARD -> Color(0xFFE09200)
+                },
+                shape = RoundedCornerShape(12.dp) // ensures corners match card
+            )
+            .clip(RoundedCornerShape(12.dp)), // keeps content inside rounded border
         colors = CardDefaults.elevatedCardColors(
-            containerColor = Pink40
+            containerColor = when (difficulty) {
+                AdventureDifficulty.VERY_EASY -> Color(0xFF3A393B)
+                AdventureDifficulty.EASY -> Color(0xFFF59F00)
+                AdventureDifficulty.MEDIUM -> Color(0xFF270F0C)
+                AdventureDifficulty.HARD -> Color(0xFFF59F00)
+                AdventureDifficulty.VERY_HARD -> Color(0xFFE09200)
+            }
         )
     ) {
         Column(
@@ -270,7 +288,8 @@ fun QuestCardWithDifficulty(
         ) {
             Text(
                 text = questName,
-                style = MaterialTheme.typography.titleMedium
+                style = MaterialTheme.typography.titleMedium,
+                color = Color.White
             )
         }
 

@@ -1,5 +1,4 @@
 package ee.ut.cs.tartu_explorer.feature.quest
-
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -10,17 +9,25 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.BottomAppBar
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ElevatedCard
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -30,9 +37,12 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Color.Companion.Transparent
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil3.compose.AsyncImage
 import ee.ut.cs.tartu_explorer.R
@@ -43,10 +53,13 @@ import ee.ut.cs.tartu_explorer.core.data.local.entities.SessionStatus
 import ee.ut.cs.tartu_explorer.core.data.repository.AdventureRepository
 import ee.ut.cs.tartu_explorer.core.data.repository.AdventureStatusDetails
 import ee.ut.cs.tartu_explorer.core.data.repository.GameRepository
+import ee.ut.cs.tartu_explorer.core.ui.theme.Pink40
+
 import ee.ut.cs.tartu_explorer.core.ui.theme.components.AnimatedBackground
 import ee.ut.cs.tartu_explorer.core.ui.theme.components.CustomBackButton
 import java.util.concurrent.TimeUnit
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun QuestScreen(
     onNavigateBack: () -> Unit,
@@ -65,74 +78,88 @@ fun QuestScreen(
     val backgrounds = listOf(R.drawable.bg1, R.drawable.bg2)
 
     AnimatedBackground(backgrounds) {
-        Box(modifier = Modifier.fillMaxSize()) {
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier
-                    .align(Alignment.TopStart)
-                    .padding(16.dp)
-            ) {
-                CustomBackButton(onClick = onNavigateBack)
-            }
-
-            QuestListCard(
-                modifier = Modifier
-                    .fillMaxWidth(0.95f)
-                    .fillMaxHeight(0.85f)
-                    .align(Alignment.Center)
-            ) {
-                Column(
-                    modifier = Modifier
-                        .verticalScroll(rememberScrollState())
-                        .fillMaxWidth(),
-                    horizontalAlignment = Alignment.Start,
-                    verticalArrangement = Arrangement.spacedBy(16.dp)
+        Scaffold(
+            containerColor = Color.Transparent, // this removes the white background
+            // Top bar
+            topBar = {
+                CenterAlignedTopAppBar(
+                    title = {
+                        Box(
+                            modifier = Modifier.fillMaxHeight(),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Text(
+                                text = "Statistics",
+                                fontSize = 28.sp,
+                                fontWeight = FontWeight.Bold,
+                                color = Color.Black
+                            )
+                        }
+                    },
+                    navigationIcon = {
+                        Box(
+                            modifier = Modifier.fillMaxHeight(),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            CustomBackButton(onClick = onNavigateBack)
+                        }
+                    },
+                    colors = TopAppBarDefaults.topAppBarColors(containerColor = Transparent),
+                    modifier = Modifier.height(96.dp),
+                    windowInsets = WindowInsets(0) //remove extra system padding
+                )
+            },
+            // So i can make it small, that the body has more room
+            bottomBar = {
+                BottomAppBar(
+                    modifier = Modifier.height(32.dp),
+                    windowInsets = WindowInsets(0), //remove extra system padding
+                    containerColor = Transparent
                 ) {
-                    listOf(
-                        AdventureDifficulty.VERY_EASY to "Very Easy",
-                        AdventureDifficulty.EASY to "Easy",
-                        AdventureDifficulty.MEDIUM to "Medium",
-                        AdventureDifficulty.HARD to "Hard",
-                        AdventureDifficulty.VERY_HARD to "Very Hard"
-                    ).forEach { (difficulty, displayName) ->
-                        QuestCardWithDifficulty(
-                            questName = displayName,
-                            onNavigateHome = onNavigateHome,
-                            adventures = state.adventures,
-                            adventureStatuses = state.adventureStatuses,
-                            adventureStatusDetails = state.adventureStatusDetails,
-                            difficulty = difficulty,
-                            displayName = displayName,
-                            thumbnailSize = 120.dp
-                        )
-                    }
+                    Text(
+                        "",
+                        modifier = Modifier.padding(horizontal = 8.dp)
+                    )
+                }
+            },
+            )
+        { innerPadding ->
+
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .verticalScroll(rememberScrollState())
+                    .background(Transparent)
+                    .padding(innerPadding),
+                horizontalAlignment = Alignment.Start,
+                verticalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                listOf(
+                    AdventureDifficulty.VERY_EASY to "Very Easy",
+                    AdventureDifficulty.EASY to "Easy",
+                    AdventureDifficulty.MEDIUM to "Medium",
+                    AdventureDifficulty.HARD to "Hard",
+                    AdventureDifficulty.VERY_HARD to "Very Hard"
+                ).forEach { (difficulty, displayName) ->
+                    QuestCardWithDifficulty(
+                        questName = displayName,
+                        onNavigateHome = onNavigateHome,
+                        adventures = state.adventures,
+                        adventureStatuses = state.adventureStatuses,
+                        adventureStatusDetails = state.adventureStatusDetails,
+                        difficulty = difficulty,
+                        displayName = displayName,
+                        thumbnailSize = 120.dp
+                    )
                 }
             }
-
-
-
         }
     }
 }
 
-@Composable
-fun QuestListCard(
-    modifier: Modifier = Modifier,
-    content: @Composable ColumnScope.() -> Unit
-) {
-    Box(
-        modifier = modifier
-            .background(color = Color(0xCCFFFFFF), shape = RoundedCornerShape(16.dp))
-            .border(2.dp, Color.Black, shape = RoundedCornerShape(16.dp))
-            .padding(20.dp),
-        contentAlignment = Alignment.Center
-    ) {
-        Column(
-            modifier = Modifier.fillMaxSize(),
-            content = content
-        )
-    }
-}
+
+
+
 
 @Composable
 fun DifficultyRow(
@@ -212,13 +239,16 @@ fun QuestCardWithDifficulty(
     ElevatedCard(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(8.dp)
+            .padding(8.dp), //padding between difficulties
+        colors = CardDefaults.elevatedCardColors(
+            containerColor = Pink40
+        )
     ) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
                 .clickable { expanded = !expanded }
-                .padding(16.dp)
+                .padding(20.dp) // makes the initial(unopened boxes bigger)
         ) {
             Text(
                 text = questName,

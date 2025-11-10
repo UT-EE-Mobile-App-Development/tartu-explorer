@@ -1,5 +1,7 @@
 package ee.ut.cs.tartu_explorer.feature.quest
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -9,6 +11,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
@@ -36,6 +39,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Color.Companion.Transparent
 import androidx.compose.ui.layout.ContentScale
@@ -91,7 +95,7 @@ fun QuestScreen(
                             contentAlignment = Alignment.Center
                         ) {
                             Text(
-                                text = "Statistics",
+                                text = "Quests",
                                 fontSize = 28.sp,
                                 fontWeight = FontWeight.Bold,
                                 color = Color.Black
@@ -127,6 +131,7 @@ fun QuestScreen(
             )
         { innerPadding ->
 
+
             Column(
                 modifier = Modifier
                     .fillMaxSize()
@@ -151,7 +156,7 @@ fun QuestScreen(
                         adventureStatusDetails = state.adventureStatusDetails,
                         difficulty = difficulty,
                         displayName = displayName,
-                        thumbnailSize = 120.dp,
+                        thumbnailSize = 130.dp,
                         expanded = (expandedDifficulty == difficulty),
                         onExpandToggle = {
                             expandedDifficulty =
@@ -177,7 +182,7 @@ fun DifficultyRow(
     adventureStatusDetails: Map<Long, AdventureStatusDetails>,
     difficulty: AdventureDifficulty,
     displayName: String,
-    thumbnailSize: Dp = 100.dp
+    thumbnailSize: Dp
 ) {
     val scrollState = rememberScrollState()
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
@@ -244,7 +249,7 @@ fun QuestCardWithDifficulty(
     adventureStatusDetails: Map<Long, AdventureStatusDetails>,
     difficulty: AdventureDifficulty,
     displayName: String,
-    thumbnailSize: Dp = 100.dp,
+    thumbnailSize: Dp,
     expanded: Boolean,
     onExpandToggle: () -> Unit
 ) {
@@ -254,13 +259,44 @@ fun QuestCardWithDifficulty(
             .fillMaxWidth()
             .padding(8.dp)
             .border(
-                width = 2.dp,
-                color = when (difficulty) {
-                    AdventureDifficulty.VERY_EASY -> Color(0xFFF7A71A)
-                    AdventureDifficulty.EASY -> Color(0xFFF1A11A)
-                    AdventureDifficulty.MEDIUM -> Color(0xFFE09200)
-                    AdventureDifficulty.HARD -> Color(0xFFD08200)
-                    AdventureDifficulty.VERY_HARD -> Color(0xFFBF7400)
+                width = 3.dp,
+                brush = when (difficulty) {
+                    //custom gradient for each color
+                    AdventureDifficulty.VERY_EASY -> Brush.verticalGradient(
+                        colors = listOf(
+                            Color(0xFFFFB833),
+                            Color(0xFFF7A71A),
+                            Color(0xFFE09A00)
+                        )
+                    )
+                    AdventureDifficulty.EASY -> Brush.verticalGradient(
+                        colors = listOf(
+                            Color(0xFFF7B21A),
+                            Color(0xFFF1A11A),
+                            Color(0xFFDB8F00)
+                        )
+                    )
+                    AdventureDifficulty.MEDIUM -> Brush.verticalGradient(
+                        colors = listOf(
+                            Color(0xFFF0A200),
+                            Color(0xFFE09200),
+                            Color(0xFFD08000)
+                        )
+                    )
+                    AdventureDifficulty.HARD -> Brush.verticalGradient(
+                        colors = listOf(
+                            Color(0xFFE59A00),
+                            Color(0xFFD08200),
+                            Color(0xFFC07000)
+                        )
+                    )
+                    AdventureDifficulty.VERY_HARD -> Brush.verticalGradient(
+                        colors = listOf(
+                            Color(0xFFD58500),
+                            Color(0xFFBF7400),
+                            Color(0xFFAB6200)
+                        )
+                    )
                 },
                 shape = RoundedCornerShape(12.dp) // ensures corners match card
             )
@@ -275,17 +311,34 @@ fun QuestCardWithDifficulty(
             }
         )
     ) {
+
+
+
         Column(
             modifier = Modifier
                 .fillMaxWidth()
                 .clickable { onExpandToggle() }
-                .padding(if (expanded) 20.dp else 20.dp)
+                .padding(if (expanded) 18.dp else 18.dp)
         // makes the initial(unopened boxes)bigger, (can make the title smaller after expanding)
         ) {
-            OutlinedText(
-                text = questName,
-                fontSize = 18.sp
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween,
+                modifier = Modifier.fillMaxWidth()
             )
+            {
+                OutlinedText(
+                    text = questName,
+                    fontSize = 16.sp
+                )
+                // Rotating arrow
+                OutlinedText(
+                    text = if (expanded) "▲" else "▼",
+                    fontSize = 24.sp,
+
+                )
+            }
+
         }
 
             // Show DifficultyRow when expanded

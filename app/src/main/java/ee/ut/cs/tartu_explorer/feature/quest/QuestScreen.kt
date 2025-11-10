@@ -1,5 +1,4 @@
 package ee.ut.cs.tartu_explorer.feature.quest
-import android.R.color.white
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
@@ -25,7 +24,6 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
@@ -56,9 +54,6 @@ import ee.ut.cs.tartu_explorer.core.data.local.entities.SessionStatus
 import ee.ut.cs.tartu_explorer.core.data.repository.AdventureRepository
 import ee.ut.cs.tartu_explorer.core.data.repository.AdventureStatusDetails
 import ee.ut.cs.tartu_explorer.core.data.repository.GameRepository
-import ee.ut.cs.tartu_explorer.core.ui.theme.MainOrange
-import ee.ut.cs.tartu_explorer.core.ui.theme.Pink40
-
 import ee.ut.cs.tartu_explorer.core.ui.theme.components.AnimatedBackground
 import ee.ut.cs.tartu_explorer.core.ui.theme.components.CustomBackButton
 import ee.ut.cs.tartu_explorer.core.ui.theme.components.OutlinedText

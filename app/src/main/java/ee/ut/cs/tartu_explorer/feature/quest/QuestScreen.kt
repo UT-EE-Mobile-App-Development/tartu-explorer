@@ -61,6 +61,7 @@ import ee.ut.cs.tartu_explorer.core.ui.theme.Pink40
 
 import ee.ut.cs.tartu_explorer.core.ui.theme.components.AnimatedBackground
 import ee.ut.cs.tartu_explorer.core.ui.theme.components.CustomBackButton
+import ee.ut.cs.tartu_explorer.core.ui.theme.components.OutlinedText
 import java.util.concurrent.TimeUnit
 import kotlin.Boolean
 
@@ -260,22 +261,22 @@ fun QuestCardWithDifficulty(
             .border(
                 width = 2.dp,
                 color = when (difficulty) {
-                    AdventureDifficulty.VERY_EASY -> Color(0xFF3A393B)
-                    AdventureDifficulty.EASY -> Color(0xFFF59F00)
-                    AdventureDifficulty.MEDIUM -> Color(0xFF270F0C)
-                    AdventureDifficulty.HARD -> Color(0xFFF59F00)
-                    AdventureDifficulty.VERY_HARD -> Color(0xFFE09200)
+                    AdventureDifficulty.VERY_EASY -> Color(0xFFF7A71A)
+                    AdventureDifficulty.EASY -> Color(0xFFF1A11A)
+                    AdventureDifficulty.MEDIUM -> Color(0xFFE09200)
+                    AdventureDifficulty.HARD -> Color(0xFFD08200)
+                    AdventureDifficulty.VERY_HARD -> Color(0xFFBF7400)
                 },
                 shape = RoundedCornerShape(12.dp) // ensures corners match card
             )
             .clip(RoundedCornerShape(12.dp)), // keeps content inside rounded border
         colors = CardDefaults.elevatedCardColors(
             containerColor = when (difficulty) {
-                AdventureDifficulty.VERY_EASY -> Color(0xFF3A393B)
-                AdventureDifficulty.EASY -> Color(0xFFF59F00)
-                AdventureDifficulty.MEDIUM -> Color(0xFF270F0C)
-                AdventureDifficulty.HARD -> Color(0xFFF59F00)
-                AdventureDifficulty.VERY_HARD -> Color(0xFFE09200)
+                AdventureDifficulty.VERY_EASY -> Color(0xFFF7A71A)
+                AdventureDifficulty.EASY -> Color(0xFFF1A11A)
+                AdventureDifficulty.MEDIUM -> Color(0xFFE09200)
+                AdventureDifficulty.HARD -> Color(0xFFD08200)
+                AdventureDifficulty.VERY_HARD -> Color(0xFFBF7400)
             }
         )
     ) {
@@ -286,10 +287,9 @@ fun QuestCardWithDifficulty(
                 .padding(if (expanded) 20.dp else 20.dp)
         // makes the initial(unopened boxes)bigger, (can make the title smaller after expanding)
         ) {
-            Text(
+            OutlinedText(
                 text = questName,
-                style = MaterialTheme.typography.titleMedium,
-                color = Color.White
+                fontSize = 18.sp
             )
         }
 

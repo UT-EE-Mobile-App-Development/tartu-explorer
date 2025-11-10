@@ -18,11 +18,15 @@ import androidx.compose.ui.unit.sp
 @Composable
 fun OutlinedText(
     text: String,
-    fontSize: TextUnit = 24.sp,
+    fontSize: TextUnit? = null,
     fontWeight: FontWeight = FontWeight.Bold,
     textAlign: TextAlign = TextAlign.Start,
     lineHeight: TextUnit = TextUnit.Unspecified
 ) {
+
+    val actualFontSize = fontSize ?: 24.sp
+    //so i can have smaller font to
+
     Box(contentAlignment = Alignment.Center) {
         val offsets = listOf(
             Pair(-1.dp, -1.dp),
@@ -39,7 +43,7 @@ fun OutlinedText(
         offsets.forEach { (x, y) ->
             Text(
                 text = text,
-                fontSize = fontSize,
+                fontSize = actualFontSize,
                 fontWeight = fontWeight,
                 color = Color.Black,
                 textAlign = textAlign,
@@ -51,7 +55,7 @@ fun OutlinedText(
         // Draw white top layer
         Text(
             text = text,
-            fontSize = fontSize,
+            fontSize = actualFontSize,
             fontWeight = fontWeight,
             color = Color.White,
             textAlign = textAlign,

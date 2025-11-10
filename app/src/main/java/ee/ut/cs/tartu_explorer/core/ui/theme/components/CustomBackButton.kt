@@ -17,6 +17,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import ee.ut.cs.tartu_explorer.core.ui.theme.MainOrange
+import ee.ut.cs.tartu_explorer.core.ui.theme.OrangeGradiantBot
+import ee.ut.cs.tartu_explorer.core.ui.theme.OrangeGradiantMid
+import ee.ut.cs.tartu_explorer.core.ui.theme.OrangeGradiantTop
 
 @Composable
 fun CustomBackButton(onClick: () -> Unit) {
@@ -28,15 +32,15 @@ fun CustomBackButton(onClick: () -> Unit) {
                     width = 3.dp,
                     brush = Brush.verticalGradient(
                         colors = listOf(
-                            Color(0xFFFFFF00),
-                            Color(0xFFFFA000),
-                            Color(0xFFB35400)
+                            OrangeGradiantTop,
+                            OrangeGradiantMid,
+                            OrangeGradiantBot
                         )
                     )
                 ),
                 shape = RoundedCornerShape(8.dp)
             )
-            .background(color = Color(0xFFFFA500), shape = RoundedCornerShape(8.dp)) // orange fill
+            .background(color = MainOrange, shape = RoundedCornerShape(8.dp)) // orange fill
             .clickable { onClick() },
         contentAlignment = Alignment.Center
     ) {

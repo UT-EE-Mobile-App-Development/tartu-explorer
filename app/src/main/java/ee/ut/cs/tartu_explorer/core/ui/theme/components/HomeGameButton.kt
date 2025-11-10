@@ -14,6 +14,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.graphics.Brush
+import ee.ut.cs.tartu_explorer.core.ui.theme.MainOrange
+import ee.ut.cs.tartu_explorer.core.ui.theme.OrangeGradiantBot
+import ee.ut.cs.tartu_explorer.core.ui.theme.OrangeGradiantMid
+import ee.ut.cs.tartu_explorer.core.ui.theme.OrangeGradiantTop
 
 @Composable
 fun HomeGameButton(
@@ -30,7 +34,7 @@ fun HomeGameButton(
             .fillMaxWidth(0.6f)
             .height(60.dp),
         colors = ButtonDefaults.buttonColors(
-            containerColor = Color(0xFFFFA500),
+            containerColor = MainOrange,
             contentColor = Color.Black
         ),
         //shadow-border
@@ -39,9 +43,9 @@ fun HomeGameButton(
             Brush.verticalGradient(
                 colors = if(enabled){ //for enabled buttons
                     listOf(
-                        Color(0xFFFFE0A0), // light top highlight
-                        Color(0xFFFFA000), // mid-orange
-                        Color(0xFF8B3A00)  // dark bottom shadow
+                        OrangeGradiantTop,
+                        OrangeGradiantMid,
+                        OrangeGradiantBot
                     )
                 }else{ //for disabled buttons
                     listOf(

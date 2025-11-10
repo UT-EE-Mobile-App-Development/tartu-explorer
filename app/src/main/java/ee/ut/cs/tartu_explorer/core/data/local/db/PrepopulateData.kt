@@ -648,7 +648,7 @@ class PrepopulateCallback(private val context: Context) : RoomDatabase.Callback(
                 description = "Explore the city's core trough a new lens",
                 difficulty = AdventureDifficulty.MEDIUM,
                 estimatedDuration = 30,
-                thumbnailPath = "https://raw.githubusercontent.com/UT-EE-Mobile-App-Development/tartu-explorer-quests/refs/heads/main/art/4/4.jpg"
+                thumbnailPath = "https://raw.githubusercontent.com/UT-EE-Mobile-App-Development/tartu-explorer-quests/refs/heads/main/buildings/42/1.jpg"
             )
         )
 

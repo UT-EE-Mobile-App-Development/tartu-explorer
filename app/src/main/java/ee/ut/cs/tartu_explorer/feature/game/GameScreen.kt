@@ -1,43 +1,34 @@
 package ee.ut.cs.tartu_explorer.feature.game
 
 import android.Manifest
-import android.R.attr.data
 import android.annotation.SuppressLint
-import android.view.MotionEvent
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Text
@@ -54,37 +45,27 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Path
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil3.compose.AsyncImage
 import com.google.android.gms.location.LocationServices
-import com.google.android.gms.maps.CameraUpdateFactory
-import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.compose.GoogleMap
 import com.google.maps.android.compose.MapProperties
 import com.google.maps.android.compose.rememberCameraPositionState
+import ee.ut.cs.tartu_explorer.R
 import ee.ut.cs.tartu_explorer.core.data.local.db.DatabaseProvider
 import ee.ut.cs.tartu_explorer.core.data.repository.AdventureSessionRepository
 import ee.ut.cs.tartu_explorer.core.data.repository.GameRepository
 import ee.ut.cs.tartu_explorer.core.data.repository.PlayerRepository
 import ee.ut.cs.tartu_explorer.core.location.LocationRepository
-import kotlinx.coroutines.flow.SharedFlow
-import kotlinx.coroutines.launch
-import androidx.compose.ui.unit.sp
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
-import androidx.compose.ui.graphics.Path
-import androidx.compose.ui.graphics.graphicsLayer
-import androidx.compose.ui.input.pointer.pointerInput
-import androidx.compose.ui.input.pointer.pointerInteropFilter
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.window.Popup
-import ee.ut.cs.tartu_explorer.R
 import ee.ut.cs.tartu_explorer.core.ui.theme.MainOrange
 import ee.ut.cs.tartu_explorer.core.ui.theme.OrangeGradiantBot
 import ee.ut.cs.tartu_explorer.core.ui.theme.OrangeGradiantMid
@@ -94,7 +75,8 @@ import ee.ut.cs.tartu_explorer.core.ui.theme.components.AnimatedBackground
 import ee.ut.cs.tartu_explorer.core.ui.theme.components.CustomBackButton
 import ee.ut.cs.tartu_explorer.feature.weather.WeatherState
 import ee.ut.cs.tartu_explorer.feature.weather.WeatherViewModel
-import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.launch
 import kotlin.math.cos
 import kotlin.math.sin
 import kotlin.math.sqrt
@@ -246,13 +228,8 @@ fun GameScreen(adventureId: Long, onNavigateBack: () -> Unit) {
                                     .padding(vertical = 6.dp),
                                 contentAlignment = Alignment.Center
                             ) {
-                                val totalHints = 2
-                                val hintsUsed = when {
-                                    state.currentHint == 0 && !showBlueCircleOnMap -> 0
-                                    state.currentHint == 1 && !showBlueCircleOnMap -> 1
-                                    showBlueCircleOnMap -> 2
-                                    else -> state.currentHint
-                                }
+                                val totalHints = unlockedHints.size
+                                val hintsUsed = currentHintIndex+1
 
                                 Text("Hint $hintsUsed/$totalHints", color = Color.White)
                             }
@@ -280,7 +257,7 @@ fun GameScreen(adventureId: Long, onNavigateBack: () -> Unit) {
                                   },
                         currentHintText = currentHintText,
                         modifier = Modifier.fillMaxWidth(),
-                        hintDisabled = state.currentHint >= 2 || showBlueCircleOnMap,
+                        hintDisabled = state.currentHint > state.hints.size-2,
                         showHintPopup = { showHintPopup = it },
                         showWeatherPopup = { showWeatherPopup  = it },
                         showBlueCircleOnMap = showBlueCircleOnMap,

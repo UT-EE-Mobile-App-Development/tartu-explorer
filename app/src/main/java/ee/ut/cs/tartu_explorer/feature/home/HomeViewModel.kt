@@ -4,6 +4,9 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
+import coil3.PlatformContext
+import coil3.imageLoader
+import coil3.request.ImageRequest
 import ee.ut.cs.tartu_explorer.core.data.local.entities.PlayerEntity
 import ee.ut.cs.tartu_explorer.core.data.local.entities.SessionStatus
 import ee.ut.cs.tartu_explorer.core.data.repository.GameRepository
@@ -13,18 +16,10 @@ import ee.ut.cs.tartu_explorer.core.util.LevelingUtil
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.launch
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.ui.platform.LocalContext
-import coil3.ImageLoader
-import coil3.PlatformContext
-import coil3.executeBlocking
-import coil3.imageLoader
-import coil3.request.ImageRequest
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.joinAll
+import kotlinx.coroutines.launch
 
 data class HomeUiState(
     val showNamePrompt: Boolean = false,

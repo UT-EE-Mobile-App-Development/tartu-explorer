@@ -62,6 +62,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Slider
 import androidx.compose.material3.Switch
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
@@ -98,6 +99,12 @@ fun HomeScreen(
         viewModelStoreOwner = LocalContext.current as ComponentActivity
     )
     val isDarkMode by themeViewModel.isDarkMode
+
+    LaunchedEffect(selectedAdventureId) {
+        if (selectedAdventureId != null) {
+            viewModel.prefetchQuestImages(selectedAdventureId, context)
+        }
+    }
 
 
     AnimatedBackground(
@@ -209,7 +216,7 @@ fun HomeScreen(
                         if (isCompleted) {
                             HomeGameButton("Adventure completed", {}, enabled = false)
                         } else {
-                            HomeGameButton("PLAY", { onNavigateToGame(selectedAdventureId) }, isDarkMode = isDarkMode)
+                            HomeGameButton("PLAY", { onNavigateToGame(selectedAdventureId) }, isDarkMode = isDarkMode, enabled = uiState.readyToPlay)
                         }
                     } else {
                         HomeGameButton("Select an adventure to play", {}, enabled = false)

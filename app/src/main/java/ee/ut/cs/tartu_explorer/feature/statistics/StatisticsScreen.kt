@@ -177,17 +177,17 @@ fun StatisticsScreen(
                                         StatBox(
                                             title = "Required hints (total)",
                                             value = data.totalHintsUsed.toString(),
-                                            color = Color(0xFF4CAF50),
+                                            color = Color(0xFFF7A71A),
                                             modifier = Modifier.weight(1f),
-                                            gradientColors = listOf(Color(0xFF81C784), Color(0xFF4CAF50), Color(0xFF2E7D32)),
+                                            gradientColors = listOf(Color(0xFFFFB833), Color(0xFFF7A71A), Color(0xFFE09A00)),
                                             isDarkMode = isDarkMode
                                         )
                                         StatBox(
                                             title = "Ø Hints per quest",
                                             value = formatDoubleOrDash(data.avgHintsPerQuest),
-                                            color = Color(0xFFF44336),
+                                            color = Color(0xFFF7A71A),
                                             modifier = Modifier.weight(1f),
-                                            gradientColors = listOf(Color(0xFFFF8A80), Color(0xFFF44336), Color(0xFFC62828)),
+                                            gradientColors = listOf(Color(0xFFFFB833), Color(0xFFF7A71A), Color(0xFFE09A00)),
                                             isDarkMode = isDarkMode
                                         )
                                     }
@@ -195,17 +195,17 @@ fun StatisticsScreen(
                                         StatBox(
                                             title = "Ø Time for an adventure",
                                             value = formatDurationOrDash(data.avgAdventureDurationMs),
-                                            color = Color(0xFFFFEB3B),
+                                            color = Color(0xFFF1A11A),
                                             modifier = Modifier.weight(1f),
-                                            gradientColors = listOf(Color(0xFFFFF59D), Color(0xFFFFEB3B), Color(0xFFFBC02D)),
+                                            gradientColors = listOf(Color(0xFFF7B21A), Color(0xFFF1A11A), Color(0xFFDB8F00)),
                                             isDarkMode = isDarkMode
                                         )
                                         StatBox(
                                             title = "Ø Time until first hint",
                                             value = formatDurationOrDash(data.avgTimeToFirstHintMs),
-                                            color = Color(0xFF03A9F4),
+                                            color = Color(0xFFF1A11A),
                                             modifier = Modifier.weight(1f),
-                                            gradientColors = listOf(Color(0xFF81D4FA), Color(0xFF03A9F4), Color(0xFF0277BD)),
+                                            gradientColors = listOf(Color(0xFFF7B21A), Color(0xFFF1A11A), Color(0xFFDB8F00)),
                                             isDarkMode = isDarkMode
                                         )
                                     }
@@ -219,8 +219,8 @@ fun StatisticsScreen(
                                     BigStatBox(
                                         title = "Completed quests by difficulty",
                                         value = "No completed quests available.",
-                                        color = Color(0xFF9B687A),
-                                        gradientColors = listOf(Color(0xFFBC8BA0), Color(0xFF9B687A), Color(0xFF6D4854)),
+                                        color = Color(0xFFE09200),
+                                        gradientColors = listOf(Color(0xFFF0A200), Color(0xFFE09200), Color(0xFFD08000)),
                                         isDarkMode = isDarkMode
                                     )
                                 }
@@ -232,8 +232,8 @@ fun StatisticsScreen(
                                     BigStatBox(
                                         title = "Completed quests by difficulty",
                                         value = difficultySummary,
-                                        color = Color(0xFF9B687A),
-                                        gradientColors = listOf(Color(0xFFBC8BA0), Color(0xFF9B687A), Color(0xFF6D4854)),
+                                        color = Color(0xFFD08200),
+                                        gradientColors = listOf(Color(0xFFE59A00), Color(0xFFD08200), Color(0xFFC07000)),
                                         isDarkMode = isDarkMode
                                     )
                                 }
@@ -268,11 +268,7 @@ fun StatisticsScreen(
                                     )
                                 } else {
                                     Brush.verticalGradient(
-                                        listOf(
-                                            Color(0xFFBC8BA0),
-                                            Color(0xFF9B687A),
-                                            Color(0xFF6D4854)
-                                        )
+                                        listOf(Color(0xFFE59A00), Color(0xFFD08200), Color(0xFFC07000))
                                     )
                                 }
                                 Box(

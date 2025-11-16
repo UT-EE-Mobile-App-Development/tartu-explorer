@@ -282,35 +282,35 @@ fun QuestCardWithDifficulty(
                     //custom gradient for each color
                     AdventureDifficulty.VERY_EASY -> Brush.verticalGradient(
                         colors = if (isDarkMode) {
-                            listOf(OrangeGradiantTop, OrangeGradiantMid, OrangeGradiantBot)
+                            listOf(Color(0xFFFFB833), Color(0xFFF7A71A), Color(0xFFE09A00))
                         } else {
                             listOf(Color.LightGray, Color.Gray, Color(0xFF666666))
                         }
                     )
                     AdventureDifficulty.EASY -> Brush.verticalGradient(
                         colors = if (isDarkMode) {
-                            listOf(OrangeGradiantTop, OrangeGradiantMid, OrangeGradiantBot)
+                            listOf(Color(0xFFF7B21A), Color(0xFFF1A11A), Color(0xFFDB8F00))
                         } else {
                             listOf(Color.LightGray, Color.Gray, Color(0xFF666666))
                         }
                     )
                     AdventureDifficulty.MEDIUM -> Brush.verticalGradient(
                         colors = if (isDarkMode) {
-                            listOf(OrangeGradiantTop, OrangeGradiantMid, OrangeGradiantBot)
+                            listOf(Color(0xFFF0A200), Color(0xFFE09200), Color(0xFFD08000))
                         } else {
                             listOf(Color.LightGray, Color.Gray, Color(0xFF666666))
                         }
                     )
                     AdventureDifficulty.HARD -> Brush.verticalGradient(
                         colors = if (isDarkMode) {
-                            listOf(OrangeGradiantTop, OrangeGradiantMid, OrangeGradiantBot)
+                            listOf(Color(0xFFE59A00), Color(0xFFD08200), Color(0xFFC07000))
                         } else {
                             listOf(Color.LightGray, Color.Gray, Color(0xFF666666))
                         }
                     )
                     AdventureDifficulty.VERY_HARD -> Brush.verticalGradient(
                         colors = if (isDarkMode) {
-                            listOf(OrangeGradiantTop, OrangeGradiantMid, OrangeGradiantBot)
+                            listOf(Color(0xFFD58500), Color(0xFFBF7400), Color(0xFFAB6200))
                         } else {
                             listOf(Color.LightGray, Color.Gray, Color(0xFF666666))
                         }

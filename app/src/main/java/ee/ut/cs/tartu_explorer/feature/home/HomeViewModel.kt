@@ -1,5 +1,6 @@
 package ee.ut.cs.tartu_explorer.feature.home
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
@@ -15,6 +16,15 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.ui.platform.LocalContext
+import coil3.ImageLoader
+import coil3.PlatformContext
+import coil3.executeBlocking
+import coil3.imageLoader
+import coil3.request.ImageRequest
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.joinAll
 
 data class HomeUiState(
     val showNamePrompt: Boolean = false,
@@ -24,7 +34,8 @@ data class HomeUiState(
     val adventureStatuses: Map<Long, SessionStatus> = emptyMap(),
     val showProfileSwitcher: Boolean = false,
     val players: List<PlayerEntity> = emptyList(),
-    val newPlayerName: String = ""
+    val newPlayerName: String = "",
+    val readyToPlay: Boolean = false
 )
 
 class HomeViewModel(
@@ -50,7 +61,13 @@ class HomeViewModel(
                         }
                     }
                 } else {
-                    _uiState.update { it.copy(player = null, levelInfo = null, adventureStatuses = emptyMap()) }
+                    _uiState.update {
+                        it.copy(
+                            player = null,
+                            levelInfo = null,
+                            adventureStatuses = emptyMap()
+                        )
+                    }
                 }
             }
         }
@@ -109,6 +126,29 @@ class HomeViewModel(
             playerRepository.insertPlayer(playerToInsert)
             _uiState.update { it.copy(newPlayerName = "") }
         }
+    }
+
+    suspend fun prefetchQuestImages(adventure: Long, context: PlatformContext) {
+        val images = gameRepository.getQuestsByAdventure(adventure)
+            .first()
+            .flatMap { questEntity ->
+                gameRepository.getHintsByQuest(questEntity.id)
+                    .first()
+                    .filter { hintEntity -> hintEntity.imageUrl != null }
+                    .map { hintEntity -> hintEntity.imageUrl as String }
+            }
+            Log.w("img-preload","fetching ${images.size} images")
+            images.map { image ->
+                    val request = ImageRequest.Builder(context)
+                        .data(image).build()
+                    val status = context.imageLoader.enqueue(request)
+                    status.job.invokeOnCompletion {
+//                        in offline mode this will fast fail and give a wrong response that images have been fetched
+                        Log.w("img-preload","fetched $image")
+                    }
+                    status.job
+            }.joinAll()
+        _uiState.update { it.copy(readyToPlay = true) }
     }
 }
 

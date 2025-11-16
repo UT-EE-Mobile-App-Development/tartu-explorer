@@ -1,10 +1,12 @@
 package ee.ut.cs.tartu_explorer.feature.statistics
 
+import android.annotation.SuppressLint
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Paint
 import android.graphics.PorterDuff
 import android.graphics.PorterDuffXfermode
+import androidx.activity.ComponentActivity
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.gestures.scrollable
@@ -16,6 +18,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Color.Companion.Transparent
@@ -45,6 +48,7 @@ import com.google.maps.android.compose.rememberCameraPositionState
 import com.google.maps.android.compose.rememberMarkerState
 import ee.ut.cs.tartu_explorer.R
 import ee.ut.cs.tartu_explorer.core.data.local.dao.CompletedQuestLocation
+import ee.ut.cs.tartu_explorer.core.ui.theme.ThemeViewModel
 import ee.ut.cs.tartu_explorer.core.ui.theme.components.AnimatedBackground
 import ee.ut.cs.tartu_explorer.core.ui.theme.components.CustomBackButton
 import kotlinx.coroutines.Dispatchers
@@ -53,6 +57,7 @@ import kotlin.collections.listOf
 import kotlin.math.min
 import kotlin.math.roundToInt
 
+@SuppressLint("ContextCastToActivity")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun StatisticsScreen(
@@ -67,7 +72,15 @@ fun StatisticsScreen(
         R.drawable.bg2
     )
 
-    AnimatedBackground(backgrounds) {
+    val themeViewModel: ThemeViewModel = viewModel(
+        viewModelStoreOwner = LocalContext.current as ComponentActivity
+    )
+    val isDarkMode by themeViewModel.isDarkMode
+
+    AnimatedBackground(
+        backgrounds = backgrounds,
+        isDarkMode = isDarkMode
+    ) {
         Scaffold(
             topBar = {
                 CenterAlignedTopAppBar(
@@ -89,7 +102,7 @@ fun StatisticsScreen(
                             modifier = Modifier.fillMaxHeight(),
                             contentAlignment = Alignment.Center
                         ) {
-                            CustomBackButton(onClick = onNavigateBack)
+                            CustomBackButton(onClick = onNavigateBack, isDarkMode = isDarkMode)
                         }
                     },
                     colors = TopAppBarDefaults.topAppBarColors(containerColor = Transparent),
@@ -166,14 +179,16 @@ fun StatisticsScreen(
                                             value = data.totalHintsUsed.toString(),
                                             color = Color(0xFF4CAF50),
                                             modifier = Modifier.weight(1f),
-                                            gradientColors = listOf(Color(0xFF81C784), Color(0xFF4CAF50), Color(0xFF2E7D32))
+                                            gradientColors = listOf(Color(0xFF81C784), Color(0xFF4CAF50), Color(0xFF2E7D32)),
+                                            isDarkMode = isDarkMode
                                         )
                                         StatBox(
                                             title = "Ø Hints per quest",
                                             value = formatDoubleOrDash(data.avgHintsPerQuest),
                                             color = Color(0xFFF44336),
                                             modifier = Modifier.weight(1f),
-                                            gradientColors = listOf(Color(0xFFFF8A80), Color(0xFFF44336), Color(0xFFC62828))
+                                            gradientColors = listOf(Color(0xFFFF8A80), Color(0xFFF44336), Color(0xFFC62828)),
+                                            isDarkMode = isDarkMode
                                         )
                                     }
                                     Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
@@ -182,14 +197,16 @@ fun StatisticsScreen(
                                             value = formatDurationOrDash(data.avgAdventureDurationMs),
                                             color = Color(0xFFFFEB3B),
                                             modifier = Modifier.weight(1f),
-                                            gradientColors = listOf(Color(0xFFFFF59D), Color(0xFFFFEB3B), Color(0xFFFBC02D))
+                                            gradientColors = listOf(Color(0xFFFFF59D), Color(0xFFFFEB3B), Color(0xFFFBC02D)),
+                                            isDarkMode = isDarkMode
                                         )
                                         StatBox(
                                             title = "Ø Time until first hint",
                                             value = formatDurationOrDash(data.avgTimeToFirstHintMs),
                                             color = Color(0xFF03A9F4),
                                             modifier = Modifier.weight(1f),
-                                            gradientColors = listOf(Color(0xFF81D4FA), Color(0xFF03A9F4), Color(0xFF0277BD))
+                                            gradientColors = listOf(Color(0xFF81D4FA), Color(0xFF03A9F4), Color(0xFF0277BD)),
+                                            isDarkMode = isDarkMode
                                         )
                                     }
                                 }
@@ -203,7 +220,8 @@ fun StatisticsScreen(
                                         title = "Completed quests by difficulty",
                                         value = "No completed quests available.",
                                         color = Color(0xFF9B687A),
-                                        gradientColors = listOf(Color(0xFFBC8BA0), Color(0xFF9B687A), Color(0xFF6D4854))
+                                        gradientColors = listOf(Color(0xFFBC8BA0), Color(0xFF9B687A), Color(0xFF6D4854)),
+                                        isDarkMode = isDarkMode
                                     )
                                 }
                             } else {
@@ -215,7 +233,8 @@ fun StatisticsScreen(
                                         title = "Completed quests by difficulty",
                                         value = difficultySummary,
                                         color = Color(0xFF9B687A),
-                                        gradientColors = listOf(Color(0xFFBC8BA0), Color(0xFF9B687A), Color(0xFF6D4854))
+                                        gradientColors = listOf(Color(0xFFBC8BA0), Color(0xFF9B687A), Color(0xFF6D4854)),
+                                        isDarkMode = isDarkMode
                                     )
                                 }
                             }
@@ -228,18 +247,40 @@ fun StatisticsScreen(
                                     "Your Completed Quests",
                                     style = MaterialTheme.typography.titleLarge,
                                     fontWeight = FontWeight.Bold,
-                                    color = Color.Black
+                                    color = if (!isDarkMode) Color.White else Color.Black
                                 )
                                 Spacer(Modifier.height(8.dp))
                                 val tartu = LatLng(58.3780, 26.7290)
                                 val cameraPositionState = rememberCameraPositionState {
                                     position = CameraPosition.fromLatLngZoom(tartu, 12f)
                                 }
+                                // Shared shape for border + clipping
+                                val borderShape = RoundedCornerShape(16.dp)
+
+                                // Dark mode and light mode gradient borders
+                                val borderBrush = if (!isDarkMode) {
+                                    Brush.verticalGradient(
+                                        listOf(
+                                            Color.LightGray,
+                                            Color.Gray,
+                                            Color.DarkGray,
+                                        )
+                                    )
+                                } else {
+                                    Brush.verticalGradient(
+                                        listOf(
+                                            Color(0xFFBC8BA0),
+                                            Color(0xFF9B687A),
+                                            Color(0xFF6D4854)
+                                        )
+                                    )
+                                }
                                 Box(
                                     modifier = Modifier
                                         .fillMaxWidth()
                                         .height(400.dp)
-                                        .border(4.dp, Color(0xFF9B687A), RoundedCornerShape(16.dp))
+                                        .border(4.dp, borderBrush, borderShape)
+                                        .clip(borderShape)
                                         .pointerInput(Unit) {
                                             awaitPointerEventScope {
                                                 while (true) {
@@ -345,18 +386,24 @@ private fun formatDurationOrDash(ms: Double?): String {
 //Used to display statistics data
 @Composable
 fun StatBox(
-    title: String, value: String, color: Color, gradientColors: List<Color>, modifier: Modifier = Modifier
+    title: String, value: String, color: Color, gradientColors: List<Color>, modifier: Modifier = Modifier, isDarkMode: Boolean
 ) {
+    val bgColor = if (!isDarkMode) Color(0xFF2C2C2C) else color
+    val borderColors = if (!isDarkMode)
+        listOf(Color.LightGray, Color.Gray, Color.DarkGray)
+    else
+        gradientColors
+
     Column(
         modifier = modifier
             .fillMaxWidth()
             .aspectRatio(1.3f) // makes each box the correct shape and same size
             .border(
                 width = 4.dp,
-                brush = Brush.verticalGradient(gradientColors),
+                brush = Brush.verticalGradient(borderColors),
                 shape = RoundedCornerShape(24.dp)
             )
-            .background(color, RoundedCornerShape(24.dp))
+            .background(bgColor, RoundedCornerShape(24.dp))
             .padding(16.dp),
         verticalArrangement = Arrangement.SpaceBetween,
         horizontalAlignment = Alignment.Start
@@ -364,30 +411,37 @@ fun StatBox(
         Text(
             text = title,
             style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.SemiBold),
-            color = Color.Black
+            color = if (!isDarkMode) Color.White else Color.Black
         )
         Text(
             text = value,
             style = MaterialTheme.typography.headlineSmall.copy(fontWeight = FontWeight.Bold),
-            color = Color.Black
+            color = if (!isDarkMode) Color.White else Color.Black
         )
     }
 }
 
 @Composable
 fun BigStatBox(
-    title: String, value: String, color: Color, gradientColors: List<Color>, modifier: Modifier = Modifier
+    title: String, value: String, color: Color, gradientColors: List<Color>, modifier: Modifier = Modifier, isDarkMode: Boolean
 ) {
+
+    val bgColor = if (!isDarkMode) Color(0xFF2C2C2C) else color
+    val borderColors = if (!isDarkMode)
+        listOf(Color.LightGray, Color.Gray, Color.DarkGray)
+    else
+        gradientColors
+
     Column(
         modifier = modifier
             .fillMaxWidth()
             .aspectRatio(1.3f)
             .border(
                 width = 5.dp,
-                brush = Brush.verticalGradient(gradientColors),
+                brush = Brush.verticalGradient(borderColors),
                 shape = RoundedCornerShape(24.dp)
             )
-            .background(color, RoundedCornerShape(24.dp))
+            .background(bgColor, RoundedCornerShape(24.dp))
             .padding(16.dp),
         verticalArrangement = Arrangement.SpaceBetween,
         horizontalAlignment = Alignment.Start
@@ -395,12 +449,12 @@ fun BigStatBox(
         Text(
             text = title,
             style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.SemiBold),
-            color = Color.Black
+            color = if (!isDarkMode) Color.White else Color.Black
         )
         Text(
             text = value,
             style = MaterialTheme.typography.headlineSmall.copy(fontWeight = FontWeight.Medium),
-            color = Color.Black
+            color = if (!isDarkMode) Color.White else Color.Black
         )
     }
 }

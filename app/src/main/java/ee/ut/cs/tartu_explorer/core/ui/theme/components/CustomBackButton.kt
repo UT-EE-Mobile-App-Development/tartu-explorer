@@ -23,24 +23,28 @@ import ee.ut.cs.tartu_explorer.core.ui.theme.OrangeGradiantMid
 import ee.ut.cs.tartu_explorer.core.ui.theme.OrangeGradiantTop
 
 @Composable
-fun CustomBackButton(onClick: () -> Unit) {
+fun CustomBackButton(onClick: () -> Unit, isDarkMode: Boolean = false) {
     Box(
         modifier = Modifier
-            .size(48.dp) // button size
+            .size(48.dp) // button size<<<<<<
             .border( //custom border, same as on homegamebuttons
                 BorderStroke(
                     width = 3.dp,
                     brush = Brush.verticalGradient(
-                        colors = listOf(
-                            OrangeGradiantTop,
-                            OrangeGradiantMid,
-                            OrangeGradiantBot
-                        )
+                        colors = if (isDarkMode) {
+                            listOf(OrangeGradiantTop, OrangeGradiantMid, OrangeGradiantBot)
+                        } else {
+                            listOf(
+                                Color.LightGray,
+                                Color.Gray,
+                                Color(0xFF666666))
+                        }
                     )
                 ),
                 shape = RoundedCornerShape(8.dp)
             )
-            .background(color = MainOrange, shape = RoundedCornerShape(8.dp)) // orange fill
+            .background(color = if (isDarkMode) MainOrange else Color.DarkGray,
+                shape = RoundedCornerShape(8.dp)) // orange fill
             .clickable { onClick() },
         contentAlignment = Alignment.Center
     ) {

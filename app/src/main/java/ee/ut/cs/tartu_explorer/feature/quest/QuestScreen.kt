@@ -1,4 +1,6 @@
 package ee.ut.cs.tartu_explorer.feature.quest
+import android.annotation.SuppressLint
+import androidx.activity.ComponentActivity
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -55,12 +57,17 @@ import ee.ut.cs.tartu_explorer.core.data.repository.AdventureRepository
 import ee.ut.cs.tartu_explorer.core.data.repository.AdventureStatusDetails
 import ee.ut.cs.tartu_explorer.core.data.repository.GameRepository
 import ee.ut.cs.tartu_explorer.core.data.repository.PlayerRepository
+import ee.ut.cs.tartu_explorer.core.ui.theme.OrangeGradiantBot
+import ee.ut.cs.tartu_explorer.core.ui.theme.OrangeGradiantMid
+import ee.ut.cs.tartu_explorer.core.ui.theme.OrangeGradiantTop
+import ee.ut.cs.tartu_explorer.core.ui.theme.ThemeViewModel
 import ee.ut.cs.tartu_explorer.core.ui.theme.components.AnimatedBackground
 import ee.ut.cs.tartu_explorer.core.ui.theme.components.CustomBackButton
 import ee.ut.cs.tartu_explorer.core.ui.theme.components.OutlinedText
 import java.util.concurrent.TimeUnit
 import kotlin.Boolean
 
+@SuppressLint("ContextCastToActivity")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun QuestScreen(
@@ -80,8 +87,15 @@ fun QuestScreen(
     var expandedDifficulty by remember { mutableStateOf<AdventureDifficulty?>(null) }
     //for the logic that 1 can only be expanded at a time
     val backgrounds = listOf(R.drawable.bg1, R.drawable.bg2)
+    val themeViewModel: ThemeViewModel = viewModel(
+        viewModelStoreOwner = LocalContext.current as ComponentActivity
+    )
+    val isDarkMode by themeViewModel.isDarkMode
 
-    AnimatedBackground(backgrounds) {
+    AnimatedBackground(
+        backgrounds = backgrounds,
+        isDarkMode = isDarkMode
+    ) {
         Scaffold(
             containerColor = Color.Transparent, // this removes the white background
             // Top bar
@@ -105,7 +119,7 @@ fun QuestScreen(
                             modifier = Modifier.fillMaxHeight(),
                             contentAlignment = Alignment.Center
                         ) {
-                            CustomBackButton(onClick = onNavigateBack)
+                            CustomBackButton(onClick = onNavigateBack, isDarkMode = isDarkMode)
                         }
                     },
                     colors = TopAppBarDefaults.topAppBarColors(containerColor = Transparent),
@@ -238,6 +252,7 @@ fun formatDuration(millis: Long): String {
     }
 }
 
+@SuppressLint("ContextCastToActivity")
 @Composable
 fun QuestCardWithDifficulty(
     questName: String,
@@ -249,8 +264,13 @@ fun QuestCardWithDifficulty(
     displayName: String,
     thumbnailSize: Dp,
     expanded: Boolean,
-    onExpandToggle: () -> Unit
+    onExpandToggle: () -> Unit,
+    isDarkMode: Boolean = false
 ) {
+    val themeViewModel: ThemeViewModel = viewModel(
+        viewModelStoreOwner = LocalContext.current as ComponentActivity
+    )
+    val isDarkMode by themeViewModel.isDarkMode
 
     ElevatedCard(
         modifier = Modifier
@@ -261,51 +281,61 @@ fun QuestCardWithDifficulty(
                 brush = when (difficulty) {
                     //custom gradient for each color
                     AdventureDifficulty.VERY_EASY -> Brush.verticalGradient(
-                        colors = listOf(
-                            Color(0xFFFFB833),
-                            Color(0xFFF7A71A),
-                            Color(0xFFE09A00)
-                        )
+                        colors = if (isDarkMode) {
+                            listOf(OrangeGradiantTop, OrangeGradiantMid, OrangeGradiantBot)
+                        } else {
+                            listOf(Color.LightGray, Color.Gray, Color(0xFF666666))
+                        }
                     )
                     AdventureDifficulty.EASY -> Brush.verticalGradient(
-                        colors = listOf(
-                            Color(0xFFF7B21A),
-                            Color(0xFFF1A11A),
-                            Color(0xFFDB8F00)
-                        )
+                        colors = if (isDarkMode) {
+                            listOf(OrangeGradiantTop, OrangeGradiantMid, OrangeGradiantBot)
+                        } else {
+                            listOf(Color.LightGray, Color.Gray, Color(0xFF666666))
+                        }
                     )
                     AdventureDifficulty.MEDIUM -> Brush.verticalGradient(
-                        colors = listOf(
-                            Color(0xFFF0A200),
-                            Color(0xFFE09200),
-                            Color(0xFFD08000)
-                        )
+                        colors = if (isDarkMode) {
+                            listOf(OrangeGradiantTop, OrangeGradiantMid, OrangeGradiantBot)
+                        } else {
+                            listOf(Color.LightGray, Color.Gray, Color(0xFF666666))
+                        }
                     )
                     AdventureDifficulty.HARD -> Brush.verticalGradient(
-                        colors = listOf(
-                            Color(0xFFE59A00),
-                            Color(0xFFD08200),
-                            Color(0xFFC07000)
-                        )
+                        colors = if (isDarkMode) {
+                            listOf(OrangeGradiantTop, OrangeGradiantMid, OrangeGradiantBot)
+                        } else {
+                            listOf(Color.LightGray, Color.Gray, Color(0xFF666666))
+                        }
                     )
                     AdventureDifficulty.VERY_HARD -> Brush.verticalGradient(
-                        colors = listOf(
-                            Color(0xFFD58500),
-                            Color(0xFFBF7400),
-                            Color(0xFFAB6200)
-                        )
+                        colors = if (isDarkMode) {
+                            listOf(OrangeGradiantTop, OrangeGradiantMid, OrangeGradiantBot)
+                        } else {
+                            listOf(Color.LightGray, Color.Gray, Color(0xFF666666))
+                        }
                     )
                 },
                 shape = RoundedCornerShape(12.dp) // ensures corners match card
             )
             .clip(RoundedCornerShape(12.dp)), // keeps content inside rounded border
         colors = CardDefaults.elevatedCardColors(
-            containerColor = when (difficulty) {
-                AdventureDifficulty.VERY_EASY -> Color(0xFFF7A71A)
-                AdventureDifficulty.EASY -> Color(0xFFF1A11A)
-                AdventureDifficulty.MEDIUM -> Color(0xFFE09200)
-                AdventureDifficulty.HARD -> Color(0xFFD08200)
-                AdventureDifficulty.VERY_HARD -> Color(0xFFBF7400)
+            containerColor = if (isDarkMode) {
+                when (difficulty) {
+                    AdventureDifficulty.VERY_EASY -> Color(0xFFF7A71A)
+                    AdventureDifficulty.EASY -> Color(0xFFF1A11A)
+                    AdventureDifficulty.MEDIUM -> Color(0xFFE09200)
+                    AdventureDifficulty.HARD -> Color(0xFFD08200)
+                    AdventureDifficulty.VERY_HARD -> Color(0xFFBF7400)
+                }
+            } else {
+                when (difficulty) {
+                    AdventureDifficulty.VERY_EASY -> Color(0xFFAAAAAA)
+                    AdventureDifficulty.EASY -> Color(0xFF999999)
+                    AdventureDifficulty.MEDIUM -> Color(0xFF888888)
+                    AdventureDifficulty.HARD -> Color(0xFF777777)
+                    AdventureDifficulty.VERY_HARD -> Color(0xFF666666)
+                }
             }
         )
     ) {
@@ -327,13 +357,16 @@ fun QuestCardWithDifficulty(
             {
                 OutlinedText(
                     text = questName,
-                    fontSize = 16.sp
+                    fontSize = 16.sp,
+                    textColor = if (isDarkMode) Color.White else Color.Black,
+                    outlineColor = if (isDarkMode) Color.Black else Color.White
                 )
                 // Rotating arrow
                 OutlinedText(
                     text = if (expanded) "▲" else "▼",
                     fontSize = 24.sp,
-
+                    textColor = if (isDarkMode) Color.White else Color.Black,
+                    outlineColor = if (isDarkMode) Color.Black else Color.White
                 )
             }
 

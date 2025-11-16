@@ -24,6 +24,7 @@ fun HomeGameButton(
     text: String,
     onClick: () -> Unit,
     enabled: Boolean = true,
+    isDarkMode: Boolean = false,
     modifier: Modifier = Modifier
 ) {
     Button(
@@ -34,31 +35,38 @@ fun HomeGameButton(
             .fillMaxWidth(0.6f)
             .height(60.dp),
         colors = ButtonDefaults.buttonColors(
-            containerColor = MainOrange,
-            contentColor = Color.Black
+            containerColor = if (isDarkMode) MainOrange else Color.DarkGray,
+            contentColor = if (isDarkMode) Color.Black else Color.DarkGray
         ),
         //shadow-border
         border = BorderStroke(
             3.dp,
             Brush.verticalGradient(
-                colors = if(enabled){ //for enabled buttons
-                    listOf(
-                        OrangeGradiantTop,
-                        OrangeGradiantMid,
-                        OrangeGradiantBot
-                    )
-                }else{ //for disabled buttons
-                    listOf(
+                colors = when {
+                    !enabled -> listOf(
                         Color(0xFFCCCCCC), // light gray top
                         Color(0xFFAAAAAA), // mid gray
                         Color(0xFF888888)  // dark gray bottom
+                    )
+                    !isDarkMode -> listOf(
+                        Color.LightGray,
+                        Color.Gray,
+                        Color(0xFF666666)
+                    )
+                    else -> listOf(
+                        OrangeGradiantTop,
+                        OrangeGradiantMid,
+                        OrangeGradiantBot
                     )
                 }
             )
         )
     ) {
         if(enabled){
-            OutlinedText(text = text)
+            OutlinedText(text = text,
+                textColor = if (isDarkMode) Color.White else Color.White,
+                outlineColor = if (isDarkMode) Color.Black else Color.Black
+            )
         }
         //for disabled text(homescreen)
         else{

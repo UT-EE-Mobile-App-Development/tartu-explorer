@@ -64,6 +64,7 @@ dependencies {
     implementation(libs.androidx.lifecycle.viewmodel.compose)
     implementation(libs.kotlinx.serialization.json)
     implementation(libs.play.services.maps)
+    implementation(libs.androidx.appcompat)
     ksp(libs.androidx.room.compiler)
 
     // internet images

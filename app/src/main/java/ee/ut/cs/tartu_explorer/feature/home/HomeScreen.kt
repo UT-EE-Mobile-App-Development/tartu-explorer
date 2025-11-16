@@ -1,5 +1,8 @@
 package ee.ut.cs.tartu_explorer.feature.home
 
+import android.annotation.SuppressLint
+import androidx.activity.ComponentActivity
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -26,6 +29,8 @@ import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -47,7 +52,26 @@ import ee.ut.cs.tartu_explorer.core.ui.theme.components.AnimatedBackground
 import ee.ut.cs.tartu_explorer.core.ui.theme.components.HomeGameButton
 import ee.ut.cs.tartu_explorer.core.ui.theme.components.OutlinedText
 import ee.ut.cs.tartu_explorer.core.util.LevelInfo
+import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.graphics.ColorMatrix
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Slider
+import androidx.compose.material3.Switch
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Brush
+import ee.ut.cs.tartu_explorer.core.ui.theme.MainOrange
+import ee.ut.cs.tartu_explorer.core.ui.theme.OrangeGradiantBot
+import ee.ut.cs.tartu_explorer.core.ui.theme.OrangeGradiantMid
+import ee.ut.cs.tartu_explorer.core.ui.theme.OrangeGradiantTop
+import ee.ut.cs.tartu_explorer.core.ui.theme.ThemeViewModel
 
+@SuppressLint("ContextCastToActivity")
 @Composable
 fun HomeScreen(
     onNavigateToQuest: () -> Unit,
@@ -70,21 +94,45 @@ fun HomeScreen(
         R.drawable.bg1,
         R.drawable.bg2
     )
+    val themeViewModel: ThemeViewModel = viewModel(
+        viewModelStoreOwner = LocalContext.current as ComponentActivity
+    )
+    val isDarkMode by themeViewModel.isDarkMode
 
-    AnimatedBackground(backgrounds) {
+
+    AnimatedBackground(
+        backgrounds = backgrounds,
+        isDarkMode = isDarkMode
+    ){
         Box(modifier = Modifier.fillMaxSize()) { // Use Box for layering
 
             // Top Left Profile Switcher
             if (uiState.player != null) {
-                Box(modifier = Modifier.align(Alignment.TopStart).padding(16.dp)) {
+                Column(
+                    modifier = Modifier
+                        .align(Alignment.TopStart)
+                        .padding(16.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
                     IconButton(onClick = viewModel::showProfileSwitcher) {
                         Icon(
                             imageVector = Icons.Default.AccountCircle,
                             contentDescription = "Switch Profile",
                             modifier = Modifier.size(48.dp),
-                            tint = Color.White // Make icon more visible on background
+                            tint = if (isDarkMode) Color.Black else Color.White
                         )
                     }
+
+                    Spacer(modifier = Modifier.height(8.dp)) // spacing between icon and switch
+
+                    // Switch below the profile icon
+                    Switch(
+                        checked = isDarkMode,
+                        onCheckedChange = { themeViewModel.toggleDarkMode() },
+                        colors = androidx.compose.material3.SwitchDefaults.colors(
+                            checkedTrackColor = MainOrange
+                        )
+                    )
                 }
             }
 
@@ -92,6 +140,14 @@ fun HomeScreen(
             uiState.levelInfo?.let {
                 Box(modifier = Modifier.align(Alignment.TopEnd).padding(16.dp)) {
                     CircularLevelIndicator(levelInfo = it)
+                }
+                Column(
+                    modifier = Modifier
+                        .align(Alignment.TopEnd)
+                        .padding(16.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ){
+
                 }
             }
 
@@ -113,7 +169,8 @@ fun HomeScreen(
                     onNewPlayerNameChange = viewModel::onNewPlayerNameChange,
                     onSwitchPlayer = viewModel::switchPlayer,
                     onCreatePlayer = viewModel::createNewPlayer,
-                    onDismiss = viewModel::dismissProfileSwitcher
+                    onDismiss = viewModel::dismissProfileSwitcher,
+                    isDarkMode = isDarkMode
                 )
             }
 
@@ -129,28 +186,30 @@ fun HomeScreen(
                     fontSize = 75.sp,
                     fontWeight = FontWeight.Bold,
                     textAlign = TextAlign.Center,
-                    lineHeight = 65.sp
+                    lineHeight = 65.sp,
+                    textColor = if (isDarkMode) Color.White else Color.White,
+                    outlineColor = if (isDarkMode) Color.Black else Color.Black
                 )
 
                 // Welcome message if player exists
                 uiState.player?.let {
-                    Text("Welcome, ${it.name}!", fontSize = 24.sp, fontWeight = FontWeight.SemiBold)
+                    Text("Welcome, ${it.name}!", fontSize = 24.sp, fontWeight = FontWeight.SemiBold, color = if (isDarkMode) Color.Black else Color.White)
                 }
 
                 Column(
                     verticalArrangement = Arrangement.spacedBy(16.dp, Alignment.CenterVertically),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    HomeGameButton("QUESTS", onNavigateToQuest)
-                    HomeGameButton("STATISTICS", onNavigateToStatistics)
+                    HomeGameButton("QUESTS", onNavigateToQuest,isDarkMode = isDarkMode)
+                    HomeGameButton("STATISTICS", onNavigateToStatistics, isDarkMode = isDarkMode)
 
                     if (selectedAdventureId != null && selectedAdventureId > 0) {
-                        Text("selected adventure: $selectedAdventureId")
+                        Text("selected adventure: $selectedAdventureId", color = if (isDarkMode) Color.Black else Color.White)
                         val isCompleted = uiState.adventureStatuses[selectedAdventureId] == SessionStatus.COMPLETED
                         if (isCompleted) {
                             HomeGameButton("Adventure completed", {}, enabled = false)
                         } else {
-                            HomeGameButton("PLAY", { onNavigateToGame(selectedAdventureId) })
+                            HomeGameButton("PLAY", { onNavigateToGame(selectedAdventureId) }, isDarkMode = isDarkMode)
                         }
                     } else {
                         HomeGameButton("Select an adventure to play", {}, enabled = false)
@@ -211,49 +270,70 @@ fun ProfileSwitcherDialog(
     onNewPlayerNameChange: (String) -> Unit,
     onSwitchPlayer: (Long) -> Unit,
     onCreatePlayer: () -> Unit,
-    onDismiss: () -> Unit
+    onDismiss: () -> Unit,
+    isDarkMode: Boolean
 ) {
+    val bgColor = if (isDarkMode) Color(0xFFFFCC80) else Color.DarkGray
+
+    val shape = RoundedCornerShape(18.dp)
+
+    val borderBrush = Brush.verticalGradient(
+        if (!isDarkMode)
+            listOf(Color.LightGray, Color.Gray, Color(0xFF666666))  // dark gray bottom)
+        else
+            listOf(OrangeGradiantMid, OrangeGradiantBot)
+    )
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text("Switch or Create Profile") },
+        title = { Text("Switch or Create Profile",color = if (isDarkMode) Color.Black else Color.White) },
+        modifier = Modifier.fillMaxWidth().border(4.dp, borderBrush,shape),
+        containerColor = bgColor,
         text = {
+
             Column(
                 verticalArrangement = Arrangement.spacedBy(8.dp),
-                modifier = Modifier.padding(8.dp)
+                modifier = Modifier.padding(8.dp).background(bgColor, shape)
             ) {
                 // Create new player
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.spacedBy(8.dp),
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier.fillMaxWidth().background(bgColor, shape)
                 ) {
                     TextField(
                         value = newPlayerName,
                         onValueChange = onNewPlayerNameChange,
-                        placeholder = { Text("New Profile Name") },
-                        modifier = Modifier.weight(1f)
+                        placeholder = { Text("New Profile Name", color = Color.Black) },
+                        modifier = Modifier.weight(1f).background(bgColor, shape)
                     )
                     Button(
                         onClick = onCreatePlayer,
-                        enabled = newPlayerName.isNotBlank()
-                    ) {
-                        Text("Create")
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = if (!isDarkMode) Color(0xFF707070) else Color(0xFFFFA64D)
+                        ),
+                        contentPadding = PaddingValues(0.dp),
+                        enabled = newPlayerName.isNotBlank()) {
+                        Text("Create", color = if (isDarkMode) Color.Black else Color.White)
                     }
                 }
                 // Spacer
                 Spacer(modifier = Modifier.height(16.dp))
                 // List of existing players
-                Text("Select a profile:", fontWeight = FontWeight.Bold)
+                Text("Select a profile:", fontWeight = FontWeight.Bold, color = if (isDarkMode) Color.Black else Color.White)
                 LazyColumn(
-                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                    verticalArrangement = Arrangement.spacedBy(8.dp),
+                    modifier = Modifier.background(bgColor, shape)
                 ) {
                     items(players) { player ->
                         Button(
                             onClick = { onSwitchPlayer(player.id) },
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = if (!isDarkMode) Color(0xFF707070) else Color(0xFFFFA64D)
+                            ),
                             modifier = Modifier.fillMaxWidth(),
                             enabled = player.id != activePlayerId
                         ) {
-                            Text(player.name + if (player.id == activePlayerId) " (Active)" else "")
+                            Text(player.name + if (player.id == activePlayerId) " (Active)" else "", color = if (isDarkMode) Color.Black else Color.White)
                         }
                     }
                 }
@@ -261,7 +341,7 @@ fun ProfileSwitcherDialog(
         },
         confirmButton = {
             TextButton(onClick = onDismiss) {
-                Text("Close")
+                Text("Close", color = if (isDarkMode) Color.Black else Color.White)
             }
         }
     )

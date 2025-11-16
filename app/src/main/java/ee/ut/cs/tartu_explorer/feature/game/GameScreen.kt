@@ -5,8 +5,13 @@ import android.R.attr.data
 import android.annotation.SuppressLint
 import android.view.MotionEvent
 import android.widget.Toast
+import androidx.activity.ComponentActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -14,12 +19,14 @@ import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -28,6 +35,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
@@ -69,11 +77,19 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.ui.graphics.Path
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.input.pointer.pointerInteropFilter
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.window.Popup
 import ee.ut.cs.tartu_explorer.R
+import ee.ut.cs.tartu_explorer.core.ui.theme.MainOrange
+import ee.ut.cs.tartu_explorer.core.ui.theme.OrangeGradiantBot
+import ee.ut.cs.tartu_explorer.core.ui.theme.OrangeGradiantMid
+import ee.ut.cs.tartu_explorer.core.ui.theme.OrangeGradiantTop
+import ee.ut.cs.tartu_explorer.core.ui.theme.ThemeViewModel
 import ee.ut.cs.tartu_explorer.core.ui.theme.components.AnimatedBackground
 import ee.ut.cs.tartu_explorer.core.ui.theme.components.CustomBackButton
 import ee.ut.cs.tartu_explorer.feature.weather.WeatherState
@@ -85,6 +101,7 @@ import kotlin.math.sqrt
 import kotlin.random.Random
 
 
+@SuppressLint("ContextCastToActivity")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun GameScreen(adventureId: Long, onNavigateBack: () -> Unit) {
@@ -120,12 +137,19 @@ fun GameScreen(adventureId: Long, onNavigateBack: () -> Unit) {
     var currentHintText by remember { mutableStateOf("") }
 
     var showBlueCircleOnMap by remember { mutableStateOf(false) }
+    var showCompletionPopup by remember { mutableStateOf(false) }
 
     val targetLatLng = state.quests.getOrNull(state.currentQuest)?.let { quest ->
         LatLng(quest.latitude, quest.longitude)}
 
+    val themeViewModel: ThemeViewModel = viewModel(
+        viewModelStoreOwner = LocalContext.current as ComponentActivity
+    )
+    val isDarkMode by themeViewModel.isDarkMode
 
-    AnimatedBackground(backgrounds) {
+    AnimatedBackground(
+        backgrounds = backgrounds,
+        isDarkMode = isDarkMode) {
         Box(modifier = Modifier.fillMaxSize()) {
 
             Row(
@@ -134,7 +158,7 @@ fun GameScreen(adventureId: Long, onNavigateBack: () -> Unit) {
                     .align(Alignment.TopStart)
                     .padding(16.dp)
             ) {
-                CustomBackButton(onClick = onNavigateBack)
+                CustomBackButton(onClick = onNavigateBack, isDarkMode = isDarkMode)
             }
 
             Box(
@@ -156,6 +180,8 @@ fun GameScreen(adventureId: Long, onNavigateBack: () -> Unit) {
                     ProgressBar(
                         currentStep = state.currentQuest,
                         totalSteps = state.quests.size,
+                        isDarkMode = isDarkMode,
+                        showCompletionPopup = showCompletionPopup,
                         modifier = Modifier.fillMaxWidth()
                     )
 
@@ -250,14 +276,16 @@ fun GameScreen(adventureId: Long, onNavigateBack: () -> Unit) {
                         onGuess = {
                             viewModel.guessPosition()
                             if (state.guessState?.inRange == true) {
-                                showBlueCircleOnMap = false}},
+                                showBlueCircleOnMap = false}
+                                  },
                         currentHintText = currentHintText,
                         modifier = Modifier.fillMaxWidth(),
                         hintDisabled = state.currentHint >= 2 || showBlueCircleOnMap,
                         showHintPopup = { showHintPopup = it },
                         showWeatherPopup = { showWeatherPopup  = it },
                         showBlueCircleOnMap = showBlueCircleOnMap,
-                        targetLatLng = targetLatLng
+                        targetLatLng = targetLatLng,
+                        isDarkMode = isDarkMode
                     )
 
 
@@ -265,8 +293,14 @@ fun GameScreen(adventureId: Long, onNavigateBack: () -> Unit) {
                         val guess = state.guessState!!
                         DebugGuessDialog(
                             onContinueAnyway = {
+                                val wasLastQuest = state.currentQuest == state.quests.size - 1
                                 viewModel.nextQuest()
-                                showBlueCircleOnMap = false},
+                                showBlueCircleOnMap = false
+
+                                if (wasLastQuest) {
+                                    showCompletionPopup = true
+                                }
+                                               },
                             onDismiss = { viewModel.resetDebugGuessDialogue() },
                             distance = guess.distanceFromTarget,
                             inRange = guess.inRange
@@ -282,12 +316,14 @@ fun GameScreen(adventureId: Long, onNavigateBack: () -> Unit) {
                 Box(
                     modifier = Modifier
                         .fillMaxSize()
-                        .background(Color.Black.copy(alpha = 0.5f)),
+                        .background(Color.Black.copy(alpha = 0.5f))
+                        .clickable {showHintPopup = false},
                     contentAlignment = Alignment.Center
                 ) {
                     Card(
                         shape = RoundedCornerShape(16.dp),
                         modifier = Modifier.padding(32.dp)
+                            .clickable {showHintPopup = false}
                     ) {
                         Text(
                             text = currentHintText,
@@ -298,17 +334,81 @@ fun GameScreen(adventureId: Long, onNavigateBack: () -> Unit) {
                 }
 
             }
-            // Centered Hint Popup
-            if (showWeatherPopup && targetLatLng != null) {
+            if (showCompletionPopup) {
+
+                val shape = RoundedCornerShape(16.dp)
+
+                // Same colors as your ProfileSwitcher
+                val bgColor = if (isDarkMode) Color(0xFFFFCC80) else Color.DarkGray
+
+                val borderBrush = Brush.verticalGradient(
+                    if (!isDarkMode)
+                        listOf(Color.LightGray, Color.Gray, Color(0xFF666666))
+                    else
+                        listOf( OrangeGradiantMid, OrangeGradiantBot)
+                )
+
                 Box(
                     modifier = Modifier
                         .fillMaxSize()
                         .background(Color.Black.copy(alpha = 0.5f)),
                     contentAlignment = Alignment.Center
                 ) {
+                    Column(
+                        modifier = Modifier
+                            .padding(32.dp)
+                            .border(4.dp, borderBrush, shape)
+                            .background(bgColor, shape)
+                            .padding(24.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.spacedBy(16.dp)
+                    ) {
+                        Text(
+                            text = "You Completed The Adventure!",
+                            fontSize = 20.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = if (isDarkMode) Color.Black else Color.White
+                        )
+
+                        Text(
+                            text = "Great job!\nYou solved all quests!",
+                            fontSize = 16.sp,
+                            textAlign = TextAlign.Center,
+                            color = if (isDarkMode) Color.Black else Color.White
+                        )
+
+                        // Styled button, same as your other dialogs
+                        Button(
+                            onClick = {
+                                showCompletionPopup = false
+                                onNavigateBack()
+                            },
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = if (!isDarkMode) Color(0xFF707070) else Color(0xFFFFA64D)
+                            ),
+                            contentPadding = PaddingValues(0.dp)
+                        ) {
+                            Text(
+                                "Finish",
+                                color = if (isDarkMode) Color.Black else Color.White
+                            )
+                        }
+                    }
+                }
+            }
+            // Centered Hint Popup
+            if (showWeatherPopup && targetLatLng != null) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(Color.Black.copy(alpha = 0.5f))
+                        .clickable {showWeatherPopup = false},
+                    contentAlignment = Alignment.Center
+                ) {
                     Card(
                         shape = RoundedCornerShape(16.dp),
                         modifier = Modifier.padding(32.dp)
+                            .clickable {showWeatherPopup = false}
                     ) {
                         WeatherCard(lat = targetLatLng.latitude, lon = targetLatLng.longitude)
 
@@ -325,43 +425,95 @@ fun GameScreen(adventureId: Long, onNavigateBack: () -> Unit) {
 
 
 @Composable
-fun ProgressBar(currentStep: Int, totalSteps: Int, modifier: Modifier = Modifier) {
-    Box(
-        modifier = modifier
-            .padding(20.dp)
+fun ProgressBar(
+    currentStep: Int,
+    totalSteps: Int,
+    modifier: Modifier = Modifier,
+    isDarkMode: Boolean = false,
+    showCompletionPopup: Boolean = false
+) {
+    Column(
+        modifier = modifier.padding(20.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        val progress = currentStep / (totalSteps - 1).toFloat()
-        Box(
+
+        Row(
             modifier = Modifier
-                .align(Alignment.Center)
                 .fillMaxWidth()
-                .height(12.dp)
-                .padding(horizontal = 10.dp)
-                .background(
-                    brush = Brush.horizontalGradient(
-                        colorStops = arrayOf(
-                            progress to Color.Green,
-                            progress + 0.01f to Color.White,
-                        )
-                    )
-                )
-        )
-        Row(horizontalArrangement = Arrangement.SpaceBetween, modifier = Modifier.fillMaxWidth()) {
+                .padding(horizontal = 16.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+
             repeat(totalSteps) { index ->
-                Box(
-                    modifier = Modifier
-                        .size(32.dp)
-                        .background(
-                            color = if (index < currentStep) Color.Green
-                            else if (index == currentStep) Color.Yellow
-                            else Color.White,
-                            shape = CircleShape
-                        )
+                val isCompleted = index < currentStep || (showCompletionPopup && index == totalSteps - 1)
+                val isCurrent = !showCompletionPopup && index == currentStep
+
+                val color = when {
+                    isCurrent -> Color(0xFFB71C1C)     // red active marker
+                    isCompleted -> Color(0xFF4CAF50)   // Green completed marker
+                    else -> if (isDarkMode) Color.LightGray else Color.DarkGray            // Future marker
+                }
+
+                val scale by animateFloatAsState(
+                    targetValue = if (isCurrent) 1.25f else 1f,
+                    label = ""
                 )
+
+                // Marker itself
+                MapMarkerIconTriangle(color = color, scale = scale)
+
+                // Draw road segments except after last marker
+                if (index < totalSteps - 1) {
+                    RoadSegment(
+                        color = if (index < currentStep) Color(0xFF4CAF50) else if (isDarkMode) Color.LightGray else Color.DarkGray
+                    )
+                }
             }
         }
     }
 }
+@Composable
+fun MapMarkerIconTriangle(color: Color, scale: Float) {
+    Column(
+        modifier = Modifier
+            .graphicsLayer(scaleX = scale, scaleY = scale)
+            .padding(horizontal = 4.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        // Circle head
+        Box(
+            modifier = Modifier
+                .size(20.dp)
+                .clip(CircleShape)
+                .background(color)
+        )
+
+        // Triangle tip
+        Canvas(
+            modifier = Modifier
+                .size(14.dp)
+                .graphicsLayer(rotationZ = 180f) // point downward
+        ) {
+            val path = Path().apply {
+                moveTo(size.width / 2f, 0f)
+                lineTo(0f, size.height)
+                lineTo(size.width, size.height)
+                close()
+            }
+            drawPath(path, color = color)
+        }
+    }
+}
+@Composable
+fun RoadSegment(color: Color) {
+    Box(
+        modifier = Modifier
+            .width(30.dp)
+            .height(4.dp)
+            .background(color, RoundedCornerShape(2.dp))
+    )
+}
+
 
 @SuppressLint("MissingPermission")
 @Composable
@@ -374,7 +526,8 @@ fun GameControls(
     showHintPopup: (Boolean) -> Unit,
     showWeatherPopup: (Boolean) -> Unit,
     showBlueCircleOnMap: Boolean = false,
-    targetLatLng: LatLng? = null
+    targetLatLng: LatLng? = null,
+    isDarkMode: Boolean
 ) {
     val context = LocalContext.current
     val fusedLocationClient = remember { LocationServices.getFusedLocationProviderClient(context) }
@@ -414,47 +567,99 @@ fun GameControls(
             horizontalArrangement = Arrangement.SpaceEvenly,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Button(onClick = onGuess) { Text("GUESS") }
+            Button(onClick = onGuess, colors = ButtonDefaults.buttonColors(
+                containerColor = if (isDarkMode) MainOrange else Color.DarkGray,
+                contentColor = Color.White
+            ),
+                //shadow-border
+                border = BorderStroke(
+                    3.dp,
+                    Brush.verticalGradient(
+                        colors = when {
+                            !isDarkMode -> listOf(
+                                Color.LightGray,
+                                Color.Gray,
+                                Color(0xFF666666)
+                            )
+                            else -> listOf(
+                                OrangeGradiantTop,
+                                OrangeGradiantMid,
+                                OrangeGradiantBot
+                            )
+                        }
+                    )
+                )) { Text("GUESS") }
 
+            // Info button
             Box(
                 contentAlignment = Alignment.Center,
                 modifier = Modifier
                     .size(50.dp)
-                    .border(2.dp, Color.Black, RoundedCornerShape(12.dp))
-                    .background(Color.LightGray, RoundedCornerShape(12.dp))
-                    .pointerInput(Unit) {
-                        detectTapGestures(
-                            onPress = {
-                                showHintPopup(true)
-                                tryAwaitRelease()
-                                showHintPopup(false)
+                    .border(BorderStroke(
+                        width = 3.dp,
+                        brush = Brush.verticalGradient(
+                            colors = if (isDarkMode) {
+                                listOf(OrangeGradiantTop, OrangeGradiantMid, OrangeGradiantBot)
+                            } else {
+                                listOf(
+                                    Color.LightGray,
+                                    Color.Gray,
+                                    Color(0xFF666666))
                             }
                         )
-                    }
+                    ), RoundedCornerShape(12.dp))
+                    .background(if (isDarkMode) MainOrange else Color.DarkGray, RoundedCornerShape(12.dp))
+                    .clickable { showHintPopup(true) }
             ) {
-                Text("i", color = Color.Black, fontSize = 24.sp)
+                Text("i", color = Color.White, fontSize = 24.sp)
             }
-            // Weather button
+
+// Weather button
             Box(
                 contentAlignment = Alignment.Center,
                 modifier = Modifier
                     .size(50.dp)
-                    .border(2.dp, Color.Black, RoundedCornerShape(12.dp))
-                    .background(Color.LightGray, RoundedCornerShape(12.dp))
-                    .pointerInput(Unit) {
-                        detectTapGestures(
-                            onPress = {
-                                showWeatherPopup(true)
-                                tryAwaitRelease()
-                                showWeatherPopup(false)
+                    .border(               BorderStroke(
+                        width = 3.dp,
+                        brush = Brush.verticalGradient(
+                            colors = if (isDarkMode) {
+                                listOf(OrangeGradiantTop, OrangeGradiantMid, OrangeGradiantBot)
+                            } else {
+                                listOf(
+                                    Color.LightGray,
+                                    Color.Gray,
+                                    Color(0xFF666666))
                             }
                         )
-                    }
+                    ), RoundedCornerShape(12.dp))
+                    .background(if (isDarkMode) MainOrange else Color.DarkGray, RoundedCornerShape(12.dp))
+                    .clickable { showWeatherPopup(true) }
             ) {
-                Text("☁", fontSize = 24.sp) // icon for weather
+                Text("☁", fontSize = 24.sp, color = Color.White)
             }
 
-            Button(onClick = onUseHint, enabled = !hintDisabled) { Text("HINTS") }
+            Button(onClick = onUseHint, enabled = !hintDisabled, colors = ButtonDefaults.buttonColors(
+                containerColor = if (isDarkMode) MainOrange else Color.DarkGray,
+                contentColor = Color.White
+            ),
+                //shadow-border
+                border = BorderStroke(
+                    3.dp,
+                    Brush.verticalGradient(
+                        colors = when {
+                            !isDarkMode -> listOf(
+                                Color.LightGray,
+                                Color.Gray,
+                                Color(0xFF666666)
+                            )
+                            else -> listOf(
+                                OrangeGradiantTop,
+                                OrangeGradiantMid,
+                                OrangeGradiantBot
+                            )
+                        }
+                    )
+                )) { Text("HINTS") }
         }
 
         Box(

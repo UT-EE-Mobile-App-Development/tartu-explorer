@@ -21,7 +21,9 @@ fun OutlinedText(
     fontSize: TextUnit? = null,
     fontWeight: FontWeight = FontWeight.Bold,
     textAlign: TextAlign = TextAlign.Start,
-    lineHeight: TextUnit = TextUnit.Unspecified
+    lineHeight: TextUnit = TextUnit.Unspecified,
+    textColor: Color,            // top text color
+    outlineColor: Color = Color.Black // outline color
 ) {
 
     val actualFontSize = fontSize ?: 24.sp
@@ -45,7 +47,7 @@ fun OutlinedText(
                 text = text,
                 fontSize = actualFontSize,
                 fontWeight = fontWeight,
-                color = Color.Black,
+                color = outlineColor,
                 textAlign = textAlign,
                 lineHeight = lineHeight,
                 modifier = Modifier.offset(x = x, y = y)
@@ -57,7 +59,7 @@ fun OutlinedText(
             text = text,
             fontSize = actualFontSize,
             fontWeight = fontWeight,
-            color = Color.White,
+            color = textColor,
             textAlign = textAlign,
             lineHeight = lineHeight
         )

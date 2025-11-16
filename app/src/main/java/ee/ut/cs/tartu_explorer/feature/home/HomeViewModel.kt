@@ -14,6 +14,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import androidx.compose.runtime.mutableStateOf
 
 data class HomeUiState(
     val showNamePrompt: Boolean = false,
@@ -30,7 +31,6 @@ class HomeViewModel(
     private val playerRepository: PlayerRepository,
     private val gameRepository: GameRepository
 ) : ViewModel() {
-
     private val _uiState = MutableStateFlow(HomeUiState())
     val uiState = _uiState.asStateFlow()
 

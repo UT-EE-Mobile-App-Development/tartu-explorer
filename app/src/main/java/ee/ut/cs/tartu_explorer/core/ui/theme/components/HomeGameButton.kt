@@ -6,14 +6,13 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.graphics.Brush
 import ee.ut.cs.tartu_explorer.core.ui.theme.MainOrange
 import ee.ut.cs.tartu_explorer.core.ui.theme.OrangeGradiantBot
 import ee.ut.cs.tartu_explorer.core.ui.theme.OrangeGradiantMid
@@ -48,11 +47,13 @@ fun HomeGameButton(
                         Color(0xFFAAAAAA), // mid gray
                         Color(0xFF888888)  // dark gray bottom
                     )
+
                     !isDarkMode -> listOf(
                         Color.LightGray,
                         Color.Gray,
                         Color(0xFF666666)
                     )
+
                     else -> listOf(
                         OrangeGradiantTop,
                         OrangeGradiantMid,
@@ -62,19 +63,19 @@ fun HomeGameButton(
             )
         )
     ) {
-        if(enabled){
-            OutlinedText(text = text,
+        if (enabled) {
+            OutlinedText(
+                text = text,
                 textColor = if (isDarkMode) Color.White else Color.White,
                 outlineColor = if (isDarkMode) Color.Black else Color.Black
             )
-        }
-        //for disabled text(homescreen)
-        else{
-            Text(
+        } else {
+            OutlinedText(
                 text = text,
                 fontSize = 16.sp,
-                fontWeight = FontWeight.Normal,
-                color = Color.Gray
+                fontWeight = FontWeight.Bold,
+                textColor = Color.White,
+                outlineColor = Color.Black
             )
         }
     }

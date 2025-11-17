@@ -38,21 +38,11 @@ class PrepopulateCallback(private val context: Context) : RoomDatabase.Callback(
         // Adventures
         val adventure1Id = adventureDao.insertAdventure(
             AdventureEntity(
-                title = "Test-Adventure (Delta/Raatuse)",
-                description = "Only a testadventure",
-                difficulty = AdventureDifficulty.EASY,
-                estimatedDuration = 60,
+                title = "Adventure (Delta/Raatuse)",
+                description = "A good start to get to know Tartu Explorer",
+                difficulty = AdventureDifficulty.VERY_EASY,
+                estimatedDuration = 30,
                 thumbnailPath = "https://www.campus.ee/wp-content/uploads/2023/04/Raatuse22_uustaust.png"
-            )
-        )
-
-        val adventure2Id = adventureDao.insertAdventure(
-            AdventureEntity(
-                title = "Street-Art-Tour",
-                description = "Find the hidden art gems of Tartu's streets",
-                difficulty = AdventureDifficulty.MEDIUM,
-                estimatedDuration = 90,
-                thumbnailPath = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQXVVqwTP4A3jU9Gmq9bEOGoFW-4DCBAvsRDA&s"
             )
         )
 
@@ -79,7 +69,7 @@ class PrepopulateCallback(private val context: Context) : RoomDatabase.Callback(
             HintEntity(
                 questId = quest1Id,
                 index = 0,
-                text = "Look for the leaning house.",
+                text = "Do you know the Tartu University?.",
                 imageUrl = "https://progressarch.com/wp-content/uploads/2024/04/5_DELTA-BUILDING_TARTU-UNIVERSITY_SCORPIO-P04010-scaled.jpg"
             )
         )
@@ -87,7 +77,7 @@ class PrepopulateCallback(private val context: Context) : RoomDatabase.Callback(
             HintEntity(
                 questId = quest1Id,
                 index = 1,
-                text = "It's near the main square.",
+                text = "Maybe it is a special building of the university with a unique shape.",
                 imageUrl = "https://www.themayor.eu/web/files/articles/4510/main_image/thumb_1200x630_Delta_Building_Tartu_University.jpg"
             )
         )
@@ -97,33 +87,16 @@ class PrepopulateCallback(private val context: Context) : RoomDatabase.Callback(
             HintEntity(
                 questId = quest2Id,
                 index = 0,
-                text = "This building is a famous university building.",
-                imageUrl = "https://www.campus.ee/wp-content/uploads/2023/04/tyk-6628-2048x1363.jpg"
+                text = "Students sleep here",
+                imageUrl = "https://www.rallyestonia.com/get/image/userfiles/image/list/item_7062/92094377.jpg?w=1000&h=0"
             )
         )
         hintDao.insert(
             HintEntity(
                 questId = quest2Id,
                 index = 1,
-                text = "It has six large white columns.",
+                text = "The Raatuse street is very close to this building",
                 imageUrl = "https://www.campus.ee/wp-content/uploads/2023/04/tyk-6628-2048x1363.jpg"
-            )
-        )
-
-        // Quests for Adventure 2
-        val quest3Id = questDao.insert(
-            QuestEntity(
-                adventureId = adventure2Id,
-                latitude = 58.3783,
-                longitude = 26.7149,
-                radius = 30.0
-            )
-        )
-        hintDao.insert(
-            HintEntity(
-                questId = quest3Id,
-                index = 0,
-                text = "Find the mural of the man with the camera."
             )
         )
     }

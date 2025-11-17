@@ -55,6 +55,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.zIndex
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil3.compose.AsyncImage
 import com.google.android.gms.location.LocationServices
@@ -141,6 +142,7 @@ fun GameScreen(adventureId: Long, onNavigateBack: () -> Unit) {
                 modifier = Modifier
                     .align(Alignment.TopStart)
                     .padding(16.dp)
+                    .zIndex(1f)
             ) {
                 CustomBackButton(onClick = onNavigateBack, isDarkMode = isDarkMode)
             }
@@ -671,7 +673,6 @@ fun GameControls(
 
 @Composable
 fun NoPermissionInfo(locationPermissionToastEvent: SharedFlow<Boolean>) {
-    // todo: instead of a toast disable the guess button and show a tooltip
     val context = LocalContext.current
     LaunchedEffect(Unit) {
         locationPermissionToastEvent.collect { it ->

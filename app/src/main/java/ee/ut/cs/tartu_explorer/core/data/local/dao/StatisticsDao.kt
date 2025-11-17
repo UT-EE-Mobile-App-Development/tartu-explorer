@@ -90,4 +90,22 @@ interface StatisticsDao {
         )
     """)
     suspend fun getCompletedQuestLocations(playerId: Long): List<CompletedQuestLocation>
+
+    // 7) Total number of started adventures
+    @Query("""
+        SELECT COUNT(*) FROM adventure_session
+        WHERE playerId = :playerId
+    """)
+    suspend fun totalAdventuresStarted(playerId: Long): Long
+
+    // 8) Total number of adventures
+    @Query("SELECT COUNT(*) FROM adventure")
+    suspend fun totalAdventures(): Long
+
+    // 9) Total number of finished adventures
+    @Query("""
+        SELECT COUNT(*) FROM adventure_session
+        WHERE playerId = :playerId AND status = 'COMPLETED'
+    """)
+    suspend fun totalAdventuresFinished(playerId: Long): Long
 }

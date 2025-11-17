@@ -493,16 +493,22 @@ fun DifficultyStatBox(
             )
         } else {
             val textColor = if (!isDarkMode) Color.White else Color.Black
-            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-                Text("Very Easy: ${difficultyMap.getOrDefault("Very Easy", 0L)}", color = textColor)
-                Text("Easy: ${difficultyMap.getOrDefault("Easy", 0L)}", color = textColor)
-            }
-            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
-                Text("Medium: ${difficultyMap.getOrDefault("Medium", 0L)}", color = textColor)
-            }
-            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-                Text("Hard: ${difficultyMap.getOrDefault("Hard", 0L)}", color = textColor)
-                Text("Very Hard: ${difficultyMap.getOrDefault("Very Hard", 0L)}", color = textColor)
+            Row(modifier = Modifier.fillMaxWidth()) {
+                Column(
+                    modifier = Modifier.weight(1f),
+                    verticalArrangement = Arrangement.spacedBy(4.dp)
+                ) {
+                    Text("Very Easy: ${difficultyMap.getOrDefault("Very Easy", 0L)}", color = textColor)
+                    Text("Easy: ${difficultyMap.getOrDefault("Easy", 0L)}", color = textColor)
+                    Text("Medium: ${difficultyMap.getOrDefault("Medium", 0L)}", color = textColor)
+                }
+                Column(
+                    modifier = Modifier.weight(1f),
+                    verticalArrangement = Arrangement.spacedBy(4.dp)
+                ) {
+                    Text("Hard: ${difficultyMap.getOrDefault("Hard", 0L)}", color = textColor)
+                    Text("Very Hard: ${difficultyMap.getOrDefault("Very Hard", 0L)}", color = textColor)
+                }
             }
         }
     }

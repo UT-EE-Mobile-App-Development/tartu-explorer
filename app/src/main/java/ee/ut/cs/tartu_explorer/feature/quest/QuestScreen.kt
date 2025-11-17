@@ -197,7 +197,10 @@ fun DifficultyRow(
     thumbnailSize: Dp
 ) {
     val scrollState = rememberScrollState()
-    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+    Column(
+        modifier = Modifier.padding(bottom = 8.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
         Row(
             modifier = Modifier
                 .horizontalScroll(scrollState)

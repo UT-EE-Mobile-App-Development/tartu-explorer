@@ -101,16 +101,19 @@ class GameViewModel(
             val attempt = QuestAttemptEntity(
                 sessionId = sessionId,
                 questId = currentQuestEntity.id,
+                // DEV-build
                 wasCorrect = true
+                //wasCorrect= inRadius
             )
             repository.trackQuestAttempt(attempt)
 
+            // for Dev:
             // If the guess was correct, award experience points
-            if (inRadius) {
-                val hintsUsed = state.value.currentHint
-                val epGained = LevelingUtil.calculateEpForQuest(hintsUsed)
-                playerRepository.addExperiencePoints(playerId, epGained)
-            }
+            // if (inRadius) {
+            val hintsUsed = state.value.currentHint
+            val epGained = LevelingUtil.calculateEpForQuest(hintsUsed)
+            playerRepository.addExperiencePoints(playerId, epGained)
+            //}
 
             // Update the UI with the guess result
             _state.update { it.copy(guessState = GuessState(distanceToTarget, inRadius)) }

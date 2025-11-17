@@ -8,6 +8,10 @@ Timo Schwarzbach (timoschwarzbach timoschwarzbach) - Lead Developer <br/>
 Rando Roosik (Orants Rando Roosik) - Researcher <br/>
 Madis Puu (madsipuu) - Editor <br/>
 
+## Polishing + Testing + APK Documentation ##
+
+see step4_report.md
+
 ## API Documentation ##
 
 see step3_report.md

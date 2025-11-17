@@ -170,8 +170,8 @@ fun StatisticsScreen(
                                 started = data.totalAdventuresStarted,
                                 finished = data.totalAdventuresFinished,
                                 total = data.totalAdventures,
-                                color = Color(0xFFF7A71A),
-                                gradientColors = listOf(Color(0xFFFFB833), Color(0xFFF7A71A), Color(0xFFE09A00)),
+                                color = Color(0xFFF1A11A),
+                                gradientColors = listOf(Color(0xFFF7B21A), Color(0xFFF1A11A), Color(0xFFDB8F00)),
                                 isDarkMode = isDarkMode
                             )
 
@@ -379,9 +379,11 @@ fun AdventureStatBox(
     modifier: Modifier = Modifier,
     isDarkMode: Boolean
 ) {
-    val bgColor = if (!isDarkMode) Color(0xFF2C2C2C) else color
-    val borderColors = if (!isDarkMode) listOf(Color.LightGray, Color.Gray, Color.DarkGray) else gradientColors
-
+    val bgColor = if (!isDarkMode) Color(0xFFAD6B1B) else color
+    val borderColors = if (!isDarkMode)
+        listOf(Color(0xFFCC8F40), Color(0xFFAD6B1B), Color(0xFF99570F))
+    else
+        gradientColors
     Column(
         modifier = modifier
             .fillMaxWidth()

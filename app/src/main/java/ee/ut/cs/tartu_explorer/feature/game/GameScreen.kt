@@ -24,6 +24,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
@@ -409,42 +411,42 @@ fun ProgressBar(
     isDarkMode: Boolean = false,
     showCompletionPopup: Boolean = false
 ) {
-    Column(
+    val listState = rememberLazyListState()
+
+    // Scroll automatically after the 5th marker
+    LaunchedEffect(currentStep) {
+        if (currentStep >= 5) {
+            listState.animateScrollToItem(currentStep)
+        }
+    }
+
+    LazyRow(
+        state = listState,
         modifier = modifier.padding(20.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
+        verticalAlignment = Alignment.CenterVertically
     ) {
+        items(totalSteps) { index ->
+            val isCompleted = index < currentStep || (showCompletionPopup && index == totalSteps - 1)
+            val isCurrent = !showCompletionPopup && index == currentStep
 
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 16.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
+            val color = when {
+                isCurrent -> Color(0xFFB71C1C)     // red active marker
+                isCompleted -> Color(0xFF4CAF50)   // green completed marker
+                else -> if (isDarkMode) Color.LightGray else Color.DarkGray
+            }
 
-            repeat(totalSteps) { index ->
-                val isCompleted = index < currentStep || (showCompletionPopup && index == totalSteps - 1)
-                val isCurrent = !showCompletionPopup && index == currentStep
+            val scale by animateFloatAsState(
+                targetValue = if (isCurrent) 1.25f else 1f,
+                label = ""
+            )
 
-                val color = when {
-                    isCurrent -> Color(0xFFB71C1C)     // red active marker
-                    isCompleted -> Color(0xFF4CAF50)   // Green completed marker
-                    else -> if (isDarkMode) Color.LightGray else Color.DarkGray            // Future marker
-                }
+            MapMarkerIconTriangle(color = color, scale = scale)
 
-                val scale by animateFloatAsState(
-                    targetValue = if (isCurrent) 1.25f else 1f,
-                    label = ""
+            // Road segment except after last marker
+            if (index < totalSteps - 1) {
+                RoadSegment(
+                    color = if (index < currentStep) Color(0xFF4CAF50) else if (isDarkMode) Color.LightGray else Color.DarkGray
                 )
-
-                // Marker itself
-                MapMarkerIconTriangle(color = color, scale = scale)
-
-                // Draw road segments except after last marker
-                if (index < totalSteps - 1) {
-                    RoadSegment(
-                        color = if (index < currentStep) Color(0xFF4CAF50) else if (isDarkMode) Color.LightGray else Color.DarkGray
-                    )
-                }
             }
         }
     }

@@ -84,6 +84,8 @@ dependencies {
     debugImplementation(libs.androidx.compose.ui.tooling)
     debugImplementation(libs.androidx.compose.ui.test.manifest)
 
+    implementation("androidx.core:core-splashscreen:1.0.1")
+
     // Maps
     implementation("com.google.maps.android:maps-compose:4.4.1") // Compose Maps
     implementation("com.google.android.gms:play-services-maps:19.0.0") // Core Maps SDK

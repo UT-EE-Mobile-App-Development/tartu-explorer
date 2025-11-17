@@ -106,11 +106,12 @@ fun QuestScreen(
                             modifier = Modifier.fillMaxHeight(),
                             contentAlignment = Alignment.Center
                         ) {
-                            Text(
+                            OutlinedText(
                                 text = "Quests",
                                 fontSize = 28.sp,
                                 fontWeight = FontWeight.Bold,
-                                color = Color.Black
+                                textColor = Color.White,
+                                outlineColor = Color.Black
                             )
                         }
                     },

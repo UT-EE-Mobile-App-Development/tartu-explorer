@@ -51,6 +51,7 @@ import ee.ut.cs.tartu_explorer.core.data.local.dao.CompletedQuestLocation
 import ee.ut.cs.tartu_explorer.core.ui.theme.ThemeViewModel
 import ee.ut.cs.tartu_explorer.core.ui.theme.components.AnimatedBackground
 import ee.ut.cs.tartu_explorer.core.ui.theme.components.CustomBackButton
+import ee.ut.cs.tartu_explorer.core.ui.theme.components.OutlinedText
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import kotlin.collections.listOf
@@ -89,11 +90,12 @@ fun StatisticsScreen(
                             modifier = Modifier.fillMaxHeight(),
                             contentAlignment = Alignment.Center
                         ) {
-                            Text(
+                            OutlinedText(
                                 text = "Statistics",
                                 fontSize = 28.sp,
                                 fontWeight = FontWeight.Bold,
-                                color = Color.Black
+                                textColor = Color.White,
+                                outlineColor = Color.Black
                             )
                         }
                     },

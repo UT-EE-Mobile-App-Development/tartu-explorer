@@ -190,7 +190,7 @@ fun HomeScreen(
 
                 // Welcome message if player exists
                 uiState.player?.let {
-                    Text("Welcome, ${it.name}!", fontSize = 24.sp, fontWeight = FontWeight.SemiBold, color = if (isDarkMode) Color.Black else Color.White)
+                    OutlinedText("Welcome, ${it.name}!", fontSize = 24.sp, fontWeight = FontWeight.SemiBold, textColor = Color.White, outlineColor = Color.Black)
                 }
 
                 Column(
@@ -201,7 +201,7 @@ fun HomeScreen(
                     HomeGameButton("STATISTICS", onNavigateToStatistics, isDarkMode = isDarkMode)
 
                     if (selectedAdventureId != null && selectedAdventureId > 0) {
-                        Text("selected adventure: $selectedAdventureId", color = if (isDarkMode) Color.Black else Color.White)
+                        OutlinedText("selected adventure: $selectedAdventureId", textColor = Color.White, outlineColor = Color.Black)
                         val isCompleted = uiState.adventureStatuses[selectedAdventureId] == SessionStatus.COMPLETED
                         if (isCompleted) {
                             HomeGameButton("Adventure completed", {}, enabled = false)

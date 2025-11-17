@@ -124,26 +124,24 @@ class HomeViewModel(
     }
 
     suspend fun prefetchQuestImages(adventure: Long, context: PlatformContext) {
-        val images = gameRepository.getQuestsByAdventure(adventure)
-            .first()
-            .flatMap { questEntity ->
-                gameRepository.getHintsByQuest(questEntity.id)
-                    .first()
-                    .filter { hintEntity -> hintEntity.imageUrl != null }
-                    .map { hintEntity -> hintEntity.imageUrl as String }
+        val quests = gameRepository.getQuestsByAdventure(adventure).first()
+
+        // Phase 1: preload first hint image of each quest (for preview)
+        quests.forEach { quest ->
+            val firstHint = gameRepository.getHintsByQuest(quest.id)
+                .first()
+                .firstOrNull { it.imageUrl != null }
+
+            firstHint?.imageUrl?.let { url ->
+                val request = ImageRequest.Builder(context)
+                    .data(url)
+                    .build()
+                context.imageLoader.enqueue(request) // fire-and-forget
             }
-            Log.w("img-preload","fetching ${images.size} images")
-            images.map { image ->
-                    val request = ImageRequest.Builder(context)
-                        .data(image).build()
-                    val status = context.imageLoader.enqueue(request)
-                    status.job.invokeOnCompletion {
-//                        in offline mode this will fast fail and give a wrong response that images have been fetched
-                        Log.w("img-preload","fetched $image")
-                    }
-                    status.job
-            }.joinAll()
-        _uiState.update { it.copy(readyToPlay = true) }
+        }
+
+        // Enable Play button immediately
+        _uiState.update { it.copy(readyToPlay = quests.isNotEmpty()) }
     }
 }
 

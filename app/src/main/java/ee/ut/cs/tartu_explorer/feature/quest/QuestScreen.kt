@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -23,6 +24,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CenterAlignedTopAppBar
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
@@ -47,7 +49,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import coil3.compose.AsyncImage
+import coil3.compose.SubcomposeAsyncImage
 import ee.ut.cs.tartu_explorer.R
 import ee.ut.cs.tartu_explorer.core.data.local.db.DatabaseProvider
 import ee.ut.cs.tartu_explorer.core.data.local.entities.AdventureDifficulty
@@ -57,9 +59,6 @@ import ee.ut.cs.tartu_explorer.core.data.repository.AdventureRepository
 import ee.ut.cs.tartu_explorer.core.data.repository.AdventureStatusDetails
 import ee.ut.cs.tartu_explorer.core.data.repository.GameRepository
 import ee.ut.cs.tartu_explorer.core.data.repository.PlayerRepository
-import ee.ut.cs.tartu_explorer.core.ui.theme.OrangeGradiantBot
-import ee.ut.cs.tartu_explorer.core.ui.theme.OrangeGradiantMid
-import ee.ut.cs.tartu_explorer.core.ui.theme.OrangeGradiantTop
 import ee.ut.cs.tartu_explorer.core.ui.theme.ThemeViewModel
 import ee.ut.cs.tartu_explorer.core.ui.theme.components.AnimatedBackground
 import ee.ut.cs.tartu_explorer.core.ui.theme.components.CustomBackButton
@@ -216,7 +215,7 @@ fun DifficultyRow(
                         else -> Color.Transparent
                     }
                     Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                        AsyncImage(
+                        SubcomposeAsyncImage(
                             model = adventure.thumbnailPath,
                             contentDescription = "$displayName levels",
                             modifier = Modifier
@@ -224,7 +223,18 @@ fun DifficultyRow(
                                 .border(2.dp, borderColor, RoundedCornerShape(8.dp))
                                 .clip(RoundedCornerShape(8.dp))//makes the pictures corners rounded as well
                                 .clickable { onNavigateHome(adventure.id) },
-                            contentScale = ContentScale.Crop //so the picture fits in the box
+                            contentScale = ContentScale.Crop, //so the picture fits in the box
+                            loading = {
+                                Box(
+                                    modifier = Modifier.fillMaxSize(),
+                                    contentAlignment = Alignment.Center
+                                ) {
+                                    CircularProgressIndicator(
+                                        modifier = Modifier.size(40.dp),
+                                        strokeWidth = 4.dp
+                                    )
+                                }
+                            }
                         )
                         if (details != null) {
                             Text(
@@ -387,6 +397,3 @@ fun QuestCardWithDifficulty(
             }
         }
     }
-
-
-

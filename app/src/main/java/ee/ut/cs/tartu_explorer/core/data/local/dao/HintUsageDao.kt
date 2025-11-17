@@ -20,6 +20,6 @@ interface HintUsageDao {
     @Query("SELECT sessionId, COUNT(*) as count FROM hint_usage WHERE sessionId IN (:sessionIds) GROUP BY sessionId")
     fun getHintCountForSessions(sessionIds: List<Long>): Flow<List<HintCount>>
 
-    @Query("SELECT COUNT(*) FROM hint_usage")
-    fun observeHintUsageChanges(): Flow<Int>
+    @Query("SELECT MAX(id) FROM hint_usage")
+    fun observeHintUsageChanges(): Flow<Long?>
 }

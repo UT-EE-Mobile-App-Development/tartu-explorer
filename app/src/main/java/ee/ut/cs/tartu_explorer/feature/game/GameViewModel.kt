@@ -101,7 +101,7 @@ class GameViewModel(
             val attempt = QuestAttemptEntity(
                 sessionId = sessionId,
                 questId = currentQuestEntity.id,
-                wasCorrect = inRadius
+                wasCorrect = true
             )
             repository.trackQuestAttempt(attempt)
 

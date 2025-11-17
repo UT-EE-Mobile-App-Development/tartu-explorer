@@ -1,12 +1,10 @@
 package ee.ut.cs.tartu_explorer.feature.game
 
 import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DebugGuessDialog(
     onContinueAnyway: () -> Unit,
@@ -21,14 +19,14 @@ fun DebugGuessDialog(
                 TextButton(
                     onClick = onContinueAnyway
                 ) {
-                    Text("next quest")
+                    Text("Next Quest")
                 }
             },
             title = {
-                Text("Guess Confirmation")
+                Text("Quest Completed!")
             },
             text = {
-                Text("You completed this quest and can continue to the next quest")
+                Text("You've successfully completed this quest. You can now proceed to the next one.")
             },
         )
     } else {
@@ -38,23 +36,22 @@ fun DebugGuessDialog(
                 TextButton(
                     onClick = onContinueAnyway
                 ) {
-                    Text("continue anyway")
+                    Text("Continue Anyway (Debug)")
                 }
             },
             dismissButton = {
                 TextButton(
                     onClick = onDismiss
                 ) {
-                    Text("return")
+                    Text("Return")
                 }
             },
             title = {
-                Text("Guess Confirmation")
+                Text("Not in Range")
             },
             text = {
-                Text("Not in range. Distance to target $distance")
+                Text("Your guess was ${distance.toInt()} meters away. The quest will be marked as complete anyway.")
             },
-
-            )
+        )
     }
 }

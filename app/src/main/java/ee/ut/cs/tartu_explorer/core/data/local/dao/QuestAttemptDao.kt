@@ -17,9 +17,9 @@ interface QuestAttemptDao {
     @Query("SELECT COUNT(*) FROM quest_attempt WHERE sessionId = :sessionId AND wasCorrect = 1")
     suspend fun getSuccessfulAttemptsCountForSession(sessionId: Long): Long
 
-    @Query("SELECT sessionId, COUNT(*) as count FROM quest_attempt WHERE wasCorrect = 1 AND sessionId IN (:sessionIds) GROUP BY sessionId")
+    @Query("SELECT sessionId, COUNT(DISTINCT questId) as count FROM quest_attempt WHERE wasCorrect = 1 AND sessionId IN (:sessionIds) GROUP BY sessionId")
     fun getSuccessfulAttemptsCountForSessions(sessionIds: List<Long>): Flow<List<SuccessfulAttemptCount>>
 
-    @Query("SELECT COUNT(*) FROM quest_attempt")
-    fun observeQuestAttemptChanges(): Flow<Int>
+    @Query("SELECT * FROM quest_attempt")
+    fun observeQuestAttemptChanges(): Flow<List<QuestAttemptEntity>>
 }

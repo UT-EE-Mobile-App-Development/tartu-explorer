@@ -673,7 +673,6 @@ fun GameControls(
 
 @Composable
 fun NoPermissionInfo(locationPermissionToastEvent: SharedFlow<Boolean>) {
-    // todo: instead of a toast disable the guess button and show a tooltip
     val context = LocalContext.current
     LaunchedEffect(Unit) {
         locationPermissionToastEvent.collect { it ->

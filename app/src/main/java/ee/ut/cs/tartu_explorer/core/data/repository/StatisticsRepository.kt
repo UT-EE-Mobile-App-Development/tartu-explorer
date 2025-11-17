@@ -13,6 +13,9 @@ data class CompletedByDifficulty(
 )
 
 data class StatsOverview(
+    val totalAdventures: Long,
+    val totalAdventuresStarted: Long,
+    val totalAdventuresFinished: Long,
     val completedByDifficulty: List<CompletedByDifficulty>,
     val totalHintsUsed: Long,
     val avgHintsPerQuest: Double?,
@@ -42,6 +45,9 @@ class StatisticsRepository private constructor(
         val avgAdventureDurationDeferred = async { dao.avgAdventureDurationMs(playerId)?.valueMs }
         val avgTimeToFirstHintDeferred = async { dao.avgTimeToFirstHintMs(playerId)?.valueMs }
         val completedQuestLocationsDeferred = async { dao.getCompletedQuestLocations(playerId) }
+        val totalAdventuresStartedDeferred = async { dao.totalAdventuresStarted(playerId) }
+        val totalAdventuresFinishedDeferred = async { dao.totalAdventuresFinished(playerId) }
+        val totalAdventuresDeferred = async { dao.totalAdventures() }
 
         val totalHints = totalHintsDeferred.await()
         val totalSuccessfulQuests = totalSuccessfulQuestsDeferred.await()
@@ -53,6 +59,9 @@ class StatisticsRepository private constructor(
         }
 
         StatsOverview(
+            totalAdventures = totalAdventuresDeferred.await(),
+            totalAdventuresStarted = totalAdventuresStartedDeferred.await(),
+            totalAdventuresFinished = totalAdventuresFinishedDeferred.await(),
             completedByDifficulty = completedByDiffDeferred.await(),
             totalHintsUsed = totalHints,
             avgHintsPerQuest = avgHintsPerQuest,

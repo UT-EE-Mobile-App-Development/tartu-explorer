@@ -9,11 +9,10 @@ import android.graphics.PorterDuffXfermode
 import androidx.activity.ComponentActivity
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -22,7 +21,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Color.Companion.Transparent
-import androidx.compose.ui.input.pointer.PointerEventType
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
@@ -48,13 +46,13 @@ import com.google.maps.android.compose.rememberCameraPositionState
 import com.google.maps.android.compose.rememberMarkerState
 import ee.ut.cs.tartu_explorer.R
 import ee.ut.cs.tartu_explorer.core.data.local.dao.CompletedQuestLocation
+import ee.ut.cs.tartu_explorer.core.data.repository.CompletedByDifficulty
 import ee.ut.cs.tartu_explorer.core.ui.theme.ThemeViewModel
 import ee.ut.cs.tartu_explorer.core.ui.theme.components.AnimatedBackground
 import ee.ut.cs.tartu_explorer.core.ui.theme.components.CustomBackButton
 import ee.ut.cs.tartu_explorer.core.ui.theme.components.OutlinedText
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import kotlin.collections.listOf
 import kotlin.math.min
 import kotlin.math.roundToInt
 
@@ -142,7 +140,7 @@ fun StatisticsScreen(
                         ) {
                             Column(horizontalAlignment = Alignment.CenterHorizontally) {
                                 Text(
-                                    "Error loading statistics:\n${s.message}",
+                                    "Error loading statistics: ${s.message}",
                                     textAlign = TextAlign.Center,
                                     color = Color.Black
                                 )
@@ -157,153 +155,128 @@ fun StatisticsScreen(
                     is StatsUiState.Loaded -> {
                         val data = s.data
                         var isMapTouched by remember { mutableStateOf(false) }
-                        val lazyListState = rememberLazyListState()
 
-                        LazyColumn(
-                            state = lazyListState,
-                            modifier = Modifier.fillMaxSize(),
-                            verticalArrangement = Arrangement.spacedBy(12.dp),
+                        Column(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .verticalScroll(rememberScrollState(), enabled = !isMapTouched)
+                                .padding(16.dp),
+                            verticalArrangement = Arrangement.spacedBy(16.dp),
                             horizontalAlignment = Alignment.CenterHorizontally,
-                            contentPadding = PaddingValues(16.dp),
-                            userScrollEnabled = !isMapTouched
                         ) {
 
-                            item { Spacer(Modifier.height(4.dp)) }
+                            AdventureStatBox(
+                                title = "Adventures",
+                                started = data.totalAdventuresStarted,
+                                finished = data.totalAdventuresFinished,
+                                total = data.totalAdventures,
+                                color = Color(0xFFF7A71A),
+                                gradientColors = listOf(Color(0xFFFFB833), Color(0xFFF7A71A), Color(0xFFE09A00)),
+                                isDarkMode = isDarkMode
+                            )
 
-                            //2x2 grid for data
-                            item {
-                                Column(
-                                    verticalArrangement = Arrangement.spacedBy(12.dp),
-                                ) {
-                                    Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
-                                        StatBox(
-                                            title = "Required hints (total)",
-                                            value = data.totalHintsUsed.toString(),
-                                            color = Color(0xFFF7A71A),
-                                            modifier = Modifier.weight(1f),
-                                            gradientColors = listOf(Color(0xFFFFB833), Color(0xFFF7A71A), Color(0xFFE09A00)),
-                                            isDarkMode = isDarkMode
-                                        )
-                                        StatBox(
-                                            title = "Ø Hints per quest",
-                                            value = formatDoubleOrDash(data.avgHintsPerQuest),
-                                            color = Color(0xFFF7A71A),
-                                            modifier = Modifier.weight(1f),
-                                            gradientColors = listOf(Color(0xFFFFB833), Color(0xFFF7A71A), Color(0xFFE09A00)),
-                                            isDarkMode = isDarkMode
-                                        )
-                                    }
-                                    Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-                                        StatBox(
-                                            title = "Ø Time for an adventure",
-                                            value = formatDurationOrDash(data.avgAdventureDurationMs),
-                                            color = Color(0xFFF1A11A),
-                                            modifier = Modifier.weight(1f),
-                                            gradientColors = listOf(Color(0xFFF7B21A), Color(0xFFF1A11A), Color(0xFFDB8F00)),
-                                            isDarkMode = isDarkMode
-                                        )
-                                        StatBox(
-                                            title = "Ø Time until first hint",
-                                            value = formatDurationOrDash(data.avgTimeToFirstHintMs),
-                                            color = Color(0xFFF1A11A),
-                                            modifier = Modifier.weight(1f),
-                                            gradientColors = listOf(Color(0xFFF7B21A), Color(0xFFF1A11A), Color(0xFFDB8F00)),
-                                            isDarkMode = isDarkMode
-                                        )
-                                    }
-                                }
+                            Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
+                                StatBox(
+                                    title = "Required hints (total)",
+                                    value = data.totalHintsUsed.toString(),
+                                    color = Color(0xFFF1A11A),
+                                    modifier = Modifier.weight(1f),
+                                    gradientColors = listOf(Color(0xFFF7B21A), Color(0xFFF1A11A), Color(0xFFDB8F00)),
+                                    isDarkMode = isDarkMode
+                                )
+                                StatBox(
+                                    title = "Ø Hints per quest",
+                                    value = formatDoubleOrDash(data.avgHintsPerQuest),
+                                    color = Color(0xFFF1A11A),
+                                    modifier = Modifier.weight(1f),
+                                    gradientColors = listOf(Color(0xFFF7B21A), Color(0xFFF1A11A), Color(0xFFDB8F00)),
+                                    isDarkMode = isDarkMode
+                                )
+                            }
+                            Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
+                                StatBox(
+                                    title = "Ø Time for an adventure",
+                                    value = formatDurationOrDash(data.avgAdventureDurationMs),
+                                    color = Color(0xFFF1A11A),
+                                    modifier = Modifier.weight(1f),
+                                    gradientColors = listOf(Color(0xFFF7B21A), Color(0xFFF1A11A), Color(0xFFDB8F00)),
+                                    isDarkMode = isDarkMode
+                                )
+                                StatBox(
+                                    title = "Ø Time until first hint",
+                                    value = formatDurationOrDash(data.avgTimeToFirstHintMs),
+                                    color = Color(0xFFF1A11A),
+                                    modifier = Modifier.weight(1f),
+                                    gradientColors = listOf(Color(0xFFF7B21A), Color(0xFFF1A11A), Color(0xFFDB8F00)),
+                                    isDarkMode = isDarkMode
+                                )
                             }
 
-                            item { Spacer(Modifier.height(16.dp)) }
-
-                            if (data.completedByDifficulty.isEmpty()) {
-                                item {
-                                    BigStatBox(
-                                        title = "Completed quests by difficulty",
-                                        value = "No completed quests available.",
-                                        color = Color(0xFFE09200),
-                                        gradientColors = listOf(Color(0xFFF0A200), Color(0xFFE09200), Color(0xFFD08000)),
-                                        isDarkMode = isDarkMode
-                                    )
-                                }
-                            } else {
-                                val difficultySummary = data.completedByDifficulty.joinToString("\n") { entry ->
-                                    "${entry.difficulty}: ${entry.count}"
-                                }
-                                item {
-                                    BigStatBox(
-                                        title = "Completed quests by difficulty",
-                                        value = difficultySummary,
-                                        color = Color(0xFFD08200),
-                                        gradientColors = listOf(Color(0xFFE59A00), Color(0xFFD08200), Color(0xFFC07000)),
-                                        isDarkMode = isDarkMode
-                                    )
-                                }
-                            }
-
-                            item { Spacer(Modifier.height(16.dp)) }
+                            DifficultyStatBox(
+                                title = "Completed Quests by Difficulty",
+                                completedByDifficulty = data.completedByDifficulty,
+                                color = Color(0xFFE09200),
+                                gradientColors = listOf(Color(0xFFF0A200), Color(0xFFE09200), Color(0xFFD08000)),
+                                isDarkMode = isDarkMode
+                            )
 
                             // Map of completed quests
-                            item {
-                                OutlinedText(
-                                    text = "Your Completed Quests",
-                                    //style = MaterialTheme.typography.titleLarge,
-                                    fontSize = 20.sp,
-                                    fontWeight = FontWeight.Bold,
-                                    textColor = Color.White,
-                                    outlineColor = Color.Black
-                                )
-                                Spacer(Modifier.height(8.dp))
-                                val tartu = LatLng(58.3780, 26.7290)
-                                val cameraPositionState = rememberCameraPositionState {
-                                    position = CameraPosition.fromLatLngZoom(tartu, 12f)
-                                }
-                                // Shared shape for border + clipping
-                                val borderShape = RoundedCornerShape(16.dp)
+                            OutlinedText(
+                                text = "Your Completed Quests",
+                                fontSize = 20.sp,
+                                fontWeight = FontWeight.Bold,
+                                textColor = Color.White,
+                                outlineColor = Color.Black
+                            )
+                            val tartu = LatLng(58.3780, 26.7290)
+                            val cameraPositionState = rememberCameraPositionState {
+                                position = CameraPosition.fromLatLngZoom(tartu, 12f)
+                            }
+                            // Shared shape for border + clipping
+                            val borderShape = RoundedCornerShape(16.dp)
 
-                                // Dark mode and light mode gradient borders
-                                val borderBrush = if (!isDarkMode) {
-                                    Brush.verticalGradient(
-                                        listOf(
-                                            Color.LightGray,
-                                            Color.Gray,
-                                            Color.DarkGray,
-                                        )
+                            // Dark mode and light mode gradient borders
+                            val borderBrush = if (!isDarkMode) {
+                                Brush.verticalGradient(
+                                    listOf(
+                                        Color.LightGray,
+                                        Color.Gray,
+                                        Color.DarkGray,
                                     )
-                                } else {
-                                    Brush.verticalGradient(
-                                        listOf(Color(0xFFE59A00), Color(0xFFD08200), Color(0xFFC07000))
-                                    )
-                                }
-                                Box(
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .height(400.dp)
-                                        .border(4.dp, borderBrush, borderShape)
-                                        .clip(borderShape)
-                                        .pointerInput(Unit) {
-                                            awaitPointerEventScope {
-                                                while (true) {
-                                                    val event = awaitPointerEvent()
-                                                    when (event.type) {
-                                                        androidx.compose.ui.input.pointer.PointerEventType.Press -> {
-                                                            isMapTouched = true
-                                                        }
-                                                        androidx.compose.ui.input.pointer.PointerEventType.Release -> {
-                                                            isMapTouched = false
-                                                        }
+                                )
+                            } else {
+                                Brush.verticalGradient(
+                                    listOf(Color(0xFFE59A00), Color(0xFFD08200), Color(0xFFC07000))
+                                )
+                            }
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .height(400.dp)
+                                    .border(4.dp, borderBrush, borderShape)
+                                    .clip(borderShape)
+                                    .pointerInput(Unit) {
+                                        awaitPointerEventScope {
+                                            while (true) {
+                                                val event = awaitPointerEvent()
+                                                when (event.type) {
+                                                    androidx.compose.ui.input.pointer.PointerEventType.Press -> {
+                                                        isMapTouched = true
+                                                    }
+                                                    androidx.compose.ui.input.pointer.PointerEventType.Release -> {
+                                                        isMapTouched = false
                                                     }
                                                 }
                                             }
                                         }
+                                    }
+                            ) {
+                                GoogleMap(
+                                    modifier = Modifier.fillMaxSize(),
+                                    cameraPositionState = cameraPositionState
                                 ) {
-                                    GoogleMap(
-                                        modifier = Modifier.fillMaxSize(),
-                                        cameraPositionState = cameraPositionState
-                                    ) {
-                                        data.completedQuestLocations.forEach { questLocation ->
-                                            QuestMarker(questLocation)
-                                        }
+                                    data.completedQuestLocations.forEach { questLocation ->
+                                        QuestMarker(questLocation)
                                     }
                                 }
                             }
@@ -384,7 +357,64 @@ private fun formatDurationOrDash(ms: Double?): String {
     }
 }
 
-//Used to display statistics data
+private fun mapDifficulty(difficulty: String): String {
+    return when (difficulty) {
+        "0" -> "Very Easy"
+        "1" -> "Easy"
+        "2" -> "Medium"
+        "3" -> "Hard"
+        "4" -> "Very Hard"
+        else -> difficulty
+    }
+}
+
+@Composable
+fun AdventureStatBox(
+    title: String,
+    started: Long,
+    finished: Long,
+    total: Long,
+    color: Color,
+    gradientColors: List<Color>,
+    modifier: Modifier = Modifier,
+    isDarkMode: Boolean
+) {
+    val bgColor = if (!isDarkMode) Color(0xFF2C2C2C) else color
+    val borderColors = if (!isDarkMode) listOf(Color.LightGray, Color.Gray, Color.DarkGray) else gradientColors
+
+    Column(
+        modifier = modifier
+            .fillMaxWidth()
+            .border(
+                width = 4.dp,
+                brush = Brush.verticalGradient(borderColors),
+                shape = RoundedCornerShape(24.dp)
+            )
+            .background(bgColor, RoundedCornerShape(24.dp))
+            .padding(16.dp),
+        verticalArrangement = Arrangement.SpaceBetween,
+        horizontalAlignment = Alignment.Start
+    ) {
+        Text(
+            text = title,
+            style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.SemiBold),
+            color = if (!isDarkMode) Color.White else Color.Black
+        )
+        Spacer(Modifier.height(8.dp))
+        Text(
+            text = "Started: $started / $total",
+            style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.Medium),
+            color = if (!isDarkMode) Color.White else Color.Black
+        )
+        Text(
+            text = "Finished: $finished / $total",
+            style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.Medium),
+            color = if (!isDarkMode) Color.White else Color.Black
+        )
+    }
+}
+
+
 @Composable
 fun StatBox(
     title: String, value: String, color: Color, gradientColors: List<Color>, modifier: Modifier = Modifier, isDarkMode: Boolean
@@ -423,28 +453,29 @@ fun StatBox(
 }
 
 @Composable
-fun BigStatBox(
-    title: String, value: String, color: Color, gradientColors: List<Color>, modifier: Modifier = Modifier, isDarkMode: Boolean
+fun DifficultyStatBox(
+    title: String,
+    completedByDifficulty: List<CompletedByDifficulty>,
+    color: Color,
+    gradientColors: List<Color>,
+    modifier: Modifier = Modifier,
+    isDarkMode: Boolean
 ) {
-
     val bgColor = if (!isDarkMode) Color(0xFF2C2C2C) else color
-    val borderColors = if (!isDarkMode)
-        listOf(Color.LightGray, Color.Gray, Color.DarkGray)
-    else
-        gradientColors
+    val borderColors = if (!isDarkMode) listOf(Color.LightGray, Color.Gray, Color.DarkGray) else gradientColors
+
+    val difficultyMap = completedByDifficulty.associate { mapDifficulty(it.difficulty) to it.count }
 
     Column(
         modifier = modifier
             .fillMaxWidth()
-            .aspectRatio(1.3f)
             .border(
-                width = 5.dp,
+                width = 4.dp,
                 brush = Brush.verticalGradient(borderColors),
                 shape = RoundedCornerShape(24.dp)
             )
             .background(bgColor, RoundedCornerShape(24.dp))
             .padding(16.dp),
-        verticalArrangement = Arrangement.SpaceBetween,
         horizontalAlignment = Alignment.Start
     ) {
         Text(
@@ -452,10 +483,27 @@ fun BigStatBox(
             style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.SemiBold),
             color = if (!isDarkMode) Color.White else Color.Black
         )
-        Text(
-            text = value,
-            style = MaterialTheme.typography.headlineSmall.copy(fontWeight = FontWeight.Medium),
-            color = if (!isDarkMode) Color.White else Color.Black
-        )
+        Spacer(Modifier.height(8.dp))
+
+        if (completedByDifficulty.isEmpty()) {
+            Text(
+                text = "No completed quests available.",
+                style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.Medium),
+                color = if (!isDarkMode) Color.White else Color.Black
+            )
+        } else {
+            val textColor = if (!isDarkMode) Color.White else Color.Black
+            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+                Text("Very Easy: ${difficultyMap.getOrDefault("Very Easy", 0L)}", color = textColor)
+                Text("Easy: ${difficultyMap.getOrDefault("Easy", 0L)}", color = textColor)
+            }
+            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
+                Text("Medium: ${difficultyMap.getOrDefault("Medium", 0L)}", color = textColor)
+            }
+            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+                Text("Hard: ${difficultyMap.getOrDefault("Hard", 0L)}", color = textColor)
+                Text("Very Hard: ${difficultyMap.getOrDefault("Very Hard", 0L)}", color = textColor)
+            }
+        }
     }
 }

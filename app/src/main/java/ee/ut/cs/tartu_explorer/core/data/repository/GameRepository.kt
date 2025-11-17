@@ -43,8 +43,12 @@ class GameRepository(
         val hintTrigger = hintUsageDao.observeHintUsageChanges()
 
         // Combine the triggers. The flatMapLatest will re-execute whenever ANY of them emit a new value.
-        return combine(sessionTrigger, attemptTrigger, hintTrigger) { sessions, _, _ ->
-            sessions // Pass the sessions through, we only need the trigger
+        return combine(
+            sessionTrigger,
+            attemptTrigger,
+            hintTrigger
+        ) { sessions, _, _ ->
+            sessions
         }.flatMapLatest { sessions ->
             if (sessions.isEmpty()) {
                 return@flatMapLatest flowOf(emptyMap())
@@ -57,7 +61,8 @@ class GameRepository(
             // These flows will now fetch the latest data because this whole block is re-executed
             val questCountsFlow = questDao.getQuestCountsForAdventures(adventureIds)
             val hintCountsFlow = hintUsageDao.getHintCountForSessions(sessionIds)
-            val successfulQuestsFlow = questAttemptDao.getSuccessfulAttemptsCountForSessions(sessionIds)
+            val successfulQuestsFlow =
+                questAttemptDao.getSuccessfulAttemptsCountForSessions(sessionIds)
 
             combine(
                 questCountsFlow,
@@ -66,7 +71,8 @@ class GameRepository(
             ) { questCounts, hintCounts, successfulQuests ->
                 val questCountsMap = questCounts.associateBy({ it.adventureId }, { it.count })
                 val hintCountsMap = hintCounts.associateBy({ it.sessionId }, { it.count })
-                val successfulQuestsMap = successfulQuests.associateBy({ it.sessionId }, { it.count })
+                val successfulQuestsMap =
+                    successfulQuests.associateBy({ it.sessionId }, { it.count })
 
                 latestSessions.mapValues { (adventureId, session) ->
                     AdventureStatusDetails(

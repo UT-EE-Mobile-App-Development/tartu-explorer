@@ -229,7 +229,7 @@ fun DifficultyRow(
                         if (details != null) {
                             Text(
                                 "Quests: ${details.completedQuests}/${details.totalQuests}" +
-                                        "   H:${details.hintsUsed}", color = Color.Black
+                                        "  Hints: ${details.hintsUsed} ", color = Color.Black
                             )
                             //Text("Time: ${formatDuration(details.durationMs)}", color = Color.Black)
                         }

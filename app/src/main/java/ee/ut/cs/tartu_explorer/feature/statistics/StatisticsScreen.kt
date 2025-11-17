@@ -318,11 +318,12 @@ private fun QuestMarker(questLocation: CompletedQuestLocation) {
     val context = LocalContext.current
     var bitmapDescriptor by remember { mutableStateOf<BitmapDescriptor?>(null) }
 
-    LaunchedEffect(questLocation.adventureThumbnailPath) {
+    LaunchedEffect(questLocation.hintImageUrl) {
+        if (questLocation.hintImageUrl == null) return@LaunchedEffect
         val loader = ImageLoader(context)
         val request = ImageRequest.Builder(context)
-            .data(questLocation.adventureThumbnailPath)
-            .size(Size(200, 200)) // Size of Images (Pins)
+            .data(questLocation.hintImageUrl)
+            .size(Size(150, 150)) // Size of Images (Pins)
             .allowHardware(false)
             .build()
 

@@ -14,10 +14,8 @@ data class AvgDouble(val value: Double?)
 data class CompletedQuestLocation(
     val latitude: Double,
     val longitude: Double,
-    // QuestEntity doesn't have a thumbnail, so we'll use the adventure thumbnail.
-    // We'll also need the quest ID if we want to show quest-specific images later.
     val questId: Long,
-    val adventureThumbnailPath: String
+    val hintImageUrl: String?
 )
 
 @Dao
@@ -80,10 +78,13 @@ interface StatisticsDao {
 
     // 6) Locations of all successfully completed quests for the map
     @Query("""
-        SELECT DISTINCT q.id AS questId, q.latitude, q.longitude, a.thumbnailPath as adventureThumbnailPath
+        SELECT DISTINCT 
+            q.id AS questId, 
+            q.latitude, 
+            q.longitude, 
+            (SELECT h.imageUrl FROM hint h WHERE h.questId = q.id ORDER BY h.'index' ASC LIMIT 1) as hintImageUrl
         FROM quest_attempt qa
         JOIN quest q ON q.id = qa.questId
-        JOIN adventure a ON a.id = q.adventureId
         WHERE qa.wasCorrect = 1 AND qa.sessionId IN (
             SELECT id FROM adventure_session WHERE playerId = :playerId
         )

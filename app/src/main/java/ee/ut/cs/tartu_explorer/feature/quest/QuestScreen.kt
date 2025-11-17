@@ -57,9 +57,6 @@ import ee.ut.cs.tartu_explorer.core.data.repository.AdventureRepository
 import ee.ut.cs.tartu_explorer.core.data.repository.AdventureStatusDetails
 import ee.ut.cs.tartu_explorer.core.data.repository.GameRepository
 import ee.ut.cs.tartu_explorer.core.data.repository.PlayerRepository
-import ee.ut.cs.tartu_explorer.core.ui.theme.OrangeGradiantBot
-import ee.ut.cs.tartu_explorer.core.ui.theme.OrangeGradiantMid
-import ee.ut.cs.tartu_explorer.core.ui.theme.OrangeGradiantTop
 import ee.ut.cs.tartu_explorer.core.ui.theme.ThemeViewModel
 import ee.ut.cs.tartu_explorer.core.ui.theme.components.AnimatedBackground
 import ee.ut.cs.tartu_explorer.core.ui.theme.components.CustomBackButton

@@ -245,11 +245,13 @@ fun StatisticsScreen(
 
                             // Map of completed quests
                             item {
-                                Text(
-                                    "Your Completed Quests",
-                                    style = MaterialTheme.typography.titleLarge,
+                                OutlinedText(
+                                    text = "Your Completed Quests",
+                                    //style = MaterialTheme.typography.titleLarge,
+                                    fontSize = 20.sp,
                                     fontWeight = FontWeight.Bold,
-                                    color = if (!isDarkMode) Color.White else Color.Black
+                                    textColor = Color.White,
+                                    outlineColor = Color.Black
                                 )
                                 Spacer(Modifier.height(8.dp))
                                 val tartu = LatLng(58.3780, 26.7290)

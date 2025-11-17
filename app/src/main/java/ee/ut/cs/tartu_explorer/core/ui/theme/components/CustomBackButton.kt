@@ -35,15 +35,16 @@ fun CustomBackButton(onClick: () -> Unit, isDarkMode: Boolean = false) {
                             listOf(OrangeGradiantTop, OrangeGradiantMid, OrangeGradiantBot)
                         } else {
                             listOf(
-                                Color.LightGray,
-                                Color.Gray,
-                                Color(0xFF666666))
+                                Color(0xFFFFA533),
+                                Color(0xFFCC7A00),
+                                Color(0xFFB36700)
+                            )
                         }
                     )
                 ),
                 shape = RoundedCornerShape(8.dp)
             )
-            .background(color = if (isDarkMode) MainOrange else Color.DarkGray,
+            .background(color = if (isDarkMode) MainOrange else Color(0xFFD87F1C),
                 shape = RoundedCornerShape(8.dp)) // orange fill
             .clickable { onClick() },
         contentAlignment = Alignment.Center

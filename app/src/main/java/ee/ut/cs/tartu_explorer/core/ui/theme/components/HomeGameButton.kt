@@ -34,7 +34,7 @@ fun HomeGameButton(
             .fillMaxWidth(0.6f)
             .height(60.dp),
         colors = ButtonDefaults.buttonColors(
-            containerColor = if (isDarkMode) MainOrange else Color.DarkGray,
+            containerColor = if (isDarkMode) MainOrange else Color(0xFFD87F1C),
             contentColor = if (isDarkMode) Color.Black else Color.DarkGray
         ),
         //shadow-border
@@ -49,9 +49,9 @@ fun HomeGameButton(
                     )
 
                     !isDarkMode -> listOf(
-                        Color.LightGray,
-                        Color.Gray,
-                        Color(0xFF666666)
+                        Color(0xFFFFA533),
+                        Color(0xFFCC7A00),
+                        Color(0xFFB36700)
                     )
 
                     else -> listOf(

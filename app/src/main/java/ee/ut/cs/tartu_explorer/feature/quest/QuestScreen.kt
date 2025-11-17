@@ -298,35 +298,35 @@ fun QuestCardWithDifficulty(
                         colors = if (isDarkMode) {
                             listOf(Color(0xFFFFB833), Color(0xFFF7A71A), Color(0xFFE09A00))
                         } else {
-                            listOf(Color.LightGray, Color.Gray, Color(0xFF666666))
+                            listOf(Color(0xFFFFAD4D),  Color(0xFFD27A1F), Color(0xFFB46617))
                         }
                     )
                     AdventureDifficulty.EASY -> Brush.verticalGradient(
                         colors = if (isDarkMode) {
                             listOf(Color(0xFFF7B21A), Color(0xFFF1A11A), Color(0xFFDB8F00))
                         } else {
-                            listOf(Color.LightGray, Color.Gray, Color(0xFF666666))
+                            listOf(Color(0xFFD9984A), Color(0xFFB97318), Color(0xFFA36000))
                         }
                     )
                     AdventureDifficulty.MEDIUM -> Brush.verticalGradient(
                         colors = if (isDarkMode) {
                             listOf(Color(0xFFF0A200), Color(0xFFE09200), Color(0xFFD08000))
                         } else {
-                            listOf(Color.LightGray, Color.Gray, Color(0xFF666666))
+                            listOf(Color(0xFFCC8F40), Color(0xFFAD6B1B), Color(0xFF99570F))
                         }
                     )
                     AdventureDifficulty.HARD -> Brush.verticalGradient(
                         colors = if (isDarkMode) {
                             listOf(Color(0xFFE59A00), Color(0xFFD08200), Color(0xFFC07000))
                         } else {
-                            listOf(Color.LightGray, Color.Gray, Color(0xFF666666))
+                            listOf(Color(0xFFB26A00), Color(0xFF995500), Color(0xFF7F4300))
                         }
                     )
                     AdventureDifficulty.VERY_HARD -> Brush.verticalGradient(
                         colors = if (isDarkMode) {
                             listOf(Color(0xFFD58500), Color(0xFFBF7400), Color(0xFFAB6200))
                         } else {
-                            listOf(Color.LightGray, Color.Gray, Color(0xFF666666))
+                            listOf(Color(0xFF9C5C00), Color(0xFF7F4700), Color(0xFF663600))
                         }
                     )
                 },
@@ -344,11 +344,11 @@ fun QuestCardWithDifficulty(
                 }
             } else {
                 when (difficulty) {
-                    AdventureDifficulty.VERY_EASY -> Color(0xFFAAAAAA)
-                    AdventureDifficulty.EASY -> Color(0xFF999999)
-                    AdventureDifficulty.MEDIUM -> Color(0xFF888888)
-                    AdventureDifficulty.HARD -> Color(0xFF777777)
-                    AdventureDifficulty.VERY_HARD -> Color(0xFF666666)
+                    AdventureDifficulty.VERY_EASY -> Color(0xFFD27A1F)//not happy with this
+                    AdventureDifficulty.EASY -> Color(0xFFBF741F)
+                    AdventureDifficulty.MEDIUM -> Color(0xFFB76F1A)
+                    AdventureDifficulty.HARD -> Color(0xFF9C5F00)
+                    AdventureDifficulty.VERY_HARD -> Color(0xFF8A4F00)
                 }
             }
         )

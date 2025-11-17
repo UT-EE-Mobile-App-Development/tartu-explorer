@@ -239,9 +239,9 @@ fun StatisticsScreen(
                             val borderBrush = if (!isDarkMode) {
                                 Brush.verticalGradient(
                                     listOf(
-                                        Color.LightGray,
-                                        Color.Gray,
-                                        Color.DarkGray,
+                                        Color(0xFFB26A00),
+                                        Color(0xFF995500),
+                                        Color(0xFF7F4300)
                                     )
                                 )
                             } else {
@@ -419,9 +419,9 @@ fun AdventureStatBox(
 fun StatBox(
     title: String, value: String, color: Color, gradientColors: List<Color>, modifier: Modifier = Modifier, isDarkMode: Boolean
 ) {
-    val bgColor = if (!isDarkMode) Color(0xFF2C2C2C) else color
+    val bgColor = if (!isDarkMode) Color(0xFFAD6B1B) else color
     val borderColors = if (!isDarkMode)
-        listOf(Color.LightGray, Color.Gray, Color.DarkGray)
+        listOf(Color(0xFFCC8F40), Color(0xFFAD6B1B), Color(0xFF99570F))
     else
         gradientColors
 
@@ -461,8 +461,11 @@ fun DifficultyStatBox(
     modifier: Modifier = Modifier,
     isDarkMode: Boolean
 ) {
-    val bgColor = if (!isDarkMode) Color(0xFF2C2C2C) else color
-    val borderColors = if (!isDarkMode) listOf(Color.LightGray, Color.Gray, Color.DarkGray) else gradientColors
+    val bgColor = if (!isDarkMode) Color(0xFF995500) else color
+    val borderColors = if (!isDarkMode)
+        listOf(Color(0xFFB26A00), Color(0xFF995500), Color(0xFF7F4300))
+    else
+        gradientColors
 
     val difficultyMap = completedByDifficulty.associate { mapDifficulty(it.difficulty) to it.count }
 

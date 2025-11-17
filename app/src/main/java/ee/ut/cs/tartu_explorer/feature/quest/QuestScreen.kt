@@ -217,7 +217,7 @@ fun DifficultyRow(
                     Column(horizontalAlignment = Alignment.CenterHorizontally) {
                         AsyncImage(
                             model = adventure.thumbnailPath,
-                            contentDescription = "$displayName levels",
+                            contentDescription = adventure.title,
                             modifier = Modifier
                                 .width(thumbnailSize+20.dp).height(thumbnailSize-30.dp)
                                 .border(2.dp, borderColor, RoundedCornerShape(8.dp))

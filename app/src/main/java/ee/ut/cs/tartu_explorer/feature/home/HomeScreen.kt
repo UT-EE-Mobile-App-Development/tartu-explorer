@@ -324,7 +324,7 @@ fun ProfileSwitcherDialog(
                     TextField(
                         value = newPlayerName,
                         onValueChange = onNewPlayerNameChange,
-                        placeholder = { Text("New Profile Name", color = Color.Black) },
+                        placeholder = { Text("New Profile Name", color = Color.White) },
                         modifier = Modifier
                             .weight(1f)
                             .background(bgColor, shape)

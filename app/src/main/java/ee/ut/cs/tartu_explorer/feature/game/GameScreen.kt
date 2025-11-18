@@ -654,27 +654,39 @@ fun GameControls(
                 )) { Text("GUESS") }
 
             // Info button
-            Box(
-                contentAlignment = Alignment.Center,
-                modifier = Modifier
-                    .size(50.dp)
-                    .border(BorderStroke(
-                        width = 3.dp,
-                        brush = Brush.verticalGradient(
-                            colors = if (isDarkMode) {
-                                listOf(Color(0xFFF7B21A), Color(0xFFF1A11A), Color(0xFFDB8F00))
-                            } else {
-                                listOf(
-                                    Color(0xFFFFA533),
-                                    Color(0xFFCC7A00),
-                                    Color(0xFFB36700))
-                            }
+            if (currentHintText.isNotBlank()) {
+                Box(
+                    contentAlignment = Alignment.Center,
+                    modifier = Modifier
+                        .size(50.dp)
+                        .border(
+                            BorderStroke(
+                                width = 3.dp,
+                                brush = Brush.verticalGradient(
+                                    colors = if (isDarkMode) {
+                                        listOf(
+                                            Color(0xFFF7B21A),
+                                            Color(0xFFF1A11A),
+                                            Color(0xFFDB8F00)
+                                        )
+                                    } else {
+                                        listOf(
+                                            Color(0xFFFFA533),
+                                            Color(0xFFCC7A00),
+                                            Color(0xFFB36700)
+                                        )
+                                    }
+                                )
+                            ), RoundedCornerShape(12.dp)
                         )
-                    ), RoundedCornerShape(12.dp))
-                    .background(if (isDarkMode) MainOrange else Color(0xFFD87F1C), RoundedCornerShape(12.dp))
-                    .clickable { showHintPopup(true) }
-            ) {
-                Text("i", color = Color.White, fontSize = 24.sp)
+                        .background(
+                            if (isDarkMode) MainOrange else Color(0xFFD87F1C),
+                            RoundedCornerShape(12.dp)
+                        )
+                        .clickable { showHintPopup(true) }
+                ) {
+                    Text("i", color = Color.White, fontSize = 24.sp)
+                }
             }
 
 // Weather button

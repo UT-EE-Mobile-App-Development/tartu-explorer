@@ -31,6 +31,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Text
@@ -303,12 +304,18 @@ fun GameScreen(adventureId: Long, onNavigateBack: () -> Unit) {
                 ) {
                     Card(
                         shape = RoundedCornerShape(16.dp),
-                        modifier = Modifier.padding(32.dp)
-                            .clickable {showHintPopup = false}
+                        modifier = Modifier
+                            .padding(32.dp)
+                            .border(BorderStroke(4.dp, MainOrange), RoundedCornerShape(16.dp))
+                            .clickable { showHintPopup = false },
+                        colors = CardDefaults.cardColors(
+                            containerColor = Color.DarkGray
+                        )
                     ) {
                         Text(
                             text = currentHintText,
-                            color = Color.Black,
+                            color = Color.White,
+                            fontWeight = FontWeight.Bold,
                             modifier = Modifier.padding(24.dp)
                         )
                     }
@@ -572,27 +579,35 @@ fun GameControls(
                 )) { Text("GUESS") }
 
             // Info button
-            Box(
-                contentAlignment = Alignment.Center,
-                modifier = Modifier
-                    .size(50.dp)
-                    .border(BorderStroke(
-                        width = 3.dp,
-                        brush = Brush.verticalGradient(
-                            colors = if (isDarkMode) {
-                                listOf(OrangeGradiantTop, OrangeGradiantMid, OrangeGradiantBot)
-                            } else {
-                                listOf(
-                                    Color.LightGray,
-                                    Color.Gray,
-                                    Color(0xFF666666))
-                            }
+            if (currentHintText.isNotBlank()) {
+                Box(
+                    contentAlignment = Alignment.Center,
+                    modifier = Modifier
+                        .size(50.dp)
+                        .border(
+                            BorderStroke(
+                                width = 3.dp,
+                                brush = Brush.verticalGradient(
+                                    colors = if (isDarkMode) {
+                                        listOf(OrangeGradiantTop, OrangeGradiantMid, OrangeGradiantBot)
+                                    } else {
+                                        listOf(
+                                            Color.LightGray,
+                                            Color.Gray,
+                                            Color(0xFF666666)
+                                        )
+                                    }
+                                )
+                            ), RoundedCornerShape(12.dp)
                         )
-                    ), RoundedCornerShape(12.dp))
-                    .background(if (isDarkMode) MainOrange else Color.DarkGray, RoundedCornerShape(12.dp))
-                    .clickable { showHintPopup(true) }
-            ) {
-                Text("i", color = Color.White, fontSize = 24.sp)
+                        .background(
+                            if (isDarkMode) MainOrange else Color.DarkGray,
+                            RoundedCornerShape(12.dp)
+                        )
+                        .clickable { showHintPopup(true) }
+                ) {
+                    Text("i", color = Color.White, fontSize = 24.sp)
+                }
             }
 
 // Weather button

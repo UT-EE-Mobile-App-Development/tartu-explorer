@@ -11,7 +11,7 @@ import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
+
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -19,14 +19,14 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.blur
+import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.delay
-import androidx.compose.ui.graphics.ColorFilter
-import androidx.compose.ui.graphics.ColorMatrix
+
 
 
 // A full-screen animated background that cycles through a list of drawable resources.
@@ -87,18 +87,20 @@ fun AnimatedBackground(
                     scaleY = 1.25f
                 }
                 .offset(y = offsetAnim.dp)
-                .alpha(alphaAnim)
+                // Apply alpha only if NOT dark mode
+                .then(if (isDarkMode) Modifier.alpha(alphaAnim) else Modifier)
                 .blur(7.dp)
+                .drawWithContent {
+                    drawContent() // draw the original image
+                    if (!isDarkMode) {
+                        drawRect(
+                            color = Color.Black.copy(alpha = 0.8f) // adjust alpha for darkness
+                        )
+                    }
+                }
 
         )
-        // Overlay black in dark mode
-        if (!isDarkMode) {
-            Box(
-                modifier = Modifier
-                    .matchParentSize()
-                    .background(Color.Black)
-            )
-        }
+
 
         content()
     }

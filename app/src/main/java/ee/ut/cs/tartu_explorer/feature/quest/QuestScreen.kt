@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -23,6 +24,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CenterAlignedTopAppBar
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
@@ -47,7 +49,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import coil3.compose.AsyncImage
+import coil3.compose.SubcomposeAsyncImage
 import ee.ut.cs.tartu_explorer.R
 import ee.ut.cs.tartu_explorer.core.data.local.db.DatabaseProvider
 import ee.ut.cs.tartu_explorer.core.data.local.entities.AdventureDifficulty
@@ -57,9 +59,6 @@ import ee.ut.cs.tartu_explorer.core.data.repository.AdventureRepository
 import ee.ut.cs.tartu_explorer.core.data.repository.AdventureStatusDetails
 import ee.ut.cs.tartu_explorer.core.data.repository.GameRepository
 import ee.ut.cs.tartu_explorer.core.data.repository.PlayerRepository
-import ee.ut.cs.tartu_explorer.core.ui.theme.OrangeGradiantBot
-import ee.ut.cs.tartu_explorer.core.ui.theme.OrangeGradiantMid
-import ee.ut.cs.tartu_explorer.core.ui.theme.OrangeGradiantTop
 import ee.ut.cs.tartu_explorer.core.ui.theme.ThemeViewModel
 import ee.ut.cs.tartu_explorer.core.ui.theme.components.AnimatedBackground
 import ee.ut.cs.tartu_explorer.core.ui.theme.components.CustomBackButton
@@ -106,11 +105,12 @@ fun QuestScreen(
                             modifier = Modifier.fillMaxHeight(),
                             contentAlignment = Alignment.Center
                         ) {
-                            Text(
+                            OutlinedText(
                                 text = "Quests",
                                 fontSize = 28.sp,
                                 fontWeight = FontWeight.Bold,
-                                color = Color.Black
+                                textColor = Color.White,
+                                outlineColor = Color.Black
                             )
                         }
                     },
@@ -197,7 +197,10 @@ fun DifficultyRow(
     thumbnailSize: Dp
 ) {
     val scrollState = rememberScrollState()
-    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+    Column(
+        modifier = Modifier.padding(bottom = 8.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
         Row(
             modifier = Modifier
                 .horizontalScroll(scrollState)
@@ -215,7 +218,7 @@ fun DifficultyRow(
                         else -> Color.Transparent
                     }
                     Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                        AsyncImage(
+                        SubcomposeAsyncImage(
                             model = adventure.thumbnailPath,
                             contentDescription = adventure.title,
                             modifier = Modifier
@@ -223,7 +226,18 @@ fun DifficultyRow(
                                 .border(2.dp, borderColor, RoundedCornerShape(8.dp))
                                 .clip(RoundedCornerShape(8.dp))//makes the pictures corners rounded as well
                                 .clickable { onNavigateHome(adventure.id) },
-                            contentScale = ContentScale.Crop //so the picture fits in the box
+                            contentScale = ContentScale.Crop, //so the picture fits in the box
+                            loading = {
+                                Box(
+                                    modifier = Modifier.fillMaxSize(),
+                                    contentAlignment = Alignment.Center
+                                ) {
+                                    CircularProgressIndicator(
+                                        modifier = Modifier.size(40.dp),
+                                        strokeWidth = 4.dp
+                                    )
+                                }
+                            }
                         )
                         if (details != null) {
                             Text(
@@ -284,35 +298,35 @@ fun QuestCardWithDifficulty(
                         colors = if (isDarkMode) {
                             listOf(Color(0xFFFFB833), Color(0xFFF7A71A), Color(0xFFE09A00))
                         } else {
-                            listOf(Color.LightGray, Color.Gray, Color(0xFF666666))
+                            listOf(Color(0xFFFFAD4D),  Color(0xFFD27A1F), Color(0xFFB46617))
                         }
                     )
                     AdventureDifficulty.EASY -> Brush.verticalGradient(
                         colors = if (isDarkMode) {
                             listOf(Color(0xFFF7B21A), Color(0xFFF1A11A), Color(0xFFDB8F00))
                         } else {
-                            listOf(Color.LightGray, Color.Gray, Color(0xFF666666))
+                            listOf(Color(0xFFD9984A), Color(0xFFB97318), Color(0xFFA36000))
                         }
                     )
                     AdventureDifficulty.MEDIUM -> Brush.verticalGradient(
                         colors = if (isDarkMode) {
                             listOf(Color(0xFFF0A200), Color(0xFFE09200), Color(0xFFD08000))
                         } else {
-                            listOf(Color.LightGray, Color.Gray, Color(0xFF666666))
+                            listOf(Color(0xFFCC8F40), Color(0xFFAD6B1B), Color(0xFF99570F))
                         }
                     )
                     AdventureDifficulty.HARD -> Brush.verticalGradient(
                         colors = if (isDarkMode) {
                             listOf(Color(0xFFE59A00), Color(0xFFD08200), Color(0xFFC07000))
                         } else {
-                            listOf(Color.LightGray, Color.Gray, Color(0xFF666666))
+                            listOf(Color(0xFFB26A00), Color(0xFF995500), Color(0xFF7F4300))
                         }
                     )
                     AdventureDifficulty.VERY_HARD -> Brush.verticalGradient(
                         colors = if (isDarkMode) {
                             listOf(Color(0xFFD58500), Color(0xFFBF7400), Color(0xFFAB6200))
                         } else {
-                            listOf(Color.LightGray, Color.Gray, Color(0xFF666666))
+                            listOf(Color(0xFF9C5C00), Color(0xFF7F4700), Color(0xFF663600))
                         }
                     )
                 },
@@ -330,11 +344,11 @@ fun QuestCardWithDifficulty(
                 }
             } else {
                 when (difficulty) {
-                    AdventureDifficulty.VERY_EASY -> Color(0xFFAAAAAA)
-                    AdventureDifficulty.EASY -> Color(0xFF999999)
-                    AdventureDifficulty.MEDIUM -> Color(0xFF888888)
-                    AdventureDifficulty.HARD -> Color(0xFF777777)
-                    AdventureDifficulty.VERY_HARD -> Color(0xFF666666)
+                    AdventureDifficulty.VERY_EASY -> Color(0xFFD27A1F)//not happy with this
+                    AdventureDifficulty.EASY -> Color(0xFFBF741F)
+                    AdventureDifficulty.MEDIUM -> Color(0xFFB76F1A)
+                    AdventureDifficulty.HARD -> Color(0xFF9C5F00)
+                    AdventureDifficulty.VERY_HARD -> Color(0xFF8A4F00)
                 }
             }
         )
@@ -386,6 +400,3 @@ fun QuestCardWithDifficulty(
             }
         }
     }
-
-
-

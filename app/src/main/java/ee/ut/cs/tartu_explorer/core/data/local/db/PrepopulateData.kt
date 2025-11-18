@@ -42,7 +42,7 @@ class PrepopulateCallback(private val context: Context) : RoomDatabase.Callback(
                 description = "A good start to get to know Tartu Explorer",
                 difficulty = AdventureDifficulty.VERY_EASY,
                 estimatedDuration = 30,
-                thumbnailPath = "https://www.campus.ee/wp-content/uploads/2023/04/Raatuse22_uustaust.png"
+                thumbnailPath = "https://raw.githubusercontent.com/UT-EE-Mobile-App-Development/tartu-explorer-quests/refs/heads/main/buildings/01/2.jpg"
             )
         )
 
@@ -69,8 +69,8 @@ class PrepopulateCallback(private val context: Context) : RoomDatabase.Callback(
             HintEntity(
                 questId = quest1Id,
                 index = 0,
-                text = "Do you know the Tartu University?.",
-                imageUrl = "https://progressarch.com/wp-content/uploads/2024/04/5_DELTA-BUILDING_TARTU-UNIVERSITY_SCORPIO-P04010-scaled.jpg"
+                text = "Do you know the Tartu University?",
+                imageUrl = "https://raw.githubusercontent.com/UT-EE-Mobile-App-Development/tartu-explorer-quests/refs/heads/main/buildings/01/1.jpg"
             )
         )
         hintDao.insert(
@@ -78,7 +78,7 @@ class PrepopulateCallback(private val context: Context) : RoomDatabase.Callback(
                 questId = quest1Id,
                 index = 1,
                 text = "Maybe it is a special building of the university with a unique shape.",
-                imageUrl = "https://www.themayor.eu/web/files/articles/4510/main_image/thumb_1200x630_Delta_Building_Tartu_University.jpg"
+                imageUrl = "https://raw.githubusercontent.com/UT-EE-Mobile-App-Development/tartu-explorer-quests/refs/heads/main/buildings/01/2.jpg"
             )
         )
 
@@ -88,7 +88,7 @@ class PrepopulateCallback(private val context: Context) : RoomDatabase.Callback(
                 questId = quest2Id,
                 index = 0,
                 text = "Students sleep here",
-                imageUrl = "https://www.rallyestonia.com/get/image/userfiles/image/list/item_7062/92094377.jpg?w=1000&h=0"
+                imageUrl = "https://raw.githubusercontent.com/UT-EE-Mobile-App-Development/tartu-explorer-quests/refs/heads/main/buildings/02/1.jpg"
             )
         )
         hintDao.insert(
@@ -96,13 +96,12 @@ class PrepopulateCallback(private val context: Context) : RoomDatabase.Callback(
                 questId = quest2Id,
                 index = 1,
                 text = "The Raatuse street is very close to this building",
-                imageUrl = "https://www.campus.ee/wp-content/uploads/2023/04/tyk-6628-2048x1363.jpg"
+                imageUrl = "https://raw.githubusercontent.com/UT-EE-Mobile-App-Development/tartu-explorer-quests/refs/heads/main/buildings/02/2.jpg"
             )
         )
     }
 
     suspend fun riversideWalk(adventureDao: AdventureDao, questDao: QuestDao, hintDao: HintDao) {
-
         val adventure = adventureDao.insertAdventure(
             AdventureEntity(
                 title = "Riverside-Walk",
@@ -112,7 +111,6 @@ class PrepopulateCallback(private val context: Context) : RoomDatabase.Callback(
                 thumbnailPath = "https://raw.githubusercontent.com/UT-EE-Mobile-App-Development/tartu-explorer-quests/refs/heads/main/art/3/2.jpg"
             )
         )
-
         // q2
         val q2 = questDao.insert(
             QuestEntity(
@@ -126,7 +124,7 @@ class PrepopulateCallback(private val context: Context) : RoomDatabase.Callback(
             HintEntity(
                 questId = q2,
                 index = 1,
-                text = null,
+                text = "Look for colorful street art near the water.",
                 imageUrl = "https://raw.githubusercontent.com/UT-EE-Mobile-App-Development/tartu-explorer-quests/refs/heads/main/art/2/1.jpg"
             )
         )
@@ -134,7 +132,7 @@ class PrepopulateCallback(private val context: Context) : RoomDatabase.Callback(
             HintEntity(
                 questId = q2,
                 index = 2,
-                text = null,
+                text = "This art isn't in a gallery; it's hiding under a large structure.",
                 imageUrl = "https://raw.githubusercontent.com/UT-EE-Mobile-App-Development/tartu-explorer-quests/refs/heads/main/art/2/2.jpg"
             )
         )
@@ -142,11 +140,10 @@ class PrepopulateCallback(private val context: Context) : RoomDatabase.Callback(
             HintEntity(
                 questId = q2,
                 index = 3,
-                text = null,
+                text = "Find the bridge closest to the Delta Centre and look underneath.",
                 imageUrl = "https://raw.githubusercontent.com/UT-EE-Mobile-App-Development/tartu-explorer-quests/refs/heads/main/art/2/3.jpg"
             )
         )
-
         // q31
         val q31 = questDao.insert(
             QuestEntity(
@@ -160,7 +157,7 @@ class PrepopulateCallback(private val context: Context) : RoomDatabase.Callback(
             HintEntity(
                 questId = q31,
                 index = 1,
-                text = null,
+                text = "A thoughtful figure rests permanently in a park.",
                 imageUrl = "https://raw.githubusercontent.com/UT-EE-Mobile-App-Development/tartu-explorer-quests/refs/heads/main/statues/31/1.jpg"
             )
         )
@@ -168,7 +165,7 @@ class PrepopulateCallback(private val context: Context) : RoomDatabase.Callback(
             HintEntity(
                 questId = q31,
                 index = 2,
-                text = null,
+                text = "This bronze man is sitting on a bench, looking towards the river.",
                 imageUrl = "https://raw.githubusercontent.com/UT-EE-Mobile-App-Development/tartu-explorer-quests/refs/heads/main/statues/31/2.jpg"
             )
         )
@@ -176,11 +173,10 @@ class PrepopulateCallback(private val context: Context) : RoomDatabase.Callback(
             HintEntity(
                 questId = q31,
                 index = 3,
-                text = null,
+                text = "He's a famous surgeon (Pirogov) enjoying the view near the 'Kaarsild' (Arch Bridge).",
                 imageUrl = "https://raw.githubusercontent.com/UT-EE-Mobile-App-Development/tartu-explorer-quests/refs/heads/main/statues/31/3.jpg"
             )
         )
-
         // q33
         val q33 = questDao.insert(
             QuestEntity(
@@ -194,7 +190,7 @@ class PrepopulateCallback(private val context: Context) : RoomDatabase.Callback(
             HintEntity(
                 questId = q33,
                 index = 1,
-                text = null,
+                text = "Everything is so calm around this statue.",
                 imageUrl = "https://raw.githubusercontent.com/UT-EE-Mobile-App-Development/tartu-explorer-quests/refs/heads/main/statues/33/1.jpg"
             )
         )
@@ -202,7 +198,7 @@ class PrepopulateCallback(private val context: Context) : RoomDatabase.Callback(
             HintEntity(
                 questId = q33,
                 index = 2,
-                text = null,
+                text = "A young man sits area near the Emajõgi.",
                 imageUrl = "https://raw.githubusercontent.com/UT-EE-Mobile-App-Development/tartu-explorer-quests/refs/heads/main/statues/33/2.jpg"
             )
         )
@@ -210,11 +206,10 @@ class PrepopulateCallback(private val context: Context) : RoomDatabase.Callback(
             HintEntity(
                 questId = q33,
                 index = 3,
-                text = null,
+                text = "This statue is located in the park near the Town Hall Square and the river.",
                 imageUrl = "https://raw.githubusercontent.com/UT-EE-Mobile-App-Development/tartu-explorer-quests/refs/heads/main/statues/33/3.jpg"
             )
         )
-
         // q51
         val q51 = questDao.insert(
             QuestEntity(
@@ -228,7 +223,7 @@ class PrepopulateCallback(private val context: Context) : RoomDatabase.Callback(
             HintEntity(
                 questId = q51,
                 index = 1,
-                text = null,
+                text = "A famous Estonian writer (Oskar Luts)",
                 imageUrl = "https://raw.githubusercontent.com/UT-EE-Mobile-App-Development/tartu-explorer-quests/refs/heads/main/statues/51/1.jpg"
             )
         )
@@ -236,11 +231,10 @@ class PrepopulateCallback(private val context: Context) : RoomDatabase.Callback(
             HintEntity(
                 questId = q51,
                 index = 2,
-                text = null,
+                text = "This street is big and has a lot of traffic. It is captured in bronze near the Vabaduse puiestee.",
                 imageUrl = "https://raw.githubusercontent.com/UT-EE-Mobile-App-Development/tartu-explorer-quests/refs/heads/main/statues/51/2.jpg"
             )
         )
-
         // q48
         val q48 = questDao.insert(
             QuestEntity(
@@ -254,11 +248,10 @@ class PrepopulateCallback(private val context: Context) : RoomDatabase.Callback(
             HintEntity(
                 questId = q48,
                 index = 1,
-                text = null,
+                text = "Find this famous statue in a park near the river",
                 imageUrl = "https://raw.githubusercontent.com/UT-EE-Mobile-App-Development/tartu-explorer-quests/refs/heads/main/statues/48/1.jpg"
             )
         )
-
         // q3
         val q3 = questDao.insert(
             QuestEntity(
@@ -272,7 +265,7 @@ class PrepopulateCallback(private val context: Context) : RoomDatabase.Callback(
             HintEntity(
                 questId = q3,
                 index = 1,
-                text = null,
+                text = "A wall covered in many different faces, crafted from tiles.",
                 imageUrl = "https://raw.githubusercontent.com/UT-EE-Mobile-App-Development/tartu-explorer-quests/refs/heads/main/art/3/1.jpg"
             )
         )
@@ -280,7 +273,7 @@ class PrepopulateCallback(private val context: Context) : RoomDatabase.Callback(
             HintEntity(
                 questId = q3,
                 index = 2,
-                text = null,
+                text = "It is close to a large bridge next to a modern University building.",
                 imageUrl = "https://raw.githubusercontent.com/UT-EE-Mobile-App-Development/tartu-explorer-quests/refs/heads/main/art/3/2.jpg"
             )
         )
@@ -288,7 +281,7 @@ class PrepopulateCallback(private val context: Context) : RoomDatabase.Callback(
             HintEntity(
                 questId = q3,
                 index = 3,
-                text = null,
+                text = "Famous graffiti on the other side of the river opposite the delta",
                 imageUrl = "https://raw.githubusercontent.com/UT-EE-Mobile-App-Development/tartu-explorer-quests/refs/heads/main/art/3/3.jpg"
             )
         )
@@ -306,7 +299,7 @@ class PrepopulateCallback(private val context: Context) : RoomDatabase.Callback(
             HintEntity(
                 questId = q17,
                 index = 1,
-                text = null,
+                text = "A large house made of glass.",
                 imageUrl = "https://raw.githubusercontent.com/UT-EE-Mobile-App-Development/tartu-explorer-quests/refs/heads/main/buildings/17/1.jpg"
             )
         )
@@ -314,7 +307,7 @@ class PrepopulateCallback(private val context: Context) : RoomDatabase.Callback(
             HintEntity(
                 questId = q17,
                 index = 2,
-                text = null,
+                text = "This is the main greenhouse in a large public garden.",
                 imageUrl = "https://raw.githubusercontent.com/UT-EE-Mobile-App-Development/tartu-explorer-quests/refs/heads/main/buildings/17/2.jpg"
             )
         )
@@ -322,10 +315,11 @@ class PrepopulateCallback(private val context: Context) : RoomDatabase.Callback(
             HintEntity(
                 questId = q17,
                 index = 3,
-                text = null,
+                text = "You'll find this palm house inside the University of Tartu Botanical Garden. You are able to claim this quest from the entry when the garden is closed",
                 imageUrl = "https://raw.githubusercontent.com/UT-EE-Mobile-App-Development/tartu-explorer-quests/refs/heads/main/buildings/17/3.jpg"
             )
         )
+        /*
         hintDao.insert(
             HintEntity(
                 questId = q17,
@@ -342,7 +336,7 @@ class PrepopulateCallback(private val context: Context) : RoomDatabase.Callback(
                 imageUrl = null
             )
         )
-
+         */
         // q15
         val q15 = questDao.insert(
             QuestEntity(
@@ -356,7 +350,7 @@ class PrepopulateCallback(private val context: Context) : RoomDatabase.Callback(
             HintEntity(
                 questId = q15,
                 index = 1,
-                text = null,
+                text = "A modern building where university students get active.",
                 imageUrl = "https://raw.githubusercontent.com/UT-EE-Mobile-App-Development/tartu-explorer-quests/refs/heads/main/buildings/15/1.jpg"
             )
         )
@@ -388,7 +382,7 @@ class PrepopulateCallback(private val context: Context) : RoomDatabase.Callback(
             HintEntity(
                 questId = q33,
                 index = 1,
-                text = null,
+                text = "Everything is so calm around this statue.",
                 imageUrl = "https://raw.githubusercontent.com/UT-EE-Mobile-App-Development/tartu-explorer-quests/refs/heads/main/statues/33/1.jpg"
             )
         )
@@ -396,7 +390,7 @@ class PrepopulateCallback(private val context: Context) : RoomDatabase.Callback(
             HintEntity(
                 questId = q33,
                 index = 2,
-                text = null,
+                text = "A young man sits area near the Emajõgi.",
                 imageUrl = "https://raw.githubusercontent.com/UT-EE-Mobile-App-Development/tartu-explorer-quests/refs/heads/main/statues/33/2.jpg"
             )
         )
@@ -404,7 +398,7 @@ class PrepopulateCallback(private val context: Context) : RoomDatabase.Callback(
             HintEntity(
                 questId = q33,
                 index = 3,
-                text = null,
+                text = "This statue is located in the park near the Town Hall Square and the river.",
                 imageUrl = "https://raw.githubusercontent.com/UT-EE-Mobile-App-Development/tartu-explorer-quests/refs/heads/main/statues/33/3.jpg"
             )
         )
@@ -422,11 +416,10 @@ class PrepopulateCallback(private val context: Context) : RoomDatabase.Callback(
             HintEntity(
                 questId = q20,
                 index = 1,
-                text = null,
+                text = "A wonderful place to relax near the river.",
                 imageUrl = "https://raw.githubusercontent.com/UT-EE-Mobile-App-Development/tartu-explorer-quests/refs/heads/main/buildings/20/1.jpg"
             )
         )
-
         // q21
         val q21 = questDao.insert(
             QuestEntity(
@@ -440,11 +433,10 @@ class PrepopulateCallback(private val context: Context) : RoomDatabase.Callback(
             HintEntity(
                 questId = q21,
                 index = 1,
-                text = null,
+                text = "a place in the center of Tartu near the Emajõgi.",
                 imageUrl = "https://raw.githubusercontent.com/UT-EE-Mobile-App-Development/tartu-explorer-quests/refs/heads/main/buildings/21/1.jpg"
             )
         )
-
         // q22
         val q22 = questDao.insert(
             QuestEntity(
@@ -458,11 +450,10 @@ class PrepopulateCallback(private val context: Context) : RoomDatabase.Callback(
             HintEntity(
                 questId = q22,
                 index = 1,
-                text = null,
+                text = "One of the largest bridges in Tartu with many lanterns",
                 imageUrl = "https://raw.githubusercontent.com/UT-EE-Mobile-App-Development/tartu-explorer-quests/refs/heads/main/buildings/22/1.jpg"
             )
         )
-
         // q28
         val q28 = questDao.insert(
             QuestEntity(
@@ -476,11 +467,10 @@ class PrepopulateCallback(private val context: Context) : RoomDatabase.Callback(
             HintEntity(
                 questId = q28,
                 index = 1,
-                text = null,
+                text = "You'll find this pig guarding the entrance to the main Market Hall.",
                 imageUrl = "https://raw.githubusercontent.com/UT-EE-Mobile-App-Development/tartu-explorer-quests/refs/heads/main/statues/28/1.jpg"
             )
         )
-
         // q29
         val q29 = questDao.insert(
             QuestEntity(
@@ -494,7 +484,7 @@ class PrepopulateCallback(private val context: Context) : RoomDatabase.Callback(
             HintEntity(
                 questId = q29,
                 index = 1,
-                text = null,
+                text = "A beloved storyteller sits permanently in the park along Freedom Avenue.",
                 imageUrl = "https://raw.githubusercontent.com/UT-EE-Mobile-App-Development/tartu-explorer-quests/refs/heads/main/statues/29/1.jpg"
             )
         )
@@ -503,8 +493,8 @@ class PrepopulateCallback(private val context: Context) : RoomDatabase.Callback(
         val q50 = questDao.insert(
             QuestEntity(
                 adventureId = adventure,
-                latitude = 58.37838931671423,
-                longitude = 26.725439477841697,
+                latitude = 58.378917,
+                longitude = 26.724556,
                 radius = 15.0
             )
         )
@@ -512,7 +502,7 @@ class PrepopulateCallback(private val context: Context) : RoomDatabase.Callback(
             HintEntity(
                 questId = q50,
                 index = 1,
-                text = null,
+                text = "This bronze statue is next to a park",
                 imageUrl = "https://raw.githubusercontent.com/UT-EE-Mobile-App-Development/tartu-explorer-quests/refs/heads/main/statues/50/1.jpg"
             )
         )
@@ -520,11 +510,10 @@ class PrepopulateCallback(private val context: Context) : RoomDatabase.Callback(
             HintEntity(
                 questId = q50,
                 index = 2,
-                text = null,
+                text = " The Sculpture Father and Son is in the center of Tartu a street of fresh food.",
                 imageUrl = "https://raw.githubusercontent.com/UT-EE-Mobile-App-Development/tartu-explorer-quests/refs/heads/main/statues/50/2.jpg"
             )
         )
-
         // q4
         val q4 = questDao.insert(
             QuestEntity(
@@ -538,7 +527,7 @@ class PrepopulateCallback(private val context: Context) : RoomDatabase.Callback(
             HintEntity(
                 questId = q4,
                 index = 1,
-                text = null,
+                text = "A massive, colorful story painted on the side of a building.",
                 imageUrl = "https://raw.githubusercontent.com/UT-EE-Mobile-App-Development/tartu-explorer-quests/refs/heads/main/art/4/1.jpg"
             )
         )
@@ -546,7 +535,7 @@ class PrepopulateCallback(private val context: Context) : RoomDatabase.Callback(
             HintEntity(
                 questId = q4,
                 index = 2,
-                text = null,
+                text = "This fairytale-like mural is near a big mall.",
                 imageUrl = "https://raw.githubusercontent.com/UT-EE-Mobile-App-Development/tartu-explorer-quests/refs/heads/main/art/4/2.jpg"
             )
         )
@@ -554,7 +543,7 @@ class PrepopulateCallback(private val context: Context) : RoomDatabase.Callback(
             HintEntity(
                 questId = q4,
                 index = 3,
-                text = null,
+                text = "It is also not far away from the old town",
                 imageUrl = "https://raw.githubusercontent.com/UT-EE-Mobile-App-Development/tartu-explorer-quests/refs/heads/main/art/4/3.jpg"
             )
         )
@@ -562,11 +551,10 @@ class PrepopulateCallback(private val context: Context) : RoomDatabase.Callback(
             HintEntity(
                 questId = q4,
                 index = 4,
-                text = null,
+                text = "Look for the painting between the mal center and the old town.",
                 imageUrl = "https://raw.githubusercontent.com/UT-EE-Mobile-App-Development/tartu-explorer-quests/refs/heads/main/art/4/4.jpg"
             )
         )
-
         // q41
         val q41 = questDao.insert(
             QuestEntity(
@@ -580,7 +568,7 @@ class PrepopulateCallback(private val context: Context) : RoomDatabase.Callback(
             HintEntity(
                 questId = q41,
                 index = 1,
-                text = null,
+                text = "A modern apartment building.",
                 imageUrl = "https://raw.githubusercontent.com/UT-EE-Mobile-App-Development/tartu-explorer-quests/refs/heads/main/buildings/41/1.jpg"
             )
         )
@@ -588,11 +576,10 @@ class PrepopulateCallback(private val context: Context) : RoomDatabase.Callback(
             HintEntity(
                 questId = q41,
                 index = 2,
-                text = null,
+                text = "This is not far away from the malls in the center of tartu",
                 imageUrl = "https://raw.githubusercontent.com/UT-EE-Mobile-App-Development/tartu-explorer-quests/refs/heads/main/buildings/41/2.jpg"
             )
         )
-
         // q40
         val q40 = questDao.insert(
             QuestEntity(
@@ -606,7 +593,7 @@ class PrepopulateCallback(private val context: Context) : RoomDatabase.Callback(
             HintEntity(
                 questId = q40,
                 index = 1,
-                text = null,
+                text = "This residential building is located on a street corner near a major commercial area.",
                 imageUrl = "https://raw.githubusercontent.com/UT-EE-Mobile-App-Development/tartu-explorer-quests/refs/heads/main/buildings/40/1.jpg"
             )
         )
@@ -614,12 +601,13 @@ class PrepopulateCallback(private val context: Context) : RoomDatabase.Callback(
             HintEntity(
                 questId = q40,
                 index = 2,
-                text = null,
+                text = "You can find this apartment block on Aleksandri Street, close to the city's main market.",
                 imageUrl = "https://raw.githubusercontent.com/UT-EE-Mobile-App-Development/tartu-explorer-quests/refs/heads/main/buildings/40/2.jpg"
             )
         )
     }
 
+    //optional: insert more hint texts
     suspend fun throughTheCenter(adventureDao: AdventureDao, questDao: QuestDao, hintDao: HintDao) {
 
         val adventure = adventureDao.insertAdventure(
@@ -631,7 +619,6 @@ class PrepopulateCallback(private val context: Context) : RoomDatabase.Callback(
                 thumbnailPath = "https://raw.githubusercontent.com/UT-EE-Mobile-App-Development/tartu-explorer-quests/refs/heads/main/buildings/42/1.jpg"
             )
         )
-
         // q42
         val q42 = questDao.insert(
             QuestEntity(
@@ -645,11 +632,10 @@ class PrepopulateCallback(private val context: Context) : RoomDatabase.Callback(
             HintEntity(
                 questId = q42,
                 index = 1,
-                text = null,
+                text = "A big park close to the old town of Tartu",
                 imageUrl = "https://raw.githubusercontent.com/UT-EE-Mobile-App-Development/tartu-explorer-quests/refs/heads/main/buildings/42/1.jpg"
             )
         )
-
         // q29
         val q29 = questDao.insert(
             QuestEntity(
@@ -663,11 +649,10 @@ class PrepopulateCallback(private val context: Context) : RoomDatabase.Callback(
             HintEntity(
                 questId = q29,
                 index = 1,
-                text = null,
+                text = "A beloved storyteller sits permanently in the park along Freedom Avenue.",
                 imageUrl = "https://raw.githubusercontent.com/UT-EE-Mobile-App-Development/tartu-explorer-quests/refs/heads/main/statues/29/1.jpg"
             )
         )
-
         // q34
         val q34 = questDao.insert(
             QuestEntity(
@@ -681,7 +666,7 @@ class PrepopulateCallback(private val context: Context) : RoomDatabase.Callback(
             HintEntity(
                 questId = q34,
                 index = 1,
-                text = null,
+                text = "A famous fountain celebrating young love.",
                 imageUrl = "https://raw.githubusercontent.com/UT-EE-Mobile-App-Development/tartu-explorer-quests/refs/heads/main/statues/34/1.jpg"
             )
         )
@@ -689,7 +674,7 @@ class PrepopulateCallback(private val context: Context) : RoomDatabase.Callback(
             HintEntity(
                 questId = q34,
                 index = 2,
-                text = null,
+                text = "This is the most famous meeting point in Tartu, right in the main square.",
                 imageUrl = "https://raw.githubusercontent.com/UT-EE-Mobile-App-Development/tartu-explorer-quests/refs/heads/main/statues/34/2.jpg"
             )
         )
@@ -697,7 +682,7 @@ class PrepopulateCallback(private val context: Context) : RoomDatabase.Callback(
             HintEntity(
                 questId = q34,
                 index = 3,
-                text = null,
+                text = "Find the 'Kissing Students' fountain in the center of the Town Hall Square (Raekoja plats).",
                 imageUrl = "https://raw.githubusercontent.com/UT-EE-Mobile-App-Development/tartu-explorer-quests/refs/heads/main/statues/34/3.jpg"
             )
         )
@@ -705,11 +690,10 @@ class PrepopulateCallback(private val context: Context) : RoomDatabase.Callback(
             HintEntity(
                 questId = q34,
                 index = 4,
-                text = null,
+                text = "It's right in front of the pink Town Hall building!",
                 imageUrl = "https://raw.githubusercontent.com/UT-EE-Mobile-App-Development/tartu-explorer-quests/refs/heads/main/statues/34/4.jpg"
             )
         )
-
         // q44
         val q44 = questDao.insert(
             QuestEntity(
@@ -723,7 +707,7 @@ class PrepopulateCallback(private val context: Context) : RoomDatabase.Callback(
             HintEntity(
                 questId = q44,
                 index = 1,
-                text = null,
+                text = "Is this the University of Tartu?.",
                 imageUrl = "https://raw.githubusercontent.com/UT-EE-Mobile-App-Development/tartu-explorer-quests/refs/heads/main/art/44/1.jpg"
             )
         )
@@ -731,11 +715,10 @@ class PrepopulateCallback(private val context: Context) : RoomDatabase.Callback(
             HintEntity(
                 questId = q44,
                 index = 2,
-                text = null,
+                text = "A large painting of the main building of the University of Tartu.",
                 imageUrl = "https://raw.githubusercontent.com/UT-EE-Mobile-App-Development/tartu-explorer-quests/refs/heads/main/art/44/2.jpg"
             )
         )
-
         // q43
         val q43 = questDao.insert(
             QuestEntity(
@@ -749,7 +732,7 @@ class PrepopulateCallback(private val context: Context) : RoomDatabase.Callback(
             HintEntity(
                 questId = q43,
                 index = 1,
-                text = null,
+                text = "A unique restaurant.",
                 imageUrl = "https://raw.githubusercontent.com/UT-EE-Mobile-App-Development/tartu-explorer-quests/refs/heads/main/buildings/43/1.jpg"
             )
         )
@@ -757,11 +740,10 @@ class PrepopulateCallback(private val context: Context) : RoomDatabase.Callback(
             HintEntity(
                 questId = q43,
                 index = 2,
-                text = null,
+                text = "This old 'Gunpowder Cellar' (Püssirohukelder) is now a popular pub at the base of Toomemägi (Toome Hill). Its built into the side of a hill",
                 imageUrl = "https://raw.githubusercontent.com/UT-EE-Mobile-App-Development/tartu-explorer-quests/refs/heads/main/buildings/43/2.jpg"
             )
         )
-
         // q45
         val q45 = questDao.insert(
             QuestEntity(
@@ -775,7 +757,7 @@ class PrepopulateCallback(private val context: Context) : RoomDatabase.Callback(
             HintEntity(
                 questId = q45,
                 index = 1,
-                text = null,
+                text = "The most important academic building in Tartu, known for its grand columns.",
                 imageUrl = "https://raw.githubusercontent.com/UT-EE-Mobile-App-Development/tartu-explorer-quests/refs/heads/main/buildings/45/1.jpg"
             )
         )
@@ -783,11 +765,10 @@ class PrepopulateCallback(private val context: Context) : RoomDatabase.Callback(
             HintEntity(
                 questId = q45,
                 index = 2,
-                text = null,
+                text = "This is the main building of the University of Tartu (Ülikooli peahoone).",
                 imageUrl = "https://raw.githubusercontent.com/UT-EE-Mobile-App-Development/tartu-explorer-quests/refs/heads/main/buildings/45/2.jpg"
             )
         )
-
         // q46
         val q46 = questDao.insert(
             QuestEntity(
@@ -801,7 +782,7 @@ class PrepopulateCallback(private val context: Context) : RoomDatabase.Callback(
             HintEntity(
                 questId = q46,
                 index = 1,
-                text = null,
+                text = "A solemn memorial dedicated to a key figure in Estonian independence.",
                 imageUrl = "https://raw.githubusercontent.com/UT-EE-Mobile-App-Development/tartu-explorer-quests/refs/heads/main/statues/47/1.jpg"
             )
         )
@@ -809,11 +790,10 @@ class PrepopulateCallback(private val context: Context) : RoomDatabase.Callback(
             HintEntity(
                 questId = q46,
                 index = 2,
-                text = null,
+                text = "Find this granite column with a portrait plaque near the University Library on Lossi Street.",
                 imageUrl = "https://raw.githubusercontent.com/UT-EE-Mobile-App-Development/tartu-explorer-quests/refs/heads/main/statues/47/2.jpg"
             )
         )
-
         // q47
         val q47 = questDao.insert(
             QuestEntity(
@@ -827,7 +807,7 @@ class PrepopulateCallback(private val context: Context) : RoomDatabase.Callback(
             HintEntity(
                 questId = q47,
                 index = 1,
-                text = null,
+                text = "You are near an old brick building in a calm part of the city.",
                 imageUrl = "https://raw.githubusercontent.com/UT-EE-Mobile-App-Development/tartu-explorer-quests/refs/heads/main/buildings/47/1.jpg"
             )
         )
@@ -835,7 +815,7 @@ class PrepopulateCallback(private val context: Context) : RoomDatabase.Callback(
             HintEntity(
                 questId = q47,
                 index = 2,
-                text = null,
+                text = "Look for a warm-colored building slightly set back from the street.",
                 imageUrl = "https://raw.githubusercontent.com/UT-EE-Mobile-App-Development/tartu-explorer-quests/refs/heads/main/buildings/47/2.jpg"
             )
         )
@@ -843,11 +823,10 @@ class PrepopulateCallback(private val context: Context) : RoomDatabase.Callback(
             HintEntity(
                 questId = q47,
                 index = 3,
-                text = null,
+                text = "Head toward Munga Street, the lively party area, and look for a long building with distinct windows nearby.",
                 imageUrl = "https://raw.githubusercontent.com/UT-EE-Mobile-App-Development/tartu-explorer-quests/refs/heads/main/buildings/47/3.jpg"
             )
         )
-
         // q14
         val q14 = questDao.insert(
             QuestEntity(
@@ -861,7 +840,7 @@ class PrepopulateCallback(private val context: Context) : RoomDatabase.Callback(
             HintEntity(
                 questId = q14,
                 index = 1,
-                text = null,
+                text = "An old, well-known brick building.",
                 imageUrl = "https://raw.githubusercontent.com/UT-EE-Mobile-App-Development/tartu-explorer-quests/refs/heads/main/buildings/14/1.jpg"
             )
         )
@@ -869,7 +848,7 @@ class PrepopulateCallback(private val context: Context) : RoomDatabase.Callback(
             HintEntity(
                 questId = q14,
                 index = 2,
-                text = null,
+                text = "One of the remnants of the Tartu city wall.",
                 imageUrl = "https://raw.githubusercontent.com/UT-EE-Mobile-App-Development/tartu-explorer-quests/refs/heads/main/buildings/14/2.jpg"
             )
         )
@@ -877,11 +856,10 @@ class PrepopulateCallback(private val context: Context) : RoomDatabase.Callback(
             HintEntity(
                 questId = q14,
                 index = 3,
-                text = null,
+                text = "Not far from the botanical garden.",
                 imageUrl = "https://raw.githubusercontent.com/UT-EE-Mobile-App-Development/tartu-explorer-quests/refs/heads/main/buildings/14/3.jpg"
             )
         )
-
         // q49
         val q49 = questDao.insert(
             QuestEntity(
@@ -895,14 +873,13 @@ class PrepopulateCallback(private val context: Context) : RoomDatabase.Callback(
             HintEntity(
                 questId = q49,
                 index = 1,
-                text = null,
+                text = "A well-known pedestrian bridge near the old town",
                 imageUrl = "https://raw.githubusercontent.com/UT-EE-Mobile-App-Development/tartu-explorer-quests/refs/heads/main/buildings/49/1.jpg"
             )
         )
     }
 
     suspend fun hillsideAdventure(adventureDao: AdventureDao, questDao: QuestDao, hintDao: HintDao) {
-
         val adventure = adventureDao.insertAdventure(
             AdventureEntity(
                 title = "Hillside Adventure",
@@ -1589,7 +1566,6 @@ class PrepopulateCallback(private val context: Context) : RoomDatabase.Callback(
     }
 
     suspend fun statuesOfTartu(adventureDao: AdventureDao, questDao: QuestDao, hintDao: HintDao) {
-
         val adventure = adventureDao.insertAdventure(
             AdventureEntity(
                 title = "Statues of Tartu",

@@ -24,11 +24,14 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Text
@@ -53,6 +56,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.zIndex
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil3.compose.AsyncImage
 import com.google.android.gms.location.LocationServices
@@ -139,6 +143,7 @@ fun GameScreen(adventureId: Long, onNavigateBack: () -> Unit) {
                 modifier = Modifier
                     .align(Alignment.TopStart)
                     .padding(16.dp)
+                    .zIndex(1f)
             ) {
                 CustomBackButton(onClick = onNavigateBack, isDarkMode = isDarkMode)
             }
@@ -299,12 +304,18 @@ fun GameScreen(adventureId: Long, onNavigateBack: () -> Unit) {
                 ) {
                     Card(
                         shape = RoundedCornerShape(16.dp),
-                        modifier = Modifier.padding(32.dp)
-                            .clickable {showHintPopup = false}
+                        modifier = Modifier
+                            .padding(32.dp)
+                            .border(BorderStroke(4.dp, MainOrange), RoundedCornerShape(16.dp))
+                            .clickable { showHintPopup = false },
+                        colors = CardDefaults.cardColors(
+                            containerColor = Color.DarkGray
+                        )
                     ) {
                         Text(
                             text = currentHintText,
-                            color = Color.Black,
+                            color = Color.White,
+                            fontWeight = FontWeight.Bold,
                             modifier = Modifier.padding(24.dp)
                         )
                     }
@@ -409,42 +420,42 @@ fun ProgressBar(
     isDarkMode: Boolean = false,
     showCompletionPopup: Boolean = false
 ) {
-    Column(
+    val listState = rememberLazyListState()
+
+    // Scroll automatically after the 5th marker
+    LaunchedEffect(currentStep) {
+        if (currentStep >= 5) {
+            listState.animateScrollToItem(currentStep)
+        }
+    }
+
+    LazyRow(
+        state = listState,
         modifier = modifier.padding(20.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
+        verticalAlignment = Alignment.CenterVertically
     ) {
+        items(totalSteps) { index ->
+            val isCompleted = index < currentStep || (showCompletionPopup && index == totalSteps - 1)
+            val isCurrent = !showCompletionPopup && index == currentStep
 
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 16.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
+            val color = when {
+                isCurrent -> Color(0xFFB71C1C)     // red active marker
+                isCompleted -> Color(0xFF4CAF50)   // green completed marker
+                else -> if (isDarkMode) Color.LightGray else Color.DarkGray
+            }
 
-            repeat(totalSteps) { index ->
-                val isCompleted = index < currentStep || (showCompletionPopup && index == totalSteps - 1)
-                val isCurrent = !showCompletionPopup && index == currentStep
+            val scale by animateFloatAsState(
+                targetValue = if (isCurrent) 1.25f else 1f,
+                label = ""
+            )
 
-                val color = when {
-                    isCurrent -> Color(0xFFB71C1C)     // red active marker
-                    isCompleted -> Color(0xFF4CAF50)   // Green completed marker
-                    else -> if (isDarkMode) Color.LightGray else Color.DarkGray            // Future marker
-                }
+            MapMarkerIconTriangle(color = color, scale = scale)
 
-                val scale by animateFloatAsState(
-                    targetValue = if (isCurrent) 1.25f else 1f,
-                    label = ""
+            // Road segment except after last marker
+            if (index < totalSteps - 1) {
+                RoadSegment(
+                    color = if (index < currentStep) Color(0xFF4CAF50) else if (isDarkMode) Color.LightGray else Color.DarkGray
                 )
-
-                // Marker itself
-                MapMarkerIconTriangle(color = color, scale = scale)
-
-                // Draw road segments except after last marker
-                if (index < totalSteps - 1) {
-                    RoadSegment(
-                        color = if (index < currentStep) Color(0xFF4CAF50) else if (isDarkMode) Color.LightGray else Color.DarkGray
-                    )
-                }
             }
         }
     }
@@ -568,27 +579,35 @@ fun GameControls(
                 )) { Text("GUESS") }
 
             // Info button
-            Box(
-                contentAlignment = Alignment.Center,
-                modifier = Modifier
-                    .size(50.dp)
-                    .border(BorderStroke(
-                        width = 3.dp,
-                        brush = Brush.verticalGradient(
-                            colors = if (isDarkMode) {
-                                listOf(OrangeGradiantTop, OrangeGradiantMid, OrangeGradiantBot)
-                            } else {
-                                listOf(
-                                    Color.LightGray,
-                                    Color.Gray,
-                                    Color(0xFF666666))
-                            }
+            if (currentHintText.isNotBlank()) {
+                Box(
+                    contentAlignment = Alignment.Center,
+                    modifier = Modifier
+                        .size(50.dp)
+                        .border(
+                            BorderStroke(
+                                width = 3.dp,
+                                brush = Brush.verticalGradient(
+                                    colors = if (isDarkMode) {
+                                        listOf(OrangeGradiantTop, OrangeGradiantMid, OrangeGradiantBot)
+                                    } else {
+                                        listOf(
+                                            Color.LightGray,
+                                            Color.Gray,
+                                            Color(0xFF666666)
+                                        )
+                                    }
+                                )
+                            ), RoundedCornerShape(12.dp)
                         )
-                    ), RoundedCornerShape(12.dp))
-                    .background(if (isDarkMode) MainOrange else Color.DarkGray, RoundedCornerShape(12.dp))
-                    .clickable { showHintPopup(true) }
-            ) {
-                Text("i", color = Color.White, fontSize = 24.sp)
+                        .background(
+                            if (isDarkMode) MainOrange else Color.DarkGray,
+                            RoundedCornerShape(12.dp)
+                        )
+                        .clickable { showHintPopup(true) }
+                ) {
+                    Text("i", color = Color.White, fontSize = 24.sp)
+                }
             }
 
 // Weather button
@@ -669,7 +688,6 @@ fun GameControls(
 
 @Composable
 fun NoPermissionInfo(locationPermissionToastEvent: SharedFlow<Boolean>) {
-    // todo: instead of a toast disable the guess button and show a tooltip
     val context = LocalContext.current
     LaunchedEffect(Unit) {
         locationPermissionToastEvent.collect { it ->

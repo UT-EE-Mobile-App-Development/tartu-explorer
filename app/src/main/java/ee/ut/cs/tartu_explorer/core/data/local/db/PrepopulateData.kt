@@ -42,7 +42,7 @@ class PrepopulateCallback(private val context: Context) : RoomDatabase.Callback(
                 description = "A good start to get to know Tartu Explorer",
                 difficulty = AdventureDifficulty.VERY_EASY,
                 estimatedDuration = 30,
-                thumbnailPath = "https://www.campus.ee/wp-content/uploads/2023/04/Raatuse22_uustaust.png"
+                thumbnailPath = "https://raw.githubusercontent.com/UT-EE-Mobile-App-Development/tartu-explorer-quests/refs/heads/main/buildings/01/2.jpg"
             )
         )
 
@@ -70,7 +70,7 @@ class PrepopulateCallback(private val context: Context) : RoomDatabase.Callback(
                 questId = quest1Id,
                 index = 0,
                 text = "Do you know the Tartu University?",
-                imageUrl = "https://progressarch.com/wp-content/uploads/2024/04/5_DELTA-BUILDING_TARTU-UNIVERSITY_SCORPIO-P04010-scaled.jpg"
+                imageUrl = "https://raw.githubusercontent.com/UT-EE-Mobile-App-Development/tartu-explorer-quests/refs/heads/main/buildings/01/1.jpg"
             )
         )
         hintDao.insert(
@@ -78,7 +78,7 @@ class PrepopulateCallback(private val context: Context) : RoomDatabase.Callback(
                 questId = quest1Id,
                 index = 1,
                 text = "Maybe it is a special building of the university with a unique shape.",
-                imageUrl = "https://www.themayor.eu/web/files/articles/4510/main_image/thumb_1200x630_Delta_Building_Tartu_University.jpg"
+                imageUrl = "https://raw.githubusercontent.com/UT-EE-Mobile-App-Development/tartu-explorer-quests/refs/heads/main/buildings/01/2.jpg"
             )
         )
 
@@ -88,7 +88,7 @@ class PrepopulateCallback(private val context: Context) : RoomDatabase.Callback(
                 questId = quest2Id,
                 index = 0,
                 text = "Students sleep here",
-                imageUrl = "https://www.rallyestonia.com/get/image/userfiles/image/list/item_7062/92094377.jpg?w=1000&h=0"
+                imageUrl = "https://raw.githubusercontent.com/UT-EE-Mobile-App-Development/tartu-explorer-quests/refs/heads/main/buildings/02/1.jpg"
             )
         )
         hintDao.insert(
@@ -96,7 +96,7 @@ class PrepopulateCallback(private val context: Context) : RoomDatabase.Callback(
                 questId = quest2Id,
                 index = 1,
                 text = "The Raatuse street is very close to this building",
-                imageUrl = "https://www.campus.ee/wp-content/uploads/2023/04/tyk-6628-2048x1363.jpg"
+                imageUrl = "https://raw.githubusercontent.com/UT-EE-Mobile-App-Development/tartu-explorer-quests/refs/heads/main/buildings/02/2.jpg"
             )
         )
     }

@@ -230,7 +230,7 @@ fun GameScreen(adventureId: Long, onNavigateBack: () -> Unit) {
                                 .padding(12.dp)
                         ) {
 
-                            ProgressBar(
+                            ProgressBar( 
                                 currentStep = state.currentQuest,
                                 totalSteps = state.quests.size,
                                 isDarkMode = isDarkMode,

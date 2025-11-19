@@ -7,6 +7,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createComposeRule
+import androidx.compose.ui.test.onAllNodesWithContentDescription
 import androidx.compose.ui.test.onAllNodesWithText
 import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithText
@@ -48,6 +49,12 @@ class QuestSelectionTest {
         composeTestRule.onNodeWithText("Select an adventure to play").assertIsDisplayed()
         composeTestRule.onNodeWithText("QUESTS").performClick()
         composeTestRule.onNodeWithText("Easy").performClick()
+
+        // Wait for the content to appear (due to animation or async DB loading)
+        composeTestRule.waitUntil(timeoutMillis = 5000) {
+            composeTestRule.onAllNodesWithContentDescription("Riverside-Walk").fetchSemanticsNodes().isNotEmpty()
+        }
+
         composeTestRule.onNodeWithContentDescription("Riverside-Walk").performClick()
         composeTestRule.waitUntil(timeoutMillis = 30000) {
             // wait for image download to finish or max 30 seconds

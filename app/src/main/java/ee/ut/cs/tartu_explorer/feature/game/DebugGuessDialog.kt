@@ -4,6 +4,7 @@ import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import ee.ut.cs.tartu_explorer.BuildConfig
 
 @Composable
 fun DebugGuessDialog(
@@ -33,10 +34,12 @@ fun DebugGuessDialog(
         AlertDialog(
             onDismissRequest = onDismiss,
             confirmButton = {
-                TextButton(
-                    onClick = onContinueAnyway
-                ) {
-                    Text("Continue Anyway (Debug)")
+                if (BuildConfig.DEV_MODE) {
+                    TextButton(
+                        onClick = onContinueAnyway
+                    ) {
+                        Text("Continue Anyway (Debug)")
+                    }
                 }
             },
             dismissButton = {
@@ -50,7 +53,10 @@ fun DebugGuessDialog(
                 Text("Not in Range")
             },
             text = {
-                Text("Your guess was ${distance.toInt()} meters away. The quest will be marked as complete anyway.")
+                Text("Your guess was ${distance.toInt()} meters away. " +
+                        if (BuildConfig.DEV_MODE) "The quest will be marked as complete anyway."
+                        else "Try again!"
+                )
             },
         )
     }

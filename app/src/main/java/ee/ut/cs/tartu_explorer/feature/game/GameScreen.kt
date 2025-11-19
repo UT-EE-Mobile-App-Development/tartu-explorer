@@ -360,14 +360,27 @@ fun GameScreen(adventureId: Long, onNavigateBack: () -> Unit) {
                         DebugGuessDialog(
                             onContinueAnyway = {
                                 val wasLastQuest = state.currentQuest == state.quests.size - 1
-                                viewModel.nextQuest()
+
+                                // Track quest attempt, award EP, and move to next quest
+                                if (guess.inRange) {
+                                    // Normal completion: in radius
+                                    viewModel.completeQuestNormally(andMoveToNext = true)
+                                } else {
+                                    // Debug: Force quest completion even if not in range
+                                    viewModel.forceQuestCompletion(andMoveToNext = true)
+                                }
+
                                 showBlueCircleOnMap = false
 
                                 if (wasLastQuest) {
                                     showCompletionPopup = true
                                 }
                                                },
-                            onDismiss = { viewModel.resetDebugGuessDialogue() },
+                            onDismiss = { 
+                                // Track quest attempt with actual result (usually false), but don't move to next quest
+                                viewModel.completeQuestNormally(andMoveToNext = false)
+                                viewModel.resetDebugGuessDialogue() 
+                            },
                             distance = guess.distanceFromTarget,
                             inRange = guess.inRange
                         )

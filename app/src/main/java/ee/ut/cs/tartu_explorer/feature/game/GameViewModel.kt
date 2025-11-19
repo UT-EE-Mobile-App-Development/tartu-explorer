@@ -97,31 +97,70 @@ class GameViewModel(
             val distanceToTarget = location.distanceTo(targetLocation)
             val inRadius = distanceToTarget <= currentQuestEntity.radius
 
-            // Always track the attempt
-            val attempt = QuestAttemptEntity(
-                sessionId = sessionId,
-                questId = currentQuestEntity.id,
-                // DEV-build
-                wasCorrect = true
-                //wasCorrect= inRadius
-            )
-            repository.trackQuestAttempt(attempt)
-
-            // for Dev:
-            // If the guess was correct, award experience points
-            // if (inRadius) {
-            val hintsUsed = state.value.currentHint
-            val epGained = LevelingUtil.calculateEpForQuest(hintsUsed)
-            playerRepository.addExperiencePoints(playerId, epGained)
-            //}
-
-            // Update the UI with the guess result
+            // Update the UI with the guess result (don't track attempt yet)
             _state.update { it.copy(guessState = GuessState(distanceToTarget, inRadius)) }
         }
     }
 
     fun resetDebugGuessDialogue() {
         _state.update { it -> it.copy(guessState = null) }
+    }
+
+    fun forceQuestCompletion(andMoveToNext: Boolean = true) {
+        viewModelScope.launch(Dispatchers.IO) {
+            val playerId = playerRepository.getActivePlayer()?.id ?: return@launch
+            val sessionId = _sessionId.value ?: return@launch
+            val currentQuestIndex = state.value.currentQuest
+            val currentQuestEntity = state.value.quests.getOrNull(currentQuestIndex) ?: return@launch
+
+            // Debug: Mark quest as correct regardless of actual distance
+            val attempt = QuestAttemptEntity(
+                sessionId = sessionId,
+                questId = currentQuestEntity.id,
+                wasCorrect = true
+            )
+            repository.trackQuestAttempt(attempt)
+
+            // Award experience points
+            val hintsUsed = state.value.currentHint
+            val epGained = LevelingUtil.calculateEpForQuest(hintsUsed)
+            playerRepository.addExperiencePoints(playerId, epGained)
+
+            // Move to next quest if requested
+            if (andMoveToNext) {
+                nextQuest()
+            }
+        }
+    }
+
+    fun completeQuestNormally(andMoveToNext: Boolean = true) {
+        viewModelScope.launch(Dispatchers.IO) {
+            val playerId = playerRepository.getActivePlayer()?.id ?: return@launch
+            val sessionId = _sessionId.value ?: return@launch
+            val currentQuestIndex = state.value.currentQuest
+            val currentQuestEntity = state.value.quests.getOrNull(currentQuestIndex) ?: return@launch
+            val currentGuessState = state.value.guessState ?: return@launch
+
+            // Track the attempt with actual inRadius result
+            val attempt = QuestAttemptEntity(
+                sessionId = sessionId,
+                questId = currentQuestEntity.id,
+                wasCorrect = currentGuessState.inRange
+            )
+            repository.trackQuestAttempt(attempt)
+
+            // Award experience points only if in radius
+            if (currentGuessState.inRange) {
+                val hintsUsed = state.value.currentHint
+                val epGained = LevelingUtil.calculateEpForQuest(hintsUsed)
+                playerRepository.addExperiencePoints(playerId, epGained)
+
+                // Move to next quest if in range and requested
+                if (andMoveToNext) {
+                    nextQuest()
+                }
+            }
+        }
     }
 
     fun nextQuest() {

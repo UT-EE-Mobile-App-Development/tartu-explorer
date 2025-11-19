@@ -10,11 +10,11 @@ Madis Puu (madsipuu) - Editor <br/>
 
 ## Polishing + Testing + APK Documentation ##
 
-see step4_report.md
+see [step4_report.md](https://github.com/UT-EE-Mobile-App-Development/tartu-explorer/blob/main/step4_report.md)
 
 ## API Documentation ##
 
-see step3_report.md
+see [step3_report.md](https://github.com/UT-EE-Mobile-App-Development/tartu-explorer/blob/main/step3_report.md)
 
 
 ## Data Model and Local Storage

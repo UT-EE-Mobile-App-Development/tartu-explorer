@@ -28,6 +28,12 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+            // Dev Mode, Set to true to enable in release
+            buildConfigField("boolean", "DEV_MODE", "false")
+        }
+        getByName("debug") {
+            // Set to false to disable in debug
+            buildConfigField("boolean", "DEV_MODE", "true")
         }
     }
     compileOptions {
@@ -39,6 +45,7 @@ android {
     }
     buildFeatures {
         compose = true
+        buildConfig = true
     }
     room {
         schemaDirectory("$projectDir/schemas")

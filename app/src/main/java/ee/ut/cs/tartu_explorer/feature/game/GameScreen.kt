@@ -9,6 +9,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -31,7 +32,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Text
@@ -52,6 +52,7 @@ import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -153,24 +154,91 @@ fun GameScreen(adventureId: Long, onNavigateBack: () -> Unit) {
                     .fillMaxWidth(0.9f)
                     .fillMaxHeight(0.85f)
                     .align(Alignment.Center)
-                    .background(Color(0xCCFFFFFF), RoundedCornerShape(16.dp))
-                    .border(2.dp, Color.Black, RoundedCornerShape(16.dp))
-                    .padding(16.dp)
+                    .background(Color(0xFFFFFAEE), RoundedCornerShape(16.dp))
+                    .border(
+                        BorderStroke(
+                            3.dp,
+                            Brush.verticalGradient(
+                                colors = when {
+                                    !isDarkMode -> listOf(
+                                        Color(0xFFFFA533),
+                                        Color(0xFFCC7A00),
+                                        Color(0xFFB36700)
+                                    )
+
+                                    else -> listOf(Color(0xFFF7B21A), Color(0xFFF1A11A), Color(0xFFDB8F00)
+                                    )
+                                }
+                            )
+                        ),
+                        shape = RoundedCornerShape(16.dp)
+                    )
+
             ) {
+                Image(
+                    painter = painterResource(id = R.drawable.splash_bg),
+                    contentDescription = null,
+                    modifier = Modifier
+                        .matchParentSize()
+                        .clip(RoundedCornerShape(16.dp)), // clip to rounded corners
+                    contentScale = ContentScale.Crop
+                )
+                // Overlay for dark mode
+                if (!isDarkMode) {
+                    Box(
+                        modifier = Modifier
+                            .matchParentSize()
+                            .background(Color(0x80000000)) // semi-transparent black (50%)
+                    )
+                }
                 Column(
                     modifier = Modifier
-                        .fillMaxSize(),
+                        .fillMaxSize()
+                        .padding(16.dp),
                         //.verticalScroll(rememberScrollState()),
                     verticalArrangement = Arrangement.spacedBy(24.dp),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    ProgressBar(
-                        currentStep = state.currentQuest,
-                        totalSteps = state.quests.size,
-                        isDarkMode = isDarkMode,
-                        showCompletionPopup = showCompletionPopup,
-                        modifier = Modifier.fillMaxWidth()
-                    )
+                    Box(                   // OUTER BOX
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .border(
+                                BorderStroke(
+                                    3.dp,
+                                    Brush.verticalGradient(
+                                        colors = when {
+                                            !isDarkMode -> listOf(
+                                                Color(0xFFFFA533),
+                                                Color(0xFFCC7A00),
+                                                Color(0xFFB36700)
+                                            )
+                                            else -> listOf(Color(0xFFF7B21A), Color(0xFFF1A11A), Color(0xFFDB8F00)
+                                            )
+                                        }
+                                    )
+                                ),
+                                shape = RoundedCornerShape(20.dp)
+                            )
+                            .background(MainOrange, RoundedCornerShape(20.dp))
+                            .padding(3.dp)      // padding inside outer box
+                    ) {
+
+                        Box(               // INNER BOX
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .background(Color(0xFFFFFAEE), RoundedCornerShape(16.dp))
+                                .padding(12.dp)
+                        ) {
+
+                            ProgressBar( 
+                                currentStep = state.currentQuest,
+                                totalSteps = state.quests.size,
+                                isDarkMode = isDarkMode,
+                                showCompletionPopup = showCompletionPopup,
+                                modifier = Modifier.fillMaxWidth()
+                            )
+                        }
+                    }
 
                     // Hint Image Viewer
                     var currentHintIndex by remember { mutableStateOf(0) }
@@ -188,6 +256,22 @@ fun GameScreen(adventureId: Long, onNavigateBack: () -> Unit) {
                         Box(
                             modifier = Modifier
                                 .fillMaxWidth()
+                                .border(
+                                    BorderStroke(
+                                        3.dp,
+                                        Brush.verticalGradient(
+                                            colors = when {
+                                                !isDarkMode -> listOf(
+                                                    Color(0xFFFFA533),
+                                                    Color(0xFFCC7A00),
+                                                    Color(0xFFB36700)
+                                                )
+
+                                                else -> listOf(Color(0xFFF7B21A), Color(0xFFF1A11A), Color(0xFFDB8F00)
+                                                )
+                                            }
+                                        )
+                                    ),shape = RoundedCornerShape(16.dp))
                                 .height(300.dp)
                                 .clip(RoundedCornerShape(16.dp))
                         ) {
@@ -304,18 +388,13 @@ fun GameScreen(adventureId: Long, onNavigateBack: () -> Unit) {
                 ) {
                     Card(
                         shape = RoundedCornerShape(16.dp),
-                        modifier = Modifier
-                            .padding(32.dp)
-                            .border(BorderStroke(4.dp, MainOrange), RoundedCornerShape(16.dp))
-                            .clickable { showHintPopup = false },
-                        colors = CardDefaults.cardColors(
-                            containerColor = Color.DarkGray
-                        )
+                        border = BorderStroke(3.dp, MainOrange),
+                        modifier = Modifier.padding(32.dp)
+                            .clickable {showHintPopup = false}
                     ) {
                         Text(
                             text = currentHintText,
                             color = Color.White,
-                            fontWeight = FontWeight.Bold,
                             modifier = Modifier.padding(24.dp)
                         )
                     }
@@ -395,6 +474,7 @@ fun GameScreen(adventureId: Long, onNavigateBack: () -> Unit) {
                 ) {
                     Card(
                         shape = RoundedCornerShape(16.dp),
+                        border = BorderStroke(3.dp, MainOrange),
                         modifier = Modifier.padding(32.dp)
                             .clickable {showWeatherPopup = false}
                     ) {
@@ -556,7 +636,7 @@ fun GameControls(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Button(onClick = onGuess, colors = ButtonDefaults.buttonColors(
-                containerColor = if (isDarkMode) MainOrange else Color.DarkGray,
+                containerColor = if (isDarkMode) MainOrange else Color(0xFFD87F1C),
                 contentColor = Color.White
             ),
                 //shadow-border
@@ -565,14 +645,11 @@ fun GameControls(
                     Brush.verticalGradient(
                         colors = when {
                             !isDarkMode -> listOf(
-                                Color.LightGray,
-                                Color.Gray,
-                                Color(0xFF666666)
+                                Color(0xFFFFA533),
+                                Color(0xFFCC7A00),
+                                Color(0xFFB36700)
                             )
-                            else -> listOf(
-                                OrangeGradiantTop,
-                                OrangeGradiantMid,
-                                OrangeGradiantBot
+                            else -> listOf(Color(0xFFF7B21A), Color(0xFFF1A11A), Color(0xFFDB8F00)
                             )
                         }
                     )
@@ -589,24 +666,28 @@ fun GameControls(
                                 width = 3.dp,
                                 brush = Brush.verticalGradient(
                                     colors = if (isDarkMode) {
-                                        listOf(OrangeGradiantTop, OrangeGradiantMid, OrangeGradiantBot)
+                                        listOf(
+                                            Color(0xFFF7B21A),
+                                            Color(0xFFF1A11A),
+                                            Color(0xFFDB8F00)
+                                        )
                                     } else {
                                         listOf(
-                                            Color.LightGray,
-                                            Color.Gray,
-                                            Color(0xFF666666)
+                                            Color(0xFFFFA533),
+                                            Color(0xFFCC7A00),
+                                            Color(0xFFB36700)
                                         )
                                     }
                                 )
                             ), RoundedCornerShape(12.dp)
                         )
                         .background(
-                            if (isDarkMode) MainOrange else Color.DarkGray,
+                            if (isDarkMode) MainOrange else Color(0xFFD87F1C),
                             RoundedCornerShape(12.dp)
                         )
                         .clickable { showHintPopup(true) }
                 ) {
-                    Text("i", color = Color.White, fontSize = 24.sp)
+                    Text("i", color = Color.White, fontSize = 24.sp, fontWeight = FontWeight.Bold)
                 }
             }
 
@@ -619,23 +700,23 @@ fun GameControls(
                         width = 3.dp,
                         brush = Brush.verticalGradient(
                             colors = if (isDarkMode) {
-                                listOf(OrangeGradiantTop, OrangeGradiantMid, OrangeGradiantBot)
+                                listOf(Color(0xFFF7B21A), Color(0xFFF1A11A), Color(0xFFDB8F00))
                             } else {
                                 listOf(
-                                    Color.LightGray,
-                                    Color.Gray,
-                                    Color(0xFF666666))
+                                    Color(0xFFFFA533),
+                                    Color(0xFFCC7A00),
+                                    Color(0xFFB36700))
                             }
                         )
                     ), RoundedCornerShape(12.dp))
-                    .background(if (isDarkMode) MainOrange else Color.DarkGray, RoundedCornerShape(12.dp))
+                    .background(if (isDarkMode) MainOrange else Color(0xFFD87F1C), RoundedCornerShape(12.dp))
                     .clickable { showWeatherPopup(true) }
             ) {
                 Text("☁", fontSize = 24.sp, color = Color.White)
             }
 
             Button(onClick = onUseHint, enabled = !hintDisabled, colors = ButtonDefaults.buttonColors(
-                containerColor = if (isDarkMode) MainOrange else Color.DarkGray,
+                containerColor = if (isDarkMode) MainOrange else Color(0xFFD87F1C),
                 contentColor = Color.White
             ),
                 //shadow-border
@@ -644,14 +725,11 @@ fun GameControls(
                     Brush.verticalGradient(
                         colors = when {
                             !isDarkMode -> listOf(
-                                Color.LightGray,
-                                Color.Gray,
-                                Color(0xFF666666)
+                                Color(0xFFFFA533),
+                                Color(0xFFCC7A00),
+                                Color(0xFFB36700)
                             )
-                            else -> listOf(
-                                OrangeGradiantTop,
-                                OrangeGradiantMid,
-                                OrangeGradiantBot
+                            else -> listOf(Color(0xFFF7B21A), Color(0xFFF1A11A), Color(0xFFDB8F00)
                             )
                         }
                     )
@@ -662,7 +740,24 @@ fun GameControls(
             modifier = Modifier
                 .fillMaxWidth()
                 .height(220.dp)
-                .border(2.dp, Color.Black, RoundedCornerShape(16.dp))
+                .border(
+                    BorderStroke(
+                        3.dp,
+                        Brush.verticalGradient(
+                            colors = when {
+                                !isDarkMode -> listOf(
+                                    Color(0xFFFFA533),
+                                    Color(0xFFCC7A00),
+                                    Color(0xFFB36700)
+                                )
+
+                                else -> listOf(Color(0xFFF7B21A), Color(0xFFF1A11A), Color(0xFFDB8F00)
+                                )
+                            }
+                        )
+                    ),
+                    shape = RoundedCornerShape(16.dp)
+                )
                 .padding(bottom = 12.dp)
                 .clip(RoundedCornerShape(16.dp))
         ) {

@@ -28,11 +28,13 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
-            // Dev Mode, Set to true to enable in release
+            // Dev Mode Select Build-Option in APK Build
+            // Change flags in code to test it in Android Studio
             buildConfigField("boolean", "DEV_MODE", "false")
         }
         getByName("debug") {
-            // Set to false to disable in debug
+            // Dev Mode Select Build-Option in APK Build
+            // Change flags in code to test it in Android Studio
             buildConfigField("boolean", "DEV_MODE", "true")
         }
     }

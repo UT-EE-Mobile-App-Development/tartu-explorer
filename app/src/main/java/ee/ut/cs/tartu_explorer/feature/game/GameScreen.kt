@@ -388,12 +388,13 @@ fun GameScreen(adventureId: Long, onNavigateBack: () -> Unit) {
                 ) {
                     Card(
                         shape = RoundedCornerShape(16.dp),
+                        border = BorderStroke(3.dp, MainOrange),
                         modifier = Modifier.padding(32.dp)
                             .clickable {showHintPopup = false}
                     ) {
                         Text(
                             text = currentHintText,
-                            color = Color.Black,
+                            color = Color.White,
                             modifier = Modifier.padding(24.dp)
                         )
                     }
@@ -473,6 +474,7 @@ fun GameScreen(adventureId: Long, onNavigateBack: () -> Unit) {
                 ) {
                     Card(
                         shape = RoundedCornerShape(16.dp),
+                        border = BorderStroke(3.dp, MainOrange),
                         modifier = Modifier.padding(32.dp)
                             .clickable {showWeatherPopup = false}
                     ) {
@@ -685,7 +687,7 @@ fun GameControls(
                         )
                         .clickable { showHintPopup(true) }
                 ) {
-                    Text("i", color = Color.White, fontSize = 24.sp)
+                    Text("i", color = Color.White, fontSize = 24.sp, fontWeight = FontWeight.Bold)
                 }
             }
 

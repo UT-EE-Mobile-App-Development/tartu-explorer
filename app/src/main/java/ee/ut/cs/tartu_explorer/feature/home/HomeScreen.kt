@@ -47,6 +47,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import ee.ut.cs.tartu_explorer.BuildConfig
 import ee.ut.cs.tartu_explorer.R
 import ee.ut.cs.tartu_explorer.core.data.local.db.DatabaseProvider
 import ee.ut.cs.tartu_explorer.core.data.local.entities.PlayerEntity
@@ -186,6 +187,17 @@ fun HomeScreen(
                     .padding(top = 200.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
+                if (BuildConfig.DEV_MODE) {
+                    OutlinedText(
+                        text = "DEV MODE",
+                        fontSize = 40.sp,
+                        fontWeight = FontWeight.Bold,
+                        textAlign = TextAlign.Center,
+                        textColor = Color.Red,
+                        outlineColor = Color.White
+                    )
+                }
+
                 OutlinedText(
                     text = "TARTU EXPLORER",
                     fontSize = 75.sp,
@@ -228,13 +240,15 @@ fun HomeScreen(
             }
 
             // Dev Panel Button at the bottom right
-            TextButton(
-                onClick = onNavigateToDev,
-                modifier = Modifier
-                    .align(Alignment.BottomEnd)
-                    .padding(16.dp)
-            ) {
-                Text("Dev-Panel")
+            if (BuildConfig.DEV_MODE) {
+                TextButton(
+                    onClick = onNavigateToDev,
+                    modifier = Modifier
+                        .align(Alignment.BottomEnd)
+                        .padding(16.dp)
+                ) {
+                    Text("Dev-Panel")
+                }
             }
         }
     }

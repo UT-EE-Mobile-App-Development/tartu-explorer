@@ -63,6 +63,7 @@ Logs individual attempts to solve a quest (e.g., location checks).
 
 The following diagram illustrates the relationships between the database entities.
 
+<img width="4102" height="7160" alt="ERD Database diagramm" src="https://github.com/user-attachments/assets/741e4b8d-b65e-4ef1-bcb0-eff8eae09177" />
 
 ---
 

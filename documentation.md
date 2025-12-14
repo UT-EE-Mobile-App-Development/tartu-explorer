@@ -30,6 +30,42 @@ Tracks an active playthrough of an adventure by a player.
 -   `status`: Enum (IN_PROGRESS, COMPLETED, CANCELLED)
 -   `currentQuestIndex`: Int - Tracks progress through the adventure's quests.
 
+### PlayerEntity (`player`)
+Represents a user profile in the application.
+-   `id`: Long (PK)
+-   `name`: String
+-   `experiencePoints`: Int
+-   `isActive`: Boolean - Indicates the currently selected profile.
+
+### HintEntity (`hint`)
+Provides clues for specific quests.
+-   `id`: Long (PK)
+-   `questId`: Long (FK)
+-   `text`: String
+-   `imageUrl`: String?
+
+### HintUsageEntity (`hint_usage`)
+Tracks which hints were used during a session (for scoring purposes).
+-   `id`: Long (PK)
+-   `sessionId`: Long (FK)
+-   `hintId`: Long (FK)
+
+### QuestAttemptEntity (`quest_attempt`)
+Logs individual attempts to solve a quest (e.g., location checks).
+-   `id`: Long (PK)
+-   `sessionId`: Long (FK)
+-   `questId`: Long (FK)
+-   `wasCorrect`: Boolean
+
+---
+
+## Entity Relationship Diagram (ERD)
+
+The following diagram illustrates the relationships between the database entities.
+
+
+---
+
 ### Weather Response Model (API)
 -   `current_weather`: Object
     -   `temperature`: Double

@@ -76,18 +76,34 @@ The project follows a feature-based Clean Architecture approach:
     -   `navigation/`: Navigation graph and logic.
     -   `MainActivity.kt`: The entry point of the application.
 
+## Documentation 
+- `with API Specifications, Data Model Descriptions`
+- `Overview of Key Modules, Services, and Workflows`
+- `Developer Mode & Release Builds`
+- `User-Facing Instructions`
+
+see [documentation.md](https://github.com/UT-EE-Mobile-App-Development/tartu-explorer/blob/main/documentation.md)
+
 
 ## User Stories and paper Prototyping
 
 see [step1_report.md](https://github.com/UT-EE-Mobile-App-Development/tartu-explorer/blob/main/step1_report.md)
 
 
-## API Documentation ##
+## API Documentation
+
+- `Which API was chosen and why`
+- `Example API endpoint used`
+- `Error handling strategy`
 
 see [step3_report.md](https://github.com/UT-EE-Mobile-App-Development/tartu-explorer/blob/main/step3_report.md)
 
 
 ## Polishing + Testing + APK Documentation ##
+
+- `Testing strategy`
+- `detailed Build Instructions (Build process for APK (Build Configuration & Developer Mode)`
+- `Generating a Signed Release APK`
 
 see [step4_report.md](https://github.com/UT-EE-Mobile-App-Development/tartu-explorer/blob/main/step4_report.md)
 

@@ -83,6 +83,28 @@ Tracks an active playthrough of an adventure by a player.
 
 ---
 
+# Developer Mode & Release Builds
+
+## Build Variants
+The project supports two main build variants via the `build.gradle.kts` configuration:
+
+1.  **Debug / Dev Build (`debug`):**
+    -   **Purpose:** For development, testing, and debugging.
+    -   **Features:**
+        -   **Dev Panel:** Access to a developer panel for quick actions.
+        -   **Database Reset:** Ability to completely wipe the local database to restart testing scenarios.
+        -   **Force Complete:** Option to mark quests as completed instantly without being at the physical location, facilitating rapid testing of game flows.
+    -   **Artifact:** `app-debug.apk`
+
+2.  **Release Build (`release`):**
+    -   **Purpose:** For end-users and production deployment.
+    -   **Features:**
+        -   **Standard Gameplay:** Cheats and developer tools are disabled.
+        -   **Security:** Debugging features removed.
+    -   **Artifact:** `app-release.apk`
+
+---
+
 # User-Facing Instructions
 
 ## Step-by-Step Usage Guidance

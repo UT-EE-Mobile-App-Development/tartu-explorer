@@ -29,6 +29,7 @@ Tracks an active playthrough of an adventure by a player.
 -   `endTime`: Long? - Timestamp when the session ended.
 -   `status`: Enum (IN_PROGRESS, COMPLETED, CANCELLED)
 -   `currentQuestIndex`: Int - Tracks progress through the adventure's quests.
+-   `currentHintIndex`: Int - Tracks progress through the adventure's hints.
 
 ### PlayerEntity (`player`)
 Represents a user profile in the application.
@@ -41,6 +42,7 @@ Represents a user profile in the application.
 Provides clues for specific quests.
 -   `id`: Long (PK)
 -   `questId`: Long (FK)
+-   `index`: Int
 -   `text`: String
 -   `imageUrl`: String?
 
@@ -49,6 +51,7 @@ Tracks which hints were used during a session (for scoring purposes).
 -   `id`: Long (PK)
 -   `sessionId`: Long (FK)
 -   `hintId`: Long (FK)
+-   `usedAt`: Long
 
 ### QuestAttemptEntity (`quest_attempt`)
 Logs individual attempts to solve a quest (e.g., location checks).
@@ -56,6 +59,7 @@ Logs individual attempts to solve a quest (e.g., location checks).
 -   `sessionId`: Long (FK)
 -   `questId`: Long (FK)
 -   `wasCorrect`: Boolean
+-   `timestamp`: Long
 
 ---
 

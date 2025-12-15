@@ -124,7 +124,7 @@ fun StatisticsScreen(
                     containerColor = Transparent
                 ) { Text("", modifier = Modifier.padding(horizontal = 8.dp)) }
             },
-            containerColor = Color.Transparent
+            containerColor = Transparent
         ) { innerPadding ->
             Box(
                 modifier = modifier

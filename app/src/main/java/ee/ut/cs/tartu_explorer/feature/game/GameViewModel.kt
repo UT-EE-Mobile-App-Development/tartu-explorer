@@ -47,7 +47,7 @@ class GameViewModel(
                 quests = quests
             )
         }
-        .flatMapLatest { it ->
+        .flatMapLatest {
             if (_quests.value.isEmpty() || it.currentQuest >= _quests.value.size) {
                 flowOf(emptyList<HintEntity>()) // Use flowOf for emitting an empty list
             } else {
@@ -91,8 +91,8 @@ class GameViewModel(
      */
     fun guessPosition() {
         viewModelScope.launch(Dispatchers.IO) {
-            val playerId = playerRepository.getActivePlayer()?.id ?: return@launch
-            val sessionId = _sessionId.value ?: return@launch
+            playerRepository.getActivePlayer()?.id ?: return@launch
+            _sessionId.value ?: return@launch
             val currentQuestIndex = state.value.currentQuest
             val currentQuestEntity = state.value.quests.getOrNull(currentQuestIndex) ?: return@launch
 
@@ -119,7 +119,7 @@ class GameViewModel(
      * Resets the debug guess dialogue state.
      */
     fun resetDebugGuessDialogue() {
-        _state.update { it -> it.copy(guessState = null) }
+        _state.update { it.copy(guessState = null) }
     }
 
     /**
@@ -196,7 +196,7 @@ class GameViewModel(
     fun nextQuest() {
         if (state.value.currentQuest < state.value.quests.size - 1) {
             val newQuestIndex = state.value.currentQuest + 1
-            _state.update { it ->
+            _state.update {
                 it.copy(
                     currentQuest = newQuestIndex,
                     currentHint = 0,
@@ -233,7 +233,7 @@ class GameViewModel(
                 repository.trackHintUsed(usage)
                 adventureSessionRepository.updateProgress(sessionId, state.value.currentQuest, nextHintIndex)
             }
-            _state.update { it ->
+            _state.update {
                 it.copy(currentHint = nextHintIndex)
             }
         }

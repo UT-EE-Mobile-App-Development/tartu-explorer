@@ -18,9 +18,9 @@ class ThemeViewModel : ViewModel() {
      */
     fun toggleDarkMode() {
         isDarkMode.value = !isDarkMode.value
-        androidx.appcompat.app.AppCompatDelegate.setDefaultNightMode(
+        AppCompatDelegate.setDefaultNightMode(
             if (isDarkMode.value) AppCompatDelegate.MODE_NIGHT_YES
-            else androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_NO
+            else AppCompatDelegate.MODE_NIGHT_NO
         )
     }
 }

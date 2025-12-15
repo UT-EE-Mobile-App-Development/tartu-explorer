@@ -845,7 +845,7 @@ fun GameControls(
 fun NoPermissionInfo(locationPermissionToastEvent: SharedFlow<Boolean>) {
     val context = LocalContext.current
     LaunchedEffect(Unit) {
-        locationPermissionToastEvent.collect { it ->
+        locationPermissionToastEvent.collect {
             if (it) {
                 val toast =
                     Toast.makeText(context, "permission locations required", Toast.LENGTH_SHORT)

@@ -103,7 +103,7 @@ fun QuestScreen(
         isDarkMode = isDarkMode
     ) {
         Scaffold(
-            containerColor = Color.Transparent, // this removes the white background
+            containerColor = Transparent, // this removes the white background
             // Top bar
             topBar = {
                 CenterAlignedTopAppBar(
@@ -229,7 +229,7 @@ fun DifficultyRow(
                     val borderColor = when (status) {
                         SessionStatus.IN_PROGRESS -> Color.Yellow
                         SessionStatus.COMPLETED -> Color.Green
-                        else -> Color.Transparent
+                        else -> Transparent
                     }
                     Column(horizontalAlignment = Alignment.CenterHorizontally) {
                         SubcomposeAsyncImage(

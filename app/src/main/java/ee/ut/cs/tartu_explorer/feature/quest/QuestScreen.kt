@@ -63,7 +63,6 @@ import ee.ut.cs.tartu_explorer.core.ui.theme.ThemeViewModel
 import ee.ut.cs.tartu_explorer.core.ui.theme.components.AnimatedBackground
 import ee.ut.cs.tartu_explorer.core.ui.theme.components.CustomBackButton
 import ee.ut.cs.tartu_explorer.core.ui.theme.components.OutlinedText
-import java.util.concurrent.TimeUnit
 import kotlin.Boolean
 
 
@@ -266,23 +265,6 @@ fun DifficultyRow(
                 color = Color.Black
             )
         }
-    }
-}
-
-/**
- * Formats a duration in milliseconds to a human-readable string.
- *
- * @param millis Duration in milliseconds.
- * @return Formatted duration string.
- */
-fun formatDuration(millis: Long): String {
-    val hours = TimeUnit.MILLISECONDS.toHours(millis)
-    val minutes = TimeUnit.MILLISECONDS.toMinutes(millis) % 60
-    val seconds = TimeUnit.MILLISECONDS.toSeconds(millis) % 60
-    return when {
-        hours > 0 -> String.format("%dh %02dmin %02ds", hours, minutes, seconds)
-        minutes > 0 -> String.format("%dmin %02ds", minutes, seconds)
-        else -> String.format("%ds", seconds)
     }
 }
 

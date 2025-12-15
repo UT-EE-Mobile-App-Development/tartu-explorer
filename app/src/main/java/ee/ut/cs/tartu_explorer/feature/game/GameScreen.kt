@@ -74,7 +74,6 @@ import ee.ut.cs.tartu_explorer.core.location.LocationRepository
 import ee.ut.cs.tartu_explorer.core.ui.theme.MainOrange
 import ee.ut.cs.tartu_explorer.core.ui.theme.OrangeGradiantBot
 import ee.ut.cs.tartu_explorer.core.ui.theme.OrangeGradiantMid
-import ee.ut.cs.tartu_explorer.core.ui.theme.OrangeGradiantTop
 import ee.ut.cs.tartu_explorer.core.ui.theme.ThemeViewModel
 import ee.ut.cs.tartu_explorer.core.ui.theme.components.AnimatedBackground
 import ee.ut.cs.tartu_explorer.core.ui.theme.components.CustomBackButton

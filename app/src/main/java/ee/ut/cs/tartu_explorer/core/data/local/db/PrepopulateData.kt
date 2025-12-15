@@ -14,6 +14,11 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
+/**
+ * Callback to prepopulate the database with initial data upon creation.
+ *
+ * @param context The application context used to access the database.
+ */
 class PrepopulateCallback(private val context: Context) : RoomDatabase.Callback() {
     override fun onCreate(db: SupportSQLiteDatabase) {
         super.onCreate(db)

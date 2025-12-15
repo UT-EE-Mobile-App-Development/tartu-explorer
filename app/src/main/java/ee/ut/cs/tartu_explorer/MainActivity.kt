@@ -15,6 +15,9 @@ import androidx.navigation.compose.rememberNavController
 import ee.ut.cs.tartu_explorer.core.ui.theme.TartuExplorerTheme
 import ee.ut.cs.tartu_explorer.navigation.AppNavGraph
 
+/**
+ * Main activity hosting the app content.
+ */
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

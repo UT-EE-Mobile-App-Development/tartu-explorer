@@ -396,6 +396,12 @@ fun ProfileSwitcherDialog(
     )
 }
 
+/**
+ * A circular level indicator showing the player's current level and progress to the next level.
+ *
+ * @param levelInfo Information about the player's level and progress.
+ * @param size The size of the circular indicator.
+ */
 @Composable
 fun CircularLevelIndicator(levelInfo: LevelInfo, size: Dp = 80.dp) {
     Box(contentAlignment = Alignment.Center, modifier = Modifier.size(size)) {

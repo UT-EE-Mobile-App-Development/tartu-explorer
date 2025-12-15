@@ -66,6 +66,13 @@ import ee.ut.cs.tartu_explorer.core.ui.theme.components.OutlinedText
 import java.util.concurrent.TimeUnit
 import kotlin.Boolean
 
+
+/**
+ * Screen that displays quests categorized by difficulty levels.
+ *
+ * @param onNavigateBack Callback to navigate back.
+ * @param onNavigateHome Callback to navigate to the home screen with a specific adventure ID.
+ */
 @SuppressLint("ContextCastToActivity")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -182,10 +189,17 @@ fun QuestScreen(
     }
 }
 
-
-
-
-
+/**
+ * Composable that displays a row of adventures for a specific difficulty level.
+ *
+ * @param onNavigateHome Callback to navigate to the home screen with a specific adventure ID.
+ * @param adventures Map of adventures categorized by difficulty.
+ * @param adventureStatuses Map of adventure IDs to their session statuses.
+ * @param adventureStatusDetails Map of adventure IDs to their status details.
+ * @param difficulty The difficulty level to display.
+ * @param displayName The display name for the difficulty level.
+ * @param thumbnailSize The size of the adventure thumbnails.
+ */
 @Composable
 fun DifficultyRow(
     onNavigateHome: (Long) -> Unit,
@@ -255,6 +269,12 @@ fun DifficultyRow(
     }
 }
 
+/**
+ * Formats a duration in milliseconds to a human-readable string.
+ *
+ * @param millis Duration in milliseconds.
+ * @return Formatted duration string.
+ */
 fun formatDuration(millis: Long): String {
     val hours = TimeUnit.MILLISECONDS.toHours(millis)
     val minutes = TimeUnit.MILLISECONDS.toMinutes(millis) % 60
@@ -266,6 +286,22 @@ fun formatDuration(millis: Long): String {
     }
 }
 
+/**
+ * Composable that displays a card for a specific difficulty level, which can be expanded to show
+ * adventures of that difficulty.
+ *
+ * @param questName The name of the quest/difficulty level.
+ * @param onNavigateHome Callback to navigate to the home screen with a specific adventure ID.
+ * @param adventures Map of adventures categorized by difficulty.
+ * @param adventureStatuses Map of adventure IDs to their session statuses.
+ * @param adventureStatusDetails Map of adventure IDs to their status details.
+ * @param difficulty The difficulty level to display.
+ * @param displayName The display name for the difficulty level.
+ * @param thumbnailSize The size of the adventure thumbnails.
+ * @param expanded Whether the card is expanded to show adventures.
+ * @param onExpandToggle Callback to toggle the expanded state.
+ * @param isDarkMode Whether dark mode is enabled.
+ */
 @SuppressLint("ContextCastToActivity")
 @Composable
 fun QuestCardWithDifficulty(

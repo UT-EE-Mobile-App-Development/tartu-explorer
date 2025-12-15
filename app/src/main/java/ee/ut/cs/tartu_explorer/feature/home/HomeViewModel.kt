@@ -21,6 +21,9 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.joinAll
 import kotlinx.coroutines.launch
 
+/**
+ * UI state for the Home screen.
+ */
 data class HomeUiState(
     val showNamePrompt: Boolean = false,
     val playerNameInput: String = "",
@@ -33,6 +36,12 @@ data class HomeUiState(
     val readyToPlay: Boolean = false
 )
 
+/**
+ * ViewModel for the Home screen.
+ *
+ * @param playerRepository Repository for player data
+ * @param gameRepository Repository for game data
+ */
 class HomeViewModel(
     private val playerRepository: PlayerRepository,
     private val gameRepository: GameRepository
@@ -81,10 +90,16 @@ class HomeViewModel(
         }
     }
 
+    /**
+     * Handles changes to the player name input field.
+     */
     fun onPlayerNameChange(newName: String) {
         _uiState.update { it.copy(playerNameInput = newName) }
     }
 
+    /**
+     * Saves the new player to the repository.
+     */
     fun savePlayer() {
         if (uiState.value.playerNameInput.isBlank()) return
 
@@ -94,18 +109,34 @@ class HomeViewModel(
         }
     }
 
+    /**
+     * Shows the profile switcher dialog.
+     */
     fun showProfileSwitcher() {
         _uiState.update { it.copy(showProfileSwitcher = true) }
     }
 
+    /**
+     * Dismisses the profile switcher dialog.
+     */
     fun dismissProfileSwitcher() {
         _uiState.update { it.copy(showProfileSwitcher = false) }
     }
 
+    /**
+     * Handles changes to the new player name input field.
+     *
+     * @param newName The new name input by the user
+     */
     fun onNewPlayerNameChange(newName: String) {
         _uiState.update { it.copy(newPlayerName = newName) }
     }
 
+    /**
+     * Switches the active player.
+     *
+     * @param playerId The ID of the player to switch to
+     */
     fun switchPlayer(playerId: Long) {
         viewModelScope.launch {
             playerRepository.switchActivePlayer(playerId)
@@ -113,6 +144,9 @@ class HomeViewModel(
         }
     }
 
+    /**
+     * Creates a new player with previously typed name.
+     */
     fun createNewPlayer() {
         if (uiState.value.newPlayerName.isBlank()) return
 
@@ -123,6 +157,12 @@ class HomeViewModel(
         }
     }
 
+    /**
+     * Prefetches the first hint images for all quests in the specified adventure.
+     *
+     * @param adventure The ID of the adventure
+     * @param context platform context
+     */
     suspend fun prefetchQuestImages(adventure: Long, context: PlatformContext) {
         val quests = gameRepository.getQuestsByAdventure(adventure).first()
 
@@ -145,7 +185,15 @@ class HomeViewModel(
     }
 }
 
-// Factory to create the ViewModel with the repository
+/**
+ * Factory producing [HomeViewModel] instances.
+ *
+ * @param playerRepository Repository for player data
+ * @param gameRepository Repository for game data
+ * @return A new instance of [HomeViewModel]
+ *
+ * @throws IllegalArgumentException if the ViewModel class is not assignable
+ */
 class HomeViewModelFactory(
     private val playerRepository: PlayerRepository,
     private val gameRepository: GameRepository

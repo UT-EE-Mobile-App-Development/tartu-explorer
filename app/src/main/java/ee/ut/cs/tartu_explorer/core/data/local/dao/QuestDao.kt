@@ -7,9 +7,19 @@ import androidx.room.Query
 import ee.ut.cs.tartu_explorer.core.data.local.entities.QuestEntity
 import kotlinx.coroutines.flow.Flow
 
-// Data class to hold the result of the COUNT query. This is a workaround for a Room KSP bug.
+/**
+ * Data class representing the count of quests for a specific adventure.
+ * It holds the result of the COUNT query. This is a workaround for a Room KSP bug.
+ *
+ * @property adventureId The ID of the adventure.
+ * @property count The number of quests associated with the adventure.
+ */
 data class QuestCount(val adventureId: Long, val count: Long)
 
+/**
+ * Data Access Object (DAO) for managing operations related to `QuestEntity`
+ * within the local database.
+ */
 @Dao
 interface QuestDao {
     @Query("SELECT * FROM quest WHERE adventureId = :adventureId")

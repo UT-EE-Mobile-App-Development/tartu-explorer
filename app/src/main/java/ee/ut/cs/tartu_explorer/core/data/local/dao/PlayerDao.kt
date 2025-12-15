@@ -7,6 +7,10 @@ import androidx.room.Query
 import ee.ut.cs.tartu_explorer.core.data.local.entities.PlayerEntity
 import kotlinx.coroutines.flow.Flow
 
+/**
+ * Data Access Object (DAO) for managing operations related to `PlayerEntity`
+ * within the local database.
+ */
 @Dao
 interface PlayerDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)

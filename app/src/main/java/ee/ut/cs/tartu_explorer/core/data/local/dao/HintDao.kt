@@ -10,6 +10,10 @@ import androidx.room.Upsert
 import ee.ut.cs.tartu_explorer.core.data.local.entities.HintEntity
 import kotlinx.coroutines.flow.Flow
 
+/**
+ * Data Access Object (DAO) for managing operations related to `HintEntity`
+ * within the local database.
+ */
 @Dao
 interface HintDao {
 

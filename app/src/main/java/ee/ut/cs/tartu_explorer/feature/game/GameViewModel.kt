@@ -17,6 +17,15 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
+/**
+ * ViewModel managing the game state and logic for an adventure.
+ *
+ * @param adventureId ID of the adventure being played
+ * @param repository Repository for game data operations
+ * @param locationRepository Repository for accessing location data
+ * @param playerRepository Repository for player data operations
+ * @param adventureSessionRepository Repository for adventure session management
+ */
 class GameViewModel(
     private val adventureId: Long,
     private val repository: GameRepository,
@@ -76,6 +85,10 @@ class GameViewModel(
         }
     }
 
+    /**
+     * Attempts to guess the player's position relative to the current quest location.
+     * Updates the game state with the result of the guess.
+     */
     fun guessPosition() {
         viewModelScope.launch(Dispatchers.IO) {
             val playerId = playerRepository.getActivePlayer()?.id ?: return@launch
@@ -102,10 +115,18 @@ class GameViewModel(
         }
     }
 
+    /**
+     * Resets the debug guess dialogue state.
+     */
     fun resetDebugGuessDialogue() {
         _state.update { it -> it.copy(guessState = null) }
     }
 
+    /**
+     * Forces the completion of the current quest, marking it as correct and awarding experience points.
+     *
+     * @param andMoveToNext If true, moves to the next quest after completion.
+     */
     fun forceQuestCompletion(andMoveToNext: Boolean = true) {
         viewModelScope.launch(Dispatchers.IO) {
             val playerId = playerRepository.getActivePlayer()?.id ?: return@launch
@@ -133,6 +154,12 @@ class GameViewModel(
         }
     }
 
+    /**
+     * Completes the current quest based on the actual guess state.
+     * Awards experience points only if the guess was within the acceptable range.
+     *
+     * @param andMoveToNext If true, moves to the next quest after successful completion.
+     */
     fun completeQuestNormally(andMoveToNext: Boolean = true) {
         viewModelScope.launch(Dispatchers.IO) {
             val playerId = playerRepository.getActivePlayer()?.id ?: return@launch
@@ -163,6 +190,9 @@ class GameViewModel(
         }
     }
 
+    /**
+     * Advances the game to the next quest, resetting relevant state and updating the session progress.
+     */
     fun nextQuest() {
         if (state.value.currentQuest < state.value.quests.size - 1) {
             val newQuestIndex = state.value.currentQuest + 1
@@ -186,6 +216,9 @@ class GameViewModel(
         }
     }
 
+    /**
+     * Requests the next hint for the current quest, tracking its usage and updating the game state.
+     */
     fun requestNextHint() {
         val nextHintIndex = _state.value.currentHint + 1
         if (nextHintIndex < state.value.hints.size) {
@@ -207,6 +240,18 @@ class GameViewModel(
     }
 }
 
+/**
+ * Factory for creating [GameViewModel] instances with required dependencies.
+ *
+ * @param adventureId ID of the adventure being played
+ * @param repository Repository for game data operations
+ * @param locationRepository Repository for accessing location data
+ * @param playerRepository Repository for player data operations
+ * @param adventureSessionRepository Repository for adventure session management
+ * @returns A new instance of [GameViewModel]
+ *
+ * @throws IllegalArgumentException if the ViewModel class is not assignable
+ */
 class GameViewModelFactory(
     private val adventureId: Long,
     private val repository: GameRepository,

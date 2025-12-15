@@ -3,14 +3,28 @@ package ee.ut.cs.tartu_explorer.core.data.local.dao
 import androidx.room.Dao
 import androidx.room.Query
 
+/**
+ * Data Access Object (DAO) for retrieving various statistics related to player activities
+ * such as completed quests, hint usage, adventure durations, and locations of completed quests.
+ */
 data class DifficultyCount(
     val difficulty: String, // oder AdventureDifficulty
     val completedQuests: Long
 )
 
+/**
+ * Data class representing an average value in milliseconds.
+ */
 data class AvgValue(val valueMs: Double?)
+
+/**
+ * Data class representing an average double value.
+ */
 data class AvgDouble(val value: Double?)
 
+/**
+ * Data class representing the location of a completed quest along with its hint image URL.
+ */
 data class CompletedQuestLocation(
     val latitude: Double,
     val longitude: Double,
@@ -18,6 +32,9 @@ data class CompletedQuestLocation(
     val hintImageUrl: String?
 )
 
+/**
+ * DAO interface for accessing statistics related to player activities.
+ */
 @Dao
 interface StatisticsDao {
 

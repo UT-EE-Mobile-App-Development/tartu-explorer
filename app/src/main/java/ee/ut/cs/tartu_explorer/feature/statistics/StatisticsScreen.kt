@@ -56,6 +56,13 @@ import kotlinx.coroutines.withContext
 import kotlin.math.min
 import kotlin.math.roundToInt
 
+/**
+ * Screen displaying user statistics related to quests and adventures.
+ *
+ * @param onNavigateBack Callback to navigate back.
+ * @param modifier Modifier for styling.
+ * @param vm ViewModel providing UI state.
+ */
 @SuppressLint("ContextCastToActivity")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -288,6 +295,11 @@ fun StatisticsScreen(
     }
 }
 
+/**
+ * Composable displaying a map marker for a completed quest location.
+ *
+ * @param questLocation The completed quest location data.
+ */
 @Composable
 private fun QuestMarker(questLocation: CompletedQuestLocation) {
     val context = LocalContext.current
@@ -323,6 +335,12 @@ private fun QuestMarker(questLocation: CompletedQuestLocation) {
     }
 }
 
+/**
+ * Crops a bitmap into a circular shape.
+ *
+ * @param bitmap The original bitmap.
+ * @return The cropped circular bitmap.
+ */
 fun getCroppedBitmap(bitmap: Bitmap): Bitmap {
     val size = min(bitmap.width, bitmap.height)
     val output = Bitmap.createBitmap(size, size, Bitmap.Config.ARGB_8888)
@@ -341,9 +359,22 @@ fun getCroppedBitmap(bitmap: Bitmap): Bitmap {
     return output
 }
 
+/**
+ * Formats a double value to two decimal places
+ *
+ * @param value The Double value to format.
+ * @return Formatted string, dash if value is null.
+ */
+
 private fun formatDoubleOrDash(value: Double?): String =
     if (value == null) "—" else ((value * 100.0).roundToInt() / 100.0).toString()
 
+/**
+ * Formats a duration in milliseconds to a human-readable string.
+ *
+ * @param ms The duration in milliseconds.
+ * @return Formatted duration string, dash if input is null.
+ */
 private fun formatDurationOrDash(ms: Double?): String {
     if (ms == null) return "—"
     val totalSeconds = (ms / 1000.0).roundToInt()
@@ -357,6 +388,12 @@ private fun formatDurationOrDash(ms: Double?): String {
     }
 }
 
+/**
+ * Maps difficulty string codes to human-readable labels.
+ *
+ * @param difficulty The difficulty code as a string.
+ * @return The corresponding human-readable difficulty label.
+ */
 private fun mapDifficulty(difficulty: String): String {
     return when (difficulty) {
         "0" -> "Very Easy"
@@ -368,6 +405,18 @@ private fun mapDifficulty(difficulty: String): String {
     }
 }
 
+/**
+ * Composable displaying a statistics box for adventures.
+ *
+ * @param title The title of the stat box.
+ * @param started Number of adventures started.
+ * @param finished Number of adventures finished.
+ * @param total Total number of adventures.
+ * @param color Background color for dark mode.
+ * @param gradientColors Gradient colors for border in dark mode.
+ * @param modifier Modifier for styling.
+ * @param isDarkMode Boolean indicating if dark mode is active.
+ */
 @Composable
 fun AdventureStatBox(
     title: String,
@@ -416,7 +465,16 @@ fun AdventureStatBox(
     }
 }
 
-
+/**
+ * Composable displaying a generic statistics box.
+ *
+ * @param title The title of the stat box.
+ * @param value The value to display.
+ * @param color Background color for dark mode.
+ * @param gradientColors Gradient colors for border in dark mode.
+ * @param modifier Modifier for styling.
+ * @param isDarkMode Boolean indicating if dark mode is active.
+ */
 @Composable
 fun StatBox(
     title: String, value: String, color: Color, gradientColors: List<Color>, modifier: Modifier = Modifier, isDarkMode: Boolean
@@ -454,6 +512,16 @@ fun StatBox(
     }
 }
 
+/**
+ * Composable displaying a statistics box for completed quests by difficulty.
+ *
+ * @param title The title of the stat box.
+ * @param completedByDifficulty List of completed quests categorized by difficulty.
+ * @param color Background color for dark mode.
+ * @param gradientColors Gradient colors for border in dark mode.
+ * @param modifier Modifier for styling.
+ * @param isDarkMode Boolean indicating if dark mode is active.
+ */
 @Composable
 fun DifficultyStatBox(
     title: String,

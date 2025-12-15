@@ -28,6 +28,10 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 
+/**
+ * Screen that shows the current device location after getting the required permissions.
+ * Currently not used in the app
+ */
 @SuppressLint("MissingPermission")
 @Composable
 fun CurrentLocationScreen() {
@@ -46,6 +50,11 @@ fun CurrentLocationScreen() {
     )
 }
 
+/**
+ * Content that shows buttons to get the current device location.
+ *
+ * @param usePreciseLocation Whether to use precise location or not
+ */
 @RequiresPermission(
     anyOf = [Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION],
 )

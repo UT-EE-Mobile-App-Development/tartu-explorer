@@ -7,8 +7,18 @@ import androidx.room.Query
 import ee.ut.cs.tartu_explorer.core.data.local.entities.QuestAttemptEntity
 import kotlinx.coroutines.flow.Flow
 
+/**
+ * Data class representing the count of successful quest attempts for a specific session.
+ *
+ * @property sessionId The ID of the session.
+ * @property count The count of successful attempts.
+ */
 data class SuccessfulAttemptCount(val sessionId: Long, val count: Long)
 
+/**
+ * Data Access Object (DAO) for managing operations related to `QuestAttemptEntity`
+ * within the local database.
+ */
 @Dao
 interface QuestAttemptDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)

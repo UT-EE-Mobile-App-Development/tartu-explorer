@@ -13,6 +13,13 @@ import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.stateIn
 
+/**
+ * ViewModel for managing quest-related data and state.
+ *
+ * @param adventureRepository Repository for adventure data
+ * @param gameRepository Repository for game data
+ * @param playerRepository Repository for player data
+ */
 class QuestViewModel(
     adventureRepository: AdventureRepository,
     gameRepository: GameRepository,
@@ -41,6 +48,16 @@ class QuestViewModel(
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), QuestState())
 }
 
+/**
+ * Factory for creating [QuestViewModel] instances.
+ *
+ * @param adventureRepository Repository for adventure data
+ * @param gameRepository Repository for game data
+ * @param playerRepository Repository for player data
+ * @return A new instance of [QuestViewModel]
+ *
+ * @throws IllegalArgumentException if the viewmodel is not assignable
+ */
 class QuestViewModelFactory(
     private val adventureRepository: AdventureRepository,
     private val gameRepository: GameRepository,

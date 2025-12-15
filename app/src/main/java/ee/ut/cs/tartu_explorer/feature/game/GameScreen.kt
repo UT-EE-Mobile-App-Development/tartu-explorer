@@ -88,6 +88,12 @@ import kotlin.math.sqrt
 import kotlin.random.Random
 
 
+/**
+ * Main game screen composable.
+ *
+ * @param adventureId ID of the adventure that is being played
+ * @param onNavigateBack Callback to navigate back to the previous screen
+ */
 @SuppressLint("ContextCastToActivity")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -504,7 +510,16 @@ fun GameScreen(adventureId: Long, onNavigateBack: () -> Unit) {
 }
 
 
-
+/**
+ * Horizontal progress bar with map marker icons and between segments,
+ * showing the current progress in the adventure.
+ *
+ * @param currentStep The current step (quest) index
+ * @param totalSteps The total number of steps (quests)
+ * @param modifier Modifier for styling
+ * @param isDarkMode Whether dark mode is enabled
+ * @param showCompletionPopup Whether to show the final marker as completed
+ */
 @Composable
 fun ProgressBar(
     currentStep: Int,
@@ -553,6 +568,13 @@ fun ProgressBar(
         }
     }
 }
+
+/**
+ * Map marker icon composed of a circle head and a triangle tip.
+ *
+ * @param color Color of the marker
+ * @param scale Scale factor for the size of the marker
+ */
 @Composable
 fun MapMarkerIconTriangle(color: Color, scale: Float) {
     Column(
@@ -585,6 +607,12 @@ fun MapMarkerIconTriangle(color: Color, scale: Float) {
         }
     }
 }
+
+/**
+ * A single segment between map markers.
+ *
+ * @param color Color of the segment
+ */
 @Composable
 fun RoadSegment(color: Color) {
     Box(
@@ -595,7 +623,20 @@ fun RoadSegment(color: Color) {
     )
 }
 
-
+/**
+ * Game control buttons for using hints and making guesses.
+ *
+ * @param onUseHint Callback when the "HINTS" button is clicked
+ * @param onGuess Callback when the "GUESS" button is clicked
+ * @param currentHintText The text of the current hint to show in the popup
+ * @param modifier Modifier for styling
+ * @param hintDisabled Whether the hint button should be disabled
+ * @param showHintPopup Callback to show/hide the hint popup
+ * @param showWeatherPopup Callback to show/hide the weather popup
+ * @param showBlueCircleOnMap Whether to show the blue circle on the map
+ * @param targetLatLng The target location's latitude and longitude
+ * @param isDarkMode Whether dark mode is enabled
+ */
 @SuppressLint("MissingPermission")
 @Composable
 fun GameControls(
@@ -794,6 +835,12 @@ fun GameControls(
     }
 }
 
+/**
+ * Composable to show a toast message when location permission is not granted.
+ *
+ * @param locationPermissionToastEvent SharedFlow that emits Boolean values indicating
+ * whether to show the toast message.
+ */
 @Composable
 fun NoPermissionInfo(locationPermissionToastEvent: SharedFlow<Boolean>) {
     val context = LocalContext.current
@@ -808,6 +855,13 @@ fun NoPermissionInfo(locationPermissionToastEvent: SharedFlow<Boolean>) {
     }
 }
 
+/**
+ * Generates a random circle around a target LatLng within a specified maximum radius.
+ *
+ * @param target The center LatLng
+ * @param maxRadiusMeters The maximum radius in meters
+ * @return A random LatLng within the circle
+ */
 fun randomCircle(target: LatLng, maxRadiusMeters: Double): LatLng {
     // Random distance from center (0..maxRadiusMeters)
     val distance = sqrt(Random.nextDouble()) * maxRadiusMeters
@@ -822,6 +876,13 @@ fun randomCircle(target: LatLng, maxRadiusMeters: Double): LatLng {
     return LatLng(target.latitude + offsetLat, target.longitude + offsetLng)
 }
 
+/**
+ * Composable that displays a weather card with current weather information
+ * for the given latitude and longitude.
+ *
+ * @param lat Latitude of the location
+ * @param lon Longitude of the location
+ */
 @Composable
 fun WeatherCard(lat: Double, lon: Double) {
     val viewModel: WeatherViewModel = viewModel()
@@ -877,7 +938,12 @@ fun WeatherCard(lat: Double, lon: Double) {
     }
 }
 
-// Takes Weather code and chooses correct icon for it
+/**
+ * Maps weather condition codes to drawable resource IDs.
+ *
+ * @param code Weather condition code
+ * @return Drawable resource ID for the corresponding weather icon
+ */
 fun weatherIcons(code: Int): Int {
     return when(code) {
         0, 1 -> R.drawable.ic_sunny

@@ -23,6 +23,11 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import ee.ut.cs.tartu_explorer.core.ui.theme.components.CustomBackButton
 
+/**
+ * Developer screen with various testing and debugging options.
+ *
+ * @param onNavigateBack Callback to navigate back.
+ */
 @Composable
 fun DevScreen(
     onNavigateBack: () -> Unit,

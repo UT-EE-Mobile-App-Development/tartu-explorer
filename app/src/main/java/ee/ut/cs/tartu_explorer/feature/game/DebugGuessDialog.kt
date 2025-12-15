@@ -6,6 +6,15 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import ee.ut.cs.tartu_explorer.BuildConfig
 
+/**
+ * Dialogue shown after making a guess in a quest,
+ * prompting options depending on whether the guess was in range
+ *
+ * @param onContinueAnyway Callback when choosing to continue anyway
+ * @param onDismiss Callback when dismissing the dialogue
+ * @param distance Distance of the guess from the target in meters
+ * @param inRange Whether the guess was within the acceptable range
+ */
 @Composable
 fun DebugGuessDialog(
     onContinueAnyway: () -> Unit,

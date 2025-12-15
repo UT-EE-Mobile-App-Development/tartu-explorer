@@ -38,6 +38,10 @@ import ee.ut.cs.tartu_explorer.core.data.local.entities.SessionStatusConverter
     ],
     version = 7
 )
+
+/**
+ * Type converters for custom data types used in the database.
+ */
 @TypeConverters(AdventureDifficultyConverter::class, SessionStatusConverter::class)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun adventureDao(): AdventureDao

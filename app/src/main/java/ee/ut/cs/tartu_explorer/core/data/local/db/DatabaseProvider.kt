@@ -3,6 +3,10 @@ package ee.ut.cs.tartu_explorer.core.data.local.db
 import android.content.Context
 import androidx.room.Room
 
+/**
+ * Singleton object to provide access to the AppDatabase instance.
+ * It also handles database recreation based on developer settings.
+ */
 object DatabaseProvider {
     @Volatile
     private var INSTANCE: AppDatabase? = null

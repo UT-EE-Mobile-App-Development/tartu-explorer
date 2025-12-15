@@ -13,7 +13,11 @@ import ee.ut.cs.tartu_explorer.feature.statistics.StatisticsScreen
 import kotlinx.serialization.Serializable
 
 
-//routs to screens
+/**
+ * Sealed class representing different screens in the app with their respective routes.
+ *
+ * @param route The navigation route for the screen.
+ */
 @Serializable
 sealed class Screen(val route: String) {
     @Serializable
@@ -25,7 +29,11 @@ sealed class Screen(val route: String) {
     data class Game(val adventureId:Long) : Screen("game")
 }
 
-
+/**
+ * Composable function defining the navigation graph for the app.
+ *
+ * @param navController The NavHostController to manage navigation.
+ */
 @Composable
 fun AppNavGraph(navController: NavHostController) {
     NavHost(navController = navController, startDestination = Screen.Home()) {

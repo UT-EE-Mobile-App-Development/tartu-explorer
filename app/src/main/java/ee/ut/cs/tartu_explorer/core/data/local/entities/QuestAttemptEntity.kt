@@ -2,6 +2,16 @@ package ee.ut.cs.tartu_explorer.core.data.local.entities
 
 import androidx.room.*
 
+/**
+ * Entity representing an attempt made by a player to complete a quest
+ * within a specific adventure session.
+ *
+ * @property id Unique identifier for the quest attempt.
+ * @property sessionId Identifier of the adventure session in which the attempt was made.
+ * @property questId Identifier of the quest that was attempted.
+ * @property wasCorrect Boolean indicating whether the attempt was correct.
+ * @property timestamp Timestamp of when the attempt was made.
+ */
 @Entity(
     tableName = "quest_attempt",
     foreignKeys = [

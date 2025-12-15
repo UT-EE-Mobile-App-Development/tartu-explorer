@@ -6,6 +6,9 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
+/**
+ * Represents the UI state for weather data.
+ */
 sealed class WeatherState {
     object Loading : WeatherState()
     data class Success(val data: WeatherResponse) : WeatherState()
@@ -13,11 +16,20 @@ sealed class WeatherState {
     object Idle : WeatherState()
 }
 
+/**
+ * ViewModel for managing weather-related data and state.
+ */
 class WeatherViewModel : ViewModel() {
     private val repository = WeatherRepository()
     private val _state = MutableStateFlow<WeatherState>(WeatherState.Idle)
     val state: StateFlow<WeatherState> = _state
 
+    /**
+     * Fetches weather data for the given latitude and longitude.
+     *
+     * @param lat Latitude of the location
+     * @param lon Longitude of the location
+     */
     fun fetchWeather(lat: Double, lon: Double) {
         viewModelScope.launch {
             _state.value = WeatherState.Loading

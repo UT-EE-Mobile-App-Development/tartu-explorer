@@ -7,8 +7,18 @@ import androidx.room.Query
 import ee.ut.cs.tartu_explorer.core.data.local.entities.HintUsageEntity
 import kotlinx.coroutines.flow.Flow
 
+/**
+ * Data class representing the count of hints used in a specific session.
+ *
+ * @property sessionId The ID of the session
+ * @property count The number of hints used in that session
+ */
 data class HintCount(val sessionId: Long, val count: Long)
 
+/**
+ * Data Access Object (DAO) for managing operations related to `HintUsageEntity`
+ * within the local database.
+ */
 @Dao
 interface HintUsageDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)

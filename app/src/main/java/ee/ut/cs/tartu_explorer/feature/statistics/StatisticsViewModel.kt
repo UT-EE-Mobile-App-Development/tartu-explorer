@@ -12,12 +12,20 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
 
+/**
+ * Represents the UI state for statistics screen.
+ */
 sealed class StatsUiState {
     data object Loading : StatsUiState()
     data class Loaded(val data: StatsOverview) : StatsUiState()
     data class Error(val message: String) : StatsUiState()
 }
 
+/**
+ * ViewModel for managing statistics-related data and state.
+ *
+ * @param application The application context
+ */
 class StatisticsViewModel(application: Application) : AndroidViewModel(application) {
 
     private val statisticsRepository = StatisticsRepository.from(application)

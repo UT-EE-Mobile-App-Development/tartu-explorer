@@ -8,6 +8,10 @@ import ee.ut.cs.tartu_explorer.core.data.local.entities.AdventureSessionEntity
 import ee.ut.cs.tartu_explorer.core.data.local.entities.SessionStatus
 import kotlinx.coroutines.flow.Flow
 
+/**
+ * Data Access Object (DAO) for managing operations related to `AdventureSessionEntity`
+ * within the local database.
+ */
 @Dao
 interface AdventureSessionDao {
 

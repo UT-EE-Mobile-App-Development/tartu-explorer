@@ -5,6 +5,14 @@ import androidx.room.ForeignKey
 import androidx.room.Index
 import androidx.room.PrimaryKey
 
+/**
+ * Entity representing the usage of hints within an adventure session.
+ *
+ * @property id Unique identifier for the hint usage record.
+ * @property sessionId Identifier of the adventure session in which the hint was used.
+ * @property hintId Identifier of the hint that was used.
+ * @property usedAt Timestamp indicating when the hint was used.
+ */
 @Entity(
     tableName = "hint_usage",
     foreignKeys = [
